@@ -1,6 +1,7 @@
 package utils
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -22,6 +23,16 @@ func GetUsername() string {
 	}
 
 	return u
+}
+
+func RunCmd(command string) string {
+	log.Debugln(command)
+	out, err := exec.Command("/bin/sh", "-c", command).Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Infoln(out)
+	return string(out)
 }
 
 func GetHomeDir() string {
