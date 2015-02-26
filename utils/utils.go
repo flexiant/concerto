@@ -32,8 +32,11 @@ func RunCmd(command string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Infoln(out)
-	return string(out)
+	stringOutput := string(out)
+	if len(stringOutput) > 0 {
+		log.Infoln(out)
+	}
+	return stringOutput
 }
 
 func GetHomeDir() string {
