@@ -6,7 +6,7 @@ import (
 	"github.com/flexiant/krane/utils"
 	"os"
 	"os/exec"
-	"string"
+	"strings"
 )
 
 func driverName() string {
