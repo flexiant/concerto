@@ -28,7 +28,7 @@ func GetUsername() string {
 
 func RunCmd(command string) string {
 	log.Debugln(command)
-	out, err := exec.Command("/bin/sh", "-c", command).Output()
+	out, err := exec.Command(command).Output()
 	if err != nil {
 		log.Fatal(err)
 	}
