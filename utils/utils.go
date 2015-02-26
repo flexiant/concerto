@@ -3,6 +3,7 @@ package utils
 import (
 	log "github.com/Sirupsen/logrus"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 )

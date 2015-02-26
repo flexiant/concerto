@@ -4,8 +4,6 @@ package firewall
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/krane/utils"
-	"os"
-	"os/exec"
 	"strings"
 )
 
