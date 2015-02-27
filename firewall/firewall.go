@@ -5,7 +5,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/krane/webservice"
+	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
 )

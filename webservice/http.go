@@ -2,11 +2,17 @@ package webservice
 
 import (
 	"crypto/tls"
+	"fmt"
 	log "github.com/Sirupsen/logrus"
-	"github.com/flexiant/krane/config"
+	"github.com/flexiant/concerto/config"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"regexp"
 )
+
+const contentDispositionRegex = "filename=\\\"([^\\\"]*){1}\\\""
 
 type Webservice struct {
 	config *config.Config
@@ -60,4 +66,41 @@ func (w *Webservice) Get(endpoint string) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+func (w *Webservice) GetFile(endpoint string, directoryPath string) (string, error) {
+
+	log.Debugf("Connecting to %s%s", w.config.ApiEndpoint, endpoint)
+	response, err := w.client.Get(w.config.ApiEndpoint + endpoint)
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+
+	log.Debugf("Status code %s", response.Status)
+
+	r, err := regexp.Compile(contentDispositionRegex)
+	if err != nil {
+		return "", err
+	}
+
+	fileName := r.FindStringSubmatch(response.Header.Get("Content-Disposition"))[1]
+	if err != nil {
+		return "", err
+	}
+	realFileName := fmt.Sprintf("%s/%s", directoryPath, fileName)
+
+	output, err := os.Create(realFileName)
+	if err != nil {
+		return "", err
+	}
+	defer output.Close()
+
+	n, err := io.Copy(output, response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	log.Debugf("%#v bytes downloaded", n)
+	return realFileName, nil
 }

@@ -4,7 +4,7 @@ package firewall
 
 import (
 	"fmt"
-	"github.com/flexiant/krane/utils"
+	"github.com/flexiant/concerto/utils"
 )
 
 func driverName() string {

@@ -7,8 +7,10 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/krane/firewall"
-	"github.com/flexiant/krane/utils"
+	"github.com/flexiant/concerto/converge"
+	"github.com/flexiant/concerto/dispatcher"
+	"github.com/flexiant/concerto/firewall"
+	"github.com/flexiant/concerto/utils"
 )
 
 const VERSION = "0.1.0"
@@ -25,6 +27,18 @@ var Commands = []cli.Command{
 		Subcommands: append(
 			firewall.SubCommands(),
 		),
+	},
+	{
+		Name:  "scripts",
+		Usage: "Manages Execution Scripts within a Host",
+		Subcommands: append(
+			dispatcher.SubCommands(),
+		),
+	},
+	{
+		Name:   "converge",
+		Usage:  "Converges Host to original Blueprint",
+		Action: converge.CmbConverge,
 	},
 }
 
@@ -50,10 +64,10 @@ func main() {
 	app := cli.NewApp()
 	app.Name = path.Base(os.Args[0])
 	app.Author = "Concerto Contributors"
-	app.Email = "https://github.com/flexiant/krane"
+	app.Email = "https://github.com/flexiant/concerto"
 	app.Commands = Commands
 	app.CommandNotFound = cmdNotFound
-	app.Usage = "Create and manage machines running Docker."
+	app.Usage = "Manages comunication between Host and Concerto Platform"
 	app.Version = VERSION
 
 	var configFile string
@@ -69,19 +83,19 @@ func main() {
 			Usage: "Enable debug mode",
 		},
 		cli.StringFlag{
-			EnvVar: "KRANE_CA_CERT",
+			EnvVar: "CONCERTO_CA_CERT",
 			Name:   "ca-cert",
 			Usage:  "CA to verify remotes against",
 			Value:  filepath.Join(utils.GetConcertoDir(), "ssl", "ca_cert.pem"),
 		},
 		cli.StringFlag{
-			EnvVar: "KRANE_CLIENT_CERT",
+			EnvVar: "CONCERTO_CLIENT_CERT",
 			Name:   "client-cert",
 			Usage:  "Client cert to use for Concerto",
 			Value:  filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt"),
 		},
 		cli.StringFlag{
-			EnvVar: "KRANE_CLIENT_KEY",
+			EnvVar: "CONCERTO_CLIENT_KEY",
 			Name:   "client-key",
 			Usage:  "Private key used in client Concerto auth",
 			Value:  filepath.Join(utils.GetConcertoDir(), "ssl", "/private/cert.key"),

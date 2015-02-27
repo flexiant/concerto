@@ -1,9 +1,7 @@
 package utils
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 )
@@ -26,19 +24,6 @@ func GetUsername() string {
 	return u
 }
 
-func RunCmd(command string) string {
-	log.Debugln(command)
-	out, err := exec.Command(command).Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	stringOutput := string(out)
-	if len(stringOutput) > 0 {
-		log.Infoln(out)
-	}
-	return stringOutput
-}
-
 func GetHomeDir() string {
 	if runtime.GOOS == "windows" {
 		return os.Getenv("USERPROFILE")
@@ -55,7 +40,7 @@ func GetBaseDir() string {
 }
 
 func GetConcertoDir() string {
-	return filepath.Join(GetBaseDir(), ".krane")
+	return filepath.Join(GetBaseDir(), ".concerto")
 }
 
 func Exists(name string) bool {
