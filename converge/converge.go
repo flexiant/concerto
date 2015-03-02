@@ -24,7 +24,8 @@ func CmbConverge(c *cli.Context) {
 	}
 
 	if utils.Exists(firstBootJsonChef) {
-		garbageOutput, _ := regexp.Compile("[\[][^\[|^\]]*[\]]\s[A-Z]*:\s")
+		garbageOutput, _ := regexp.Compile("[\\[][^\\[|^\\]]*[\\]]\\s[A-Z]*:\\s")
+		output, _ := regexp.Compile("Chef Run")
 		cmd := exec.Command("chef-client", "-j", firstBootJsonChef)
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
@@ -50,7 +51,13 @@ func CmbConverge(c *cli.Context) {
 				break
 			}
 			x = x + 1
-			log.Debugf("%s", garbageOutput.ReplaceAllString(string(line), ""))
+			outputLine := garbageOutput.ReplaceAllString(string(line), "")
+			if output.MatchString(outputLine) {
+				log.Infof("%s", outputLine)
+			} else {
+				log.Debugf("%s", outputLine)
+			}
+
 		}
 		err = cmd.Wait()
 		if err != nil {
