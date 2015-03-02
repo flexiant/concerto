@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	timestampLayout = "2006-01-02T15:04:05.000000-07:00"
+	TimeStampLayout = "2006-01-02T15:04:05.000000-07:00"
 )
 
 func extractExitCode(err error) int {
@@ -65,8 +65,8 @@ func RunCmd(command string) (output string, exitCode int, startedAt time.Time, f
 	output = strings.TrimSpace(string(bytes))
 	exitCode = extractExitCode(err)
 
-	log.Debugf("Starting Time: %s", startedAt.Format(timestampLayout))
-	log.Debugf("End Time: %s", startedAt.Format(timestampLayout))
+	log.Debugf("Starting Time: %s", startedAt.Format(TimeStampLayout))
+	log.Debugf("End Time: %s", finishedAt.Format(TimeStampLayout))
 	log.Debugf("Output")
 	log.Debugf("")
 	log.Debugf("%s", output)

@@ -37,8 +37,8 @@ type ScriptConclusion struct {
 	FinishedAt string `json:"finished_at"`
 }
 
-type ConclusionWrapper struct {
-	Conclusion ScriptConclusion `json:"script_conclusion"`
+type ScriptConclusionRoot struct {
+	Root ScriptConclusion `json:"script_conclusion"`
 }
 
 func SubCommands() []cli.Command {
@@ -61,11 +61,17 @@ func SubCommands() []cli.Command {
 	}
 }
 
-// func execScriptCharacterization(script ScriptCharacterization, directoryPath string) (output ScriptConclusion) {
-// 	output.UUID = script.UUID
-// 	output.Output, output.ExitCode, output.StartedAt, output.FinishedAt = utils.ExecCode(script.Script.Code, directoryPath, script.Script.UUID)
-// 	return output
-// }
+func executeScriptCharacterization(script ScriptCharacterization, directoryPath string) (conclusion ScriptConclusionRoot) {
+	output, exitCode, startedAt, finishedAt := utils.ExecCode(script.Script.Code, directoryPath, script.Script.UUID)
+
+	conclusion.Root.UUID = script.UUID
+	conclusion.Root.Output = output
+	conclusion.Root.ExitCode = exitCode
+	conclusion.Root.StartedAt = startedAt.Format(utils.TimeStampLayout)
+	conclusion.Root.FinishedAt = finishedAt.Format(utils.TimeStampLayout)
+
+	return conclusion
+}
 
 func execute(phase string) {
 	var scriptChars []ScriptCharacterization
@@ -101,28 +107,40 @@ func execute(phase string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Infof("Attachment Folder: %s", os.Getenv("ATTACHMENT_DIR"))
 
 		// Seting up Enviroment Variables
 		log.Infof("Enviroment Variables")
 		for index, value := range ex.Parameters {
 			os.Setenv(index, value)
-			log.Debugf("\t - %s=%s", index, value)
+			log.Infof("\t - %s=%s", index, value)
 		}
 
-		// Downloading Attachements
-		log.Infof("Attachments")
-		if err != nil {
-			log.Fatal(err)
-		}
-		for _, endpoint := range ex.Script.AttachmentPaths {
-			filename, err := webservice.GetFile(endpoint, os.Getenv("ATTACHMENT_DIR"))
+		if len(ex.Script.AttachmentPaths) > 0 {
+			log.Infof("Attachment Folder: %s", os.Getenv("ATTACHMENT_DIR"))
+			// Downloading Attachements
+			log.Infof("Attachments")
 			if err != nil {
 				log.Fatal(err)
 			}
-			log.Infof("\t - %s --> %s", endpoint, filename)
+			for _, endpoint := range ex.Script.AttachmentPaths {
+				filename, err := webservice.GetFile(endpoint, os.Getenv("ATTACHMENT_DIR"))
+				if err != nil {
+					log.Fatal(err)
+				}
+				log.Infof("\t - %s --> %s", endpoint, filename)
+			}
 		}
-		utils.ExecCode(ex.Script.Code, path, ex.Script.UUID)
+
+		json, err := json.Marshal(executeScriptCharacterization(ex, path))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = webservice.Post(conclusionsEndpoint, json)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		log.Infof("------------------------------------------------------------------------------------------------")
 	}
 }

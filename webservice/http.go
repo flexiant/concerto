@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 )
 
 const contentDispositionRegex = "filename=\\\"([^\\\"]*){1}\\\""
@@ -50,16 +51,30 @@ func httpClient(config *config.Config) (*http.Client, error) {
 	return client, nil
 }
 
+func (w *Webservice) Post(endpoint string, json []byte) error {
+	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+	output := strings.NewReader(string(json))
+	response, err := w.client.Post(w.config.ApiEndpoint+endpoint, "application/json", output)
+
+	log.Debugf("Posting: %s", output)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+	log.Debugf("Status code: %s", response.Status)
+	return nil
+}
+
 func (w *Webservice) Get(endpoint string) ([]byte, error) {
 
-	log.Debugf("Connecting to %s%s", w.config.ApiEndpoint, endpoint)
+	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 	response, err := w.client.Get(w.config.ApiEndpoint + endpoint)
 	if err != nil {
 		return nil, err
 	}
 	defer response.Body.Close()
 
-	log.Debugf("Status code %s", response.Status)
+	log.Debugf("Status code: %s", response.Status)
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
@@ -70,14 +85,14 @@ func (w *Webservice) Get(endpoint string) ([]byte, error) {
 
 func (w *Webservice) GetFile(endpoint string, directoryPath string) (string, error) {
 
-	log.Debugf("Connecting to %s%s", w.config.ApiEndpoint, endpoint)
+	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 	response, err := w.client.Get(w.config.ApiEndpoint + endpoint)
 	if err != nil {
 		return "", err
 	}
 	defer response.Body.Close()
 
-	log.Debugf("Status code %s", response.Status)
+	log.Debugf("Status code: %s", response.Status)
 
 	r, err := regexp.Compile(contentDispositionRegex)
 	if err != nil {
