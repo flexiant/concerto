@@ -23,9 +23,8 @@ func extractExitCode(err error) int {
 		case *os.PathError:
 			return 127
 		}
-	} else {
-		return 0
 	}
+	return 0
 }
 
 func ExecCode(code string, path string, filename string) (output string, exitCode int, startedAt time.Time, finishedAt time.Time) {
