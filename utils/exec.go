@@ -17,9 +17,12 @@ const (
 
 func extractExitCode(err error) int {
 	if err != nil {
-		exiterr := err.(*exec.ExitError)
-		status := exiterr.Sys().(syscall.WaitStatus)
-		return status.ExitStatus()
+		switch err.(type) {
+		case *exec.ExitError:
+			return err.(*exec.ExitError).Sys().(syscall.WaitStatus).ExitStatus()
+		case *os.PathError:
+			return 127
+		}
 	} else {
 		return 0
 	}
