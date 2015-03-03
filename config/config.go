@@ -27,13 +27,7 @@ type Cert struct {
 // Returns Concerto Server Configuration
 func ConcertoServerConfiguration() (*Config, error) {
 
-	var fileLocation string
-
-	if utils.GetUsername() == "root" {
-		fileLocation = "/etc/tapp/client.xml"
-	} else {
-		fileLocation = filepath.Join(utils.GetBaseDir(), ".krane", "client.xml")
-	}
+	fileLocation := filepath.Join(utils.GetConcertoDir(), "client.xml")
 
 	if utils.Exists(fileLocation) {
 		var config *Config
