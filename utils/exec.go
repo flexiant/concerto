@@ -26,12 +26,19 @@ func extractExitCode(err error) int {
 }
 
 func ExecCode(code string, path string, filename string) (output string, exitCode int, startedAt time.Time, finishedAt time.Time) {
-	tmp, err := os.Create(fmt.Sprintf("%s/%s", path, filename))
+	var err error
+	var tmp *os.File
+
+	if runtime.GOOS == "windows" {
+		tmp, err = os.Create(fmt.Sprintf("%s/%s.bat", path, filename))
+	} else {
+		tmp, err = os.Create(fmt.Sprintf("%s/%s", path, filename))
+	}
+
 	if err != nil {
 		log.Fatalf("Error creating temp file : ", err)
 	}
 
-	defer os.Remove(tmp.Name())
 	defer tmp.Close()
 
 	_, err = tmp.WriteString(code)
@@ -52,7 +59,7 @@ func RunCmd(command string) (output string, exitCode int, startedAt time.Time, f
 	var cmd *exec.Cmd
 
 	if runtime.GOOS == "windows" {
-		log.Infof("Command: %s %s", command)
+		log.Infof("Command: %s %s", "cmd /C ", command)
 		cmd = exec.Command("cmd", command)
 	} else {
 		log.Infof("Command: %s %s", "/bin/sh", command)
