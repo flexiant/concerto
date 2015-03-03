@@ -52,7 +52,7 @@ func RunCmd(command string) (output string, exitCode int, startedAt time.Time, f
 	var cmd *exec.Cmd
 
 	if runtime.GOOS == "windows" {
-		log.Infof("Command: %s %s", "cmd /C ", command)
+		log.Infof("Command: %s %s", command)
 		cmd = exec.Command("cmd", command)
 	} else {
 		log.Infof("Command: %s %s", "/bin/sh", command)
