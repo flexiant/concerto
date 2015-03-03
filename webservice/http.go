@@ -80,6 +80,7 @@ func (w *Webservice) Get(endpoint string) ([]byte, error) {
 		return nil, err
 	}
 
+	log.Debugf("Response: %s", string(body))
 	return body, nil
 }
 
