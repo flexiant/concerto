@@ -70,13 +70,6 @@ func main() {
 	app.Usage = "Manages comunication between Host and Concerto Platform"
 	app.Version = VERSION
 
-	var configFile string
-	if utils.GetUsername() == "root" {
-		configFile = "/etc/tapp/client.xml"
-	} else {
-		configFile = filepath.Join(utils.GetConcertoDir(), "client.xml")
-	}
-
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "debug, D",
@@ -104,7 +97,7 @@ func main() {
 			EnvVar: "CONCERTO_CONFIG",
 			Name:   "concerto-config",
 			Usage:  "Concerto Config File",
-			Value:  configFile,
+			Value:  filepath.Join(utils.GetConcertoDir(), "client.xml"),
 		},
 	}
 

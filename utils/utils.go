@@ -40,7 +40,13 @@ func GetBaseDir() string {
 }
 
 func GetConcertoDir() string {
-	return filepath.Join(GetBaseDir(), ".concerto")
+	if GetUsername() == "root" {
+		return "/etc/tapp/"
+	} else if GetUsername() == "Administrator" {
+		return "c:\\concerto\\"
+	} else {
+		return filepath.Join(GetBaseDir(), ".concerto")
+	}
 }
 
 func Exists(name string) bool {
