@@ -1,10 +1,17 @@
 package utils
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"runtime"
 )
+
+func CheckError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func GetUsername() string {
 	u := "unknown"

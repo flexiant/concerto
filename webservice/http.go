@@ -61,6 +61,10 @@ func (w *Webservice) Post(endpoint string, json []byte) error {
 		return err
 	}
 	defer response.Body.Close()
+
+	body, _ := ioutil.ReadAll(response.Body)
+
+	log.Debugf("Response: %s", body)
 	log.Debugf("Status code: %s", response.Status)
 	return nil
 }

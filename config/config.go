@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
 	"io/ioutil"
 	"os"
@@ -38,7 +39,27 @@ func ConcertoServerConfiguration() (*Config, error) {
 		defer xmlFile.Close()
 		b, _ := ioutil.ReadAll(xmlFile)
 		xml.Unmarshal(b, &config)
-		return config, nil
+
+		if config.ApiEndpoint != "" && config.Certificate.Cert != "" {
+			return config, nil
+		} else {
+			return nil, errors.New(fmt.Sprintf("Configuration File %s does not have valid format.", fileLocation))
+		}
+
+	} else if utils.Exists(filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt")) {
+
+		certificate := Cert{
+			filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt"),
+			filepath.Join(utils.GetConcertoDir(), "ssl", "/private/cert.key"),
+			filepath.Join(utils.GetConcertoDir(), "ssl", "ca_cert.pem"),
+		}
+		config := Config{}
+		config.ApiEndpoint = os.Getenv("CONCERTO_ENDPOINT")
+		config.Certificate = certificate
+		log.Debugf("%#v", config)
+
+		return &config, nil
+
 	} else {
 		return nil, errors.New(fmt.Sprintf("Configuration File %s does not exist.", fileLocation))
 	}

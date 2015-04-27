@@ -1,16 +1,20 @@
 package main
 
 import (
-	"os"
-	"path"
-	"path/filepath"
-
+	"crypto/x509"
+	"encoding/pem"
+	// "fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/converge"
 	"github.com/flexiant/concerto/dispatcher"
 	"github.com/flexiant/concerto/firewall"
+	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
+	"io/ioutil"
+	"os"
+	"path"
+	"path/filepath"
 )
 
 const VERSION = "0.1.0"
@@ -20,7 +24,7 @@ func initLogging(lvl log.Level) {
 	log.SetLevel(lvl)
 }
 
-var Commands = []cli.Command{
+var ServerCommands = []cli.Command{
 	{
 		Name:  "firewall",
 		Usage: "Manages Firewall Policies within a Host",
@@ -42,6 +46,16 @@ var Commands = []cli.Command{
 	},
 }
 
+var ClientCommands = []cli.Command{
+	{
+		Name:  "ship",
+		Usage: "Manages Container Ships in Host",
+		Subcommands: append(
+			ship.SubCommands(),
+		),
+	},
+}
+
 func cmdNotFound(c *cli.Context, command string) {
 	log.Fatalf(
 		"%s: '%s' is not a %s command. See '%s --help'.",
@@ -50,6 +64,31 @@ func cmdNotFound(c *cli.Context, command string) {
 		c.App.Name,
 		c.App.Name,
 	)
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func isUserCertificate(filename string) bool {
+	if utils.Exists(filename) {
+		data, err := ioutil.ReadFile(filename)
+		checkError(err)
+		block, _ := pem.Decode(data)
+
+		cert, err := x509.ParseCertificate(block.Bytes)
+		checkError(err)
+
+		if len(cert.Subject.OrganizationalUnit) > 0 {
+			if cert.Subject.OrganizationalUnit[0] == "Users" {
+				return true
+
+			}
+		}
+	}
+	return false
 }
 
 func main() {
@@ -65,10 +104,16 @@ func main() {
 	app.Name = path.Base(os.Args[0])
 	app.Author = "Concerto Contributors"
 	app.Email = "https://github.com/flexiant/concerto"
-	app.Commands = Commands
+
 	app.CommandNotFound = cmdNotFound
 	app.Usage = "Manages comunication between Host and Concerto Platform"
 	app.Version = VERSION
+
+	if isUserCertificate(filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt")) {
+		app.Commands = ClientCommands
+	} else {
+		app.Commands = ServerCommands
+	}
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
@@ -98,6 +143,12 @@ func main() {
 			Name:   "concerto-config",
 			Usage:  "Concerto Config File",
 			Value:  filepath.Join(utils.GetConcertoDir(), "client.xml"),
+		},
+		cli.StringFlag{
+			EnvVar: "CONCERTO_ENDPOINT",
+			Name:   "concerto-endpoint",
+			Usage:  "Concerto Endpoint",
+			Value:  os.Getenv("CONCERTO_ENDPOINT"),
 		},
 	}
 
