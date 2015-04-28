@@ -91,7 +91,7 @@ func (w *Webservice) Put(endpoint string) error {
 func (w *Webservice) Delete(endpoint string) error {
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 
-	request, err := http.NewRequest("DELELTE", w.config.ApiEndpoint+endpoint, nil)
+	request, err := http.NewRequest("DELETE", w.config.ApiEndpoint+endpoint, nil)
 	response, err := w.client.Do(request)
 
 	log.Debugf("Deleting: %s", endpoint)
