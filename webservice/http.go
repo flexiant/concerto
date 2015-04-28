@@ -69,6 +69,44 @@ func (w *Webservice) Post(endpoint string, json []byte) error {
 	return nil
 }
 
+func (w *Webservice) Put(endpoint string) error {
+	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+
+	request, err := http.NewRequest("PUT", w.config.ApiEndpoint+endpoint, nil)
+	response, err := w.client.Do(request)
+
+	log.Debugf("Putting: %s", endpoint)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	body, _ := ioutil.ReadAll(response.Body)
+
+	log.Debugf("Response: %s", body)
+	log.Debugf("Status code: %s", response.Status)
+	return nil
+}
+
+func (w *Webservice) Delete(endpoint string) error {
+	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+
+	request, err := http.NewRequest("DELELTE", w.config.ApiEndpoint+endpoint, nil)
+	response, err := w.client.Do(request)
+
+	log.Debugf("Deleting: %s", endpoint)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	body, _ := ioutil.ReadAll(response.Body)
+
+	log.Debugf("Response: %s", body)
+	log.Debugf("Status code: %s", response.Status)
+	return nil
+}
+
 func (w *Webservice) Get(endpoint string) ([]byte, error) {
 
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
