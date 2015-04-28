@@ -9,6 +9,7 @@ import (
 	"github.com/flexiant/concerto/converge"
 	"github.com/flexiant/concerto/dispatcher"
 	"github.com/flexiant/concerto/firewall"
+	"github.com/flexiant/concerto/fleet"
 	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
 	"io/ioutil"
@@ -52,6 +53,13 @@ var ClientCommands = []cli.Command{
 		Usage: "Manages Container Ships in Host",
 		Subcommands: append(
 			ship.SubCommands(),
+		),
+	},
+	{
+		Name:  "fleet",
+		Usage: "Manages Container Fleets in Host",
+		Subcommands: append(
+			fleet.SubCommands(),
 		),
 	},
 }
