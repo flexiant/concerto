@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/x509"
 	"encoding/pem"
-	// "fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/converge"

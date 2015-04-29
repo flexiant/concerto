@@ -3,7 +3,6 @@ package fleet
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
@@ -24,17 +23,7 @@ type Fleet struct {
 }
 
 func cmdCreate(c *cli.Context) {
-
-	parameters := false
-
-	if !c.IsSet("fleet") {
-		log.Warn("Please use parameter --fleet")
-		parameters = true
-	}
-
-	if parameters {
-		log.Fatal("execute create -h to find out how to use it correctly")
-	}
+	utils.FlagsRequired(c, []string{"fleet"})
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -54,9 +43,8 @@ func cmdCreate(c *cli.Context) {
 }
 
 func cmdDelete(c *cli.Context) {
-	if !c.IsSet("id") {
-		log.Warn("Please use parameter --id")
-	}
+	utils.FlagsRequired(c, []string{"id"})
+
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
@@ -65,9 +53,7 @@ func cmdDelete(c *cli.Context) {
 }
 
 func cmdStart(c *cli.Context) {
-	if !c.IsSet("id") {
-		log.Warn("Please use parameter --id")
-	}
+	utils.FlagsRequired(c, []string{"id"})
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -77,9 +63,8 @@ func cmdStart(c *cli.Context) {
 }
 
 func cmdStop(c *cli.Context) {
-	if !c.IsSet("id") {
-		log.Warn("Please use parameter --id")
-	}
+	utils.FlagsRequired(c, []string{"id"})
+
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
@@ -88,9 +73,8 @@ func cmdStop(c *cli.Context) {
 }
 
 func cmdEmpty(c *cli.Context) {
-	if !c.IsSet("id") {
-		log.Warn("Please use parameter --id")
-	}
+	utils.FlagsRequired(c, []string{"id"})
+
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
@@ -99,9 +83,8 @@ func cmdEmpty(c *cli.Context) {
 }
 
 func cmdAttachNet(c *cli.Context) {
-	if !c.IsSet("id") {
-		log.Warn("Please use parameter --id")
-	}
+	utils.FlagsRequired(c, []string{"id"})
+
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
