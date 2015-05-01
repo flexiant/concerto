@@ -53,7 +53,35 @@ func ExecCode(code string, path string, filename string) (output string, exitCod
 		log.Fatalf("Error changing permision to file : ", err)
 	}
 
-	return RunCmd(tmp.Name())
+	return RunFile(tmp.Name())
+}
+
+func RunFile(command string) (output string, exitCode int, startedAt time.Time, finishedAt time.Time) {
+
+	var cmd *exec.Cmd
+
+	if runtime.GOOS == "windows" {
+		log.Infof("Command: %s", command)
+		cmd = exec.Command("cmd", "/C", command)
+	} else {
+		log.Infof("Command: %s %s", "/bin/sh", command)
+		cmd = exec.Command("/bin/sh", command)
+	}
+
+	startedAt = time.Now()
+	bytes, err := cmd.CombinedOutput()
+	finishedAt = time.Now()
+	output = strings.TrimSpace(string(bytes))
+	exitCode = extractExitCode(err)
+
+	log.Debugf("Starting Time: %s", startedAt.Format(TimeStampLayout))
+	log.Debugf("End Time: %s", finishedAt.Format(TimeStampLayout))
+	log.Debugf("Output")
+	log.Debugf("")
+	log.Debugf("%s", output)
+	log.Debugf("")
+	log.Infof("Exit Code: %d", exitCode)
+	return
 }
 
 func RunCmd(command string) (output string, exitCode int, startedAt time.Time, finishedAt time.Time) {
