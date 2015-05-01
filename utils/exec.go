@@ -64,8 +64,8 @@ func RunCmd(command string) (output string, exitCode int, startedAt time.Time, f
 		log.Infof("Command: %s", command)
 		cmd = exec.Command("cmd", "/C", command)
 	} else {
-		log.Infof("Command: %s %s", "/bin/sh", command)
-		cmd = exec.Command("/bin/sh", command)
+		log.Infof("Command: %s %s", "/bin/sh -c", command)
+		cmd = exec.Command("/bin/sh", "-c", command)
 	}
 
 	startedAt = time.Now()
