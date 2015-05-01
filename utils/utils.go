@@ -48,7 +48,7 @@ func GetBaseDir() string {
 
 func GetConcertoDir() string {
 	if GetUsername() == "root" {
-		return "/etc/tapp/"
+		return "/etc/concerto/"
 	} else if GetUsername() == "Administrator" {
 		return "c:\\concerto\\"
 	} else {

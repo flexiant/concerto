@@ -12,7 +12,7 @@ import (
 )
 
 type Config struct {
-	XMLName     xml.Name `xml:"tapp"`
+	XMLName     xml.Name `xml:"concerto"`
 	ApiEndpoint string   `xml:"server,attr"`
 	LogFile     string   `xml:"log_file,attr"`
 	LogLevel    string   `xml:"log_level,attr"`
