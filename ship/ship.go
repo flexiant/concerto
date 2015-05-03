@@ -10,9 +10,9 @@ import (
 	"text/tabwriter"
 )
 
-type Fleet struct {
-	Ships []Ship `json:"ships"`
-}
+// type Fleet struct {
+// 	Ships []Ship `json:"ships"`
+// }
 
 type Ship struct {
 	Id        string `json:"id"`
@@ -27,7 +27,7 @@ type Ship struct {
 }
 
 func cmdCreate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"fleet", "fqdn", "name", "plan"})
+	utils.FlagsRequired(c, []string{"fleet", "plan"})
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -35,8 +35,6 @@ func cmdCreate(c *cli.Context) {
 	v := make(map[string]string)
 
 	v["fleet_name"] = c.String("fleet")
-	v["fqdn"] = c.String("fqdn")
-	v["name"] = c.String("name")
 	v["plan"] = c.String("plan")
 
 	json, err := json.Marshal(v)
@@ -87,7 +85,7 @@ func cmdDelete(c *cli.Context) {
 }
 
 func cmdList(c *cli.Context) {
-	var ships Fleet
+	var ships []Ship
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -101,7 +99,7 @@ func cmdList(c *cli.Context) {
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "FLEET\tMASTER\tID\tNAME\tFQDN\tIP\tSTATE")
 
-	for _, ship := range ships.Ships {
+	for _, ship := range ships {
 		if ship.Master {
 			fmt.Fprintf(w, "%s\t*\t%s\t%s\t%s\t%s\t%s\n", ship.FleetName, ship.Id, ship.Name, ship.Fqdn, ship.PublicIp, ship.State)
 		} else {
@@ -123,14 +121,6 @@ func SubCommands() []cli.Command {
 				cli.StringFlag{
 					Name:  "fleet",
 					Usage: "Fleet Name to Attach Ship",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of Host",
-				},
-				cli.StringFlag{
-					Name:  "fqdn",
-					Usage: "Full Qualify Domain Name of Host",
 				},
 				cli.StringFlag{
 					Name:  "plan",
