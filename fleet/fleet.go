@@ -105,7 +105,6 @@ func cmdList(c *cli.Context) {
 	utils.CheckError(err)
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	// :id, :name, :state, :master_count, :slave_count, :workspace_id, :firewall_profile_id, :master_template_id, :slave_template_id
 	fmt.Fprintln(w, "FLEET NAME\tID\tSTATE\tMASTER COUNT\tSLAVE COUNT\tWORKSPACE ID\tFIREWALL PROFILE ID\tMASTER TEMPLATE ID\tSLAVE TEMPLATE ID")
 
 	for _, fleet := range fleets {
