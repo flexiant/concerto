@@ -9,6 +9,7 @@ import (
 	"github.com/flexiant/concerto/dispatcher"
 	"github.com/flexiant/concerto/firewall"
 	"github.com/flexiant/concerto/fleet"
+	"github.com/flexiant/concerto/kube"
 	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
 	"io/ioutil"
@@ -60,6 +61,17 @@ var ClientCommands = []cli.Command{
 		Subcommands: append(
 			fleet.SubCommands(),
 		),
+	},
+	{
+		Name:  "kube",
+		Usage: "Manages a kubernetes cluster",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "fleet",
+				Usage: "Fleet Name",
+			},
+		},
+		Action: kube.CmbHijack,
 	},
 }
 
