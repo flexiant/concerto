@@ -1,4 +1,4 @@
-package kube
+package cluster
 
 import (
 	"bufio"
@@ -7,6 +7,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/config"
 	"github.com/flexiant/concerto/fleet"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
@@ -14,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func CmbHijack(c *cli.Context) {
@@ -54,8 +56,15 @@ func CmbHijack(c *cli.Context) {
 		kubeLocation := strings.TrimSpace(string(output))
 
 		if len(kubeLocation) > 0 {
-			fleetParameters := fmt.Sprintf("--server=http://%s-master-01.kaas.concerto.io:8080", fleet.Name)
-			arguments := append([]string{fleetParameters, c.Args().First()}, c.Args().Tail()...)
+			config, err := config.ConcertoServerConfiguration()
+			utils.CheckError(err)
+
+			fleetParameters := fmt.Sprintf("--server=https://%s:6443", fleet.Masters[0])
+			clientCertificate := fmt.Sprintf("--client-certificate=%s", config.Certificate.Cert)
+			clientKey := fmt.Sprintf("--client-key=%s", config.Certificate.Key)
+			clientCA := fmt.Sprintf("--certificate-authority=%s", config.Certificate.Ca)
+
+			arguments := append([]string{fleetParameters, clientCertificate, clientKey, clientCA, c.Args().First()}, c.Args().Tail()...)
 
 			log.Debug(fmt.Sprintf("Going to execute %s %s", kubeLocation, arguments))
 
@@ -87,12 +96,17 @@ func CmbHijack(c *cli.Context) {
 					}
 					break
 				}
-				fmt.Printf("%s\n", strings.Replace(string(line), "kubectl", "concerto kube", -1))
+				fmt.Printf("%s\n", strings.Replace(string(line), "kubectl", "concerto cluster", -1))
 			}
+
+			go func() {
+				time.Sleep(30 * time.Second)
+				log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", fleetParameters))
+			}()
 
 			return
 		} else {
-			log.Warn(fmt.Sprintf("We could not find kubectl in your enviroment. Please install it. Thank you.", fleetName))
+			log.Warn(fmt.Sprintf("We could not find kubectl in your enviroment. Please install it. Thank you."))
 			os.Exit(1)
 		}
 	} else {

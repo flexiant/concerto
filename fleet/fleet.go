@@ -11,15 +11,16 @@ import (
 )
 
 type Fleet struct {
-	Id                string `json:"id"`
-	Name              string `json:"name"`
-	State             string `json:"state"`
-	MasterCount       int    `json:"master_count"`
-	SlaveCount        int    `json:"slave_count"`
-	WorkspaceId       string `json:"workspace_id"`
-	FirewallProfileId string `json:"firewall_profile_id"`
-	MasterTemplateId  string `json:"master_template_id"`
-	SlaveTemplateId   string `json:"slave_template_id"`
+	Id                string   `json:"id"`
+	Name              string   `json:"name"`
+	State             string   `json:"state"`
+	MasterCount       int      `json:"master_count"`
+	SlaveCount        int      `json:"slave_count"`
+	WorkspaceId       string   `json:"workspace_id"`
+	FirewallProfileId string   `json:"firewall_profile_id"`
+	MasterTemplateId  string   `json:"master_template_id"`
+	SlaveTemplateId   string   `json:"slave_template_id"`
+	Masters           []string `json:"masters"`
 }
 
 func cmdCreate(c *cli.Context) {

@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"io"
 	"os"
 	"os/exec"
 	"runtime"
@@ -60,6 +63,9 @@ func RunFile(command string) (output string, exitCode int, startedAt time.Time, 
 
 	var cmd *exec.Cmd
 
+	var b bytes.Buffer
+	buffer := bufio.NewWriter(&b)
+
 	if runtime.GOOS == "windows" {
 		log.Infof("Command: %s", command)
 		cmd = exec.Command("cmd", "/C", command)
@@ -68,17 +74,31 @@ func RunFile(command string) (output string, exitCode int, startedAt time.Time, 
 		cmd = exec.Command("/bin/sh", command)
 	}
 
+	stdout, err := cmd.StdoutPipe()
+	CheckError(err)
+
+	stderr, err := cmd.StderrPipe()
+	CheckError(err)
+
 	startedAt = time.Now()
-	bytes, err := cmd.CombinedOutput()
+	err = cmd.Start()
+	CheckError(err)
+
+	go io.Copy(buffer, stderr)
+	go io.Copy(buffer, stdout)
+
+	err = cmd.Wait()
 	finishedAt = time.Now()
-	output = strings.TrimSpace(string(bytes))
 	exitCode = extractExitCode(err)
+
+	err = buffer.Flush()
+	CheckError(err)
 
 	log.Debugf("Starting Time: %s", startedAt.Format(TimeStampLayout))
 	log.Debugf("End Time: %s", finishedAt.Format(TimeStampLayout))
 	log.Debugf("Output")
 	log.Debugf("")
-	log.Debugf("%s", output)
+	log.Debugf("%s", b.String())
 	log.Debugf("")
 	log.Infof("Exit Code: %d", exitCode)
 	return

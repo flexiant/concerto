@@ -5,11 +5,12 @@ import (
 	"encoding/pem"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/cluster"
+	"github.com/flexiant/concerto/container"
 	"github.com/flexiant/concerto/converge"
 	"github.com/flexiant/concerto/dispatcher"
 	"github.com/flexiant/concerto/firewall"
 	"github.com/flexiant/concerto/fleet"
-	"github.com/flexiant/concerto/kube"
 	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
 	"io/ioutil"
@@ -50,28 +51,39 @@ var ServerCommands = []cli.Command{
 var ClientCommands = []cli.Command{
 	{
 		Name:  "ship",
-		Usage: "Manages Container Ships in Host",
+		Usage: "Manages a Ships",
 		Subcommands: append(
 			ship.SubCommands(),
 		),
 	},
 	{
 		Name:  "fleet",
-		Usage: "Manages Container Fleets in Host",
+		Usage: "Manages a Fleet",
 		Subcommands: append(
 			fleet.SubCommands(),
 		),
 	},
 	{
-		Name:  "kube",
-		Usage: "Manages a kubernetes cluster",
+		Name:  "container",
+		Usage: "Manages Containers in a Ship",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "ship",
+				Usage: "Ship Name",
+			},
+		},
+		Action: container.CmbHijack,
+	},
+	{
+		Name:  "cluster",
+		Usage: "Manages Cluster in a Fleet",
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "fleet",
 				Usage: "Fleet Name",
 			},
 		},
-		Action: kube.CmbHijack,
+		Action: cluster.CmbHijack,
 	},
 }
 
