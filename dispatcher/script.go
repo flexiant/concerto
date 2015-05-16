@@ -136,7 +136,7 @@ func execute(phase string) {
 			log.Fatal(err)
 		}
 
-		err = webservice.Post(conclusionsEndpoint, json)
+		err, _, _ = webservice.Post(conclusionsEndpoint, json)
 		if err != nil {
 			log.Fatal(err)
 		}

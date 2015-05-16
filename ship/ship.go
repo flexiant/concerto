@@ -3,6 +3,7 @@ package ship
 import (
 	"encoding/json"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
@@ -39,9 +40,13 @@ func cmdCreate(c *cli.Context) {
 
 	json, err := json.Marshal(v)
 	utils.CheckError(err)
-
-	err = webservice.Post("/v1/kaas/ships", json)
+	err, res, code := webservice.Post("/v1/kaas/ships", json)
+	if res == "" {
+		log.Fatal(err)
+	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code)
+	fmt.Println(res)
 }
 
 func cmdStart(c *cli.Context) {
@@ -50,8 +55,10 @@ func cmdStart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+	fmt.Println(res)
 }
 
 func cmdStop(c *cli.Context) {
@@ -60,8 +67,10 @@ func cmdStop(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+	fmt.Println(res)
 }
 
 func cmdRestart(c *cli.Context) {
@@ -70,8 +79,10 @@ func cmdRestart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+	fmt.Println(res)
 }
 
 func cmdDelete(c *cli.Context) {
@@ -80,8 +91,10 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Delete(fmt.Sprintf("/v1/kaas/ships/%s", c.String("id")))
+	err, res := webservice.Delete(fmt.Sprintf("/v1/kaas/ships/%s", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+	fmt.Println(res)
 }
 
 func cmdList(c *cli.Context) {

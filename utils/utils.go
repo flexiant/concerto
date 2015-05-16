@@ -13,6 +13,12 @@ func CheckError(err error) {
 	}
 }
 
+func CheckReturnCode(res int) {
+	if res >= 300 {
+		log.Fatal(res)
+	}
+}
+
 func GetUsername() string {
 	u := "unknown"
 	osUser := ""

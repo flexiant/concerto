@@ -38,8 +38,11 @@ func cmdCreate(c *cli.Context) {
 	json, err := json.Marshal(v)
 	utils.CheckError(err)
 
-	err = webservice.Post("/v1/kaas/fleets", json)
+	err, res, code := webservice.Post("/v1/kaas/fleets", json)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code)
+
+	fmt.Println(res)
 }
 
 func cmdDelete(c *cli.Context) {
@@ -48,8 +51,11 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
+	err, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+
+	fmt.Println(res)
 }
 
 func cmdStart(c *cli.Context) {
@@ -58,8 +64,11 @@ func cmdStart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+
+	fmt.Println(res)
 }
 
 func cmdStop(c *cli.Context) {
@@ -68,8 +77,11 @@ func cmdStop(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+
+	fmt.Println(res)
 }
 
 func cmdEmpty(c *cli.Context) {
@@ -78,8 +90,11 @@ func cmdEmpty(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+
+	fmt.Println(res)
 }
 
 func cmdAttachNet(c *cli.Context) {
@@ -88,8 +103,11 @@ func cmdAttachNet(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err = webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")))
 	utils.CheckError(err)
+	// utils.CheckReturnCode(res)
+
+	fmt.Println(res)
 }
 
 func cmdList(c *cli.Context) {

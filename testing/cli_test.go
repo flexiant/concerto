@@ -2,16 +2,21 @@ package testing
 
 import (
 	"fmt"
-	// log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/fleet"
 	"github.com/flexiant/concerto/ship"
-	"time"
-	// "os"
+	"io/ioutil"
+	"os"
 	"testing"
+	"time"
 )
 
 var fleetName = "test-" + fmt.Sprint(time.Now().Unix())
+var fleetId string
+var gruId string
+var minionId string
+var plan = "55266f9411305a957d000127"
+var domain_id = "55266f8611305a957d000018"
 
 var ClientCommands = []cli.Command{
 	{
@@ -53,10 +58,20 @@ func TestBlob(t *testing.T) {
 }
 
 func Test_Fleet_Create(t *testing.T) {
-	println(fleetName)
+
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "create", "--fleet", fleetName, "--domain_id=55266f8611305a957d000018"})
+	app.Run([]string{"", "fleet", "create", "--fleet", fleetName, "--domain_id=" + domain_id})
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+	fleetId = string(out)
+
 }
 
 func Test_Fleet_List(t *testing.T) {
@@ -66,15 +81,33 @@ func Test_Fleet_List(t *testing.T) {
 }
 
 func Test_Ship_Create_Gru(t *testing.T) {
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=55266f9411305a957d000127"})
+	app.Run([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=" + plan})
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+	gruId = string(out)
 }
 
 func Test_Ship_Create_Minion(t *testing.T) {
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=55266f9411305a957d000127"})
+	app.Run([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=" + plan})
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+	minionId = string(out)
 }
 
 func Test_Ship_List(t *testing.T) {
@@ -86,53 +119,53 @@ func Test_Ship_List(t *testing.T) {
 func Test_Fleet_Attach_Net(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "attach_net", "--id="})
+	app.Run([]string{"", "fleet", "attach_net", "--id=" + fleetId})
 }
 
 func Test_Fleet_Start(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "start", "--id="})
+	app.Run([]string{"", "fleet", "start", "--id=" + fleetId})
 }
 
 func Test_Fleet_Stop(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "stop", "--id="})
+	app.Run([]string{"", "fleet", "stop", "--id=" + fleetId})
 }
 
 func Test_Ship_Start(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "start", "--id="})
+	app.Run([]string{"", "ship", "start", "--id=" + gruId})
 }
 
 func Test_Ship_Restart(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "restart", "--id="})
+	app.Run([]string{"", "ship", "restart", "--id=" + gruId})
 }
 
 func Test_Ship_Stop(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "stop", "--id="})
+	app.Run([]string{"", "ship", "stop", "--id=" + gruId})
 }
 
 func Test_Ship_Delete(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "delete", "--id="})
+	app.Run([]string{"", "ship", "delete", "--id=" + minionId})
 }
 
 func Test_Fleet_Empty(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "empty", "--id="})
+	app.Run([]string{"", "fleet", "empty", "--id=" + fleetId})
 }
 
 func Test_Fleet_Delete(t *testing.T) {
 	app := cli.NewApp()
 	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "delete", "--id="})
+	app.Run([]string{"", "fleet", "delete", "--id=" + fleetId})
 }

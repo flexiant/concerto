@@ -51,14 +51,14 @@ func httpClient(config *config.Config) (*http.Client, error) {
 	return client, nil
 }
 
-func (w *Webservice) Post(endpoint string, json []byte) error {
+func (w *Webservice) Post(endpoint string, json []byte) (error, string, int) {
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 	output := strings.NewReader(string(json))
 	response, err := w.client.Post(w.config.ApiEndpoint+endpoint, "application/json", output)
 
 	log.Debugf("Posting: %s", output)
 	if err != nil {
-		return err
+		return err, "", 4000
 	}
 	defer response.Body.Close()
 
@@ -66,10 +66,17 @@ func (w *Webservice) Post(endpoint string, json []byte) error {
 
 	log.Debugf("Response: %s", body)
 	log.Debugf("Status code: %s", response.Status)
-	return nil
+
+	id := ""
+	if response.StatusCode <= 300 {
+		if len(body) > 32 {
+			id = string(body[7:31])
+		}
+	}
+	return nil, id, response.StatusCode
 }
 
-func (w *Webservice) Put(endpoint string) error {
+func (w *Webservice) Put(endpoint string) (error, int) {
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 
 	request, err := http.NewRequest("PUT", w.config.ApiEndpoint+endpoint, nil)
@@ -77,7 +84,7 @@ func (w *Webservice) Put(endpoint string) error {
 
 	log.Debugf("Putting: %s", endpoint)
 	if err != nil {
-		return err
+		return err, -1
 	}
 	defer response.Body.Close()
 
@@ -85,10 +92,10 @@ func (w *Webservice) Put(endpoint string) error {
 
 	log.Debugf("Response: %s", body)
 	log.Debugf("Status code: %s", response.Status)
-	return nil
+	return nil, response.StatusCode
 }
 
-func (w *Webservice) Delete(endpoint string) error {
+func (w *Webservice) Delete(endpoint string) (error, int) {
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 
 	request, err := http.NewRequest("DELETE", w.config.ApiEndpoint+endpoint, nil)
@@ -96,7 +103,7 @@ func (w *Webservice) Delete(endpoint string) error {
 
 	log.Debugf("Deleting: %s", endpoint)
 	if err != nil {
-		return err
+		return err, -1
 	}
 	defer response.Body.Close()
 
@@ -104,7 +111,7 @@ func (w *Webservice) Delete(endpoint string) error {
 
 	log.Debugf("Response: %s", body)
 	log.Debugf("Status code: %s", response.Status)
-	return nil
+	return nil, response.StatusCode
 }
 
 func (w *Webservice) Get(endpoint string) ([]byte, error) {
