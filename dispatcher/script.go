@@ -46,7 +46,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "boot",
 			Usage:  "Executes scripts characterization associated to booting state of host",
-			Action: cmbBoot,
+			Action: cmdBoot,
 		},
 		{
 			Name:   "operational",
@@ -145,7 +145,7 @@ func execute(phase string) {
 	}
 }
 
-func cmbBoot(c *cli.Context) {
+func cmdBoot(c *cli.Context) {
 	execute("boot")
 }
 
