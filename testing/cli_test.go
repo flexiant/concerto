@@ -7,6 +7,7 @@ import (
 	"github.com/flexiant/concerto/ship"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 	"time"
 )
@@ -33,6 +34,28 @@ var ClientCommands = []cli.Command{
 			fleet.SubCommands(),
 		),
 	},
+	// {
+	// 	Name:  "container",
+	// 	Usage: "Manages Containers in a Ship",
+	// 	Flags: []cli.Flag{
+	// 		cli.StringFlag{
+	// 			Name:  "ship",
+	// 			Usage: "Ship Name",
+	// 		},
+	// 	},
+	// 	Action: container.CmbHijack,
+	// },
+	// {
+	// 	Name:  "cluster",
+	// 	Usage: "Manages Cluster in a Fleet",
+	// 	Flags: []cli.Flag{
+	// 		cli.StringFlag{
+	// 			Name:  "fleet",
+	// 			Usage: "Fleet Name",
+	// 		},
+	// 	},
+	// 	Action: cluster.CmbHijack,
+	// },
 }
 
 /*
@@ -53,119 +76,101 @@ The logical order of the tests:
 14. Delete Fleet
 */
 
+func testing_setup(flags []string, t *testing.T) string {
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	app := cli.NewApp()
+	app.Commands = ClientCommands
+	app.Run(flags)
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+	if strings.HasPrefix(string(out), "Incorrect Usage.") {
+		t.Error("Incorrect Usage of Flags.")
+		return ""
+	}
+
+	return string(out)
+}
+
 func TestBlob(t *testing.T) {
 	println("Testing started")
 }
 
 func Test_Fleet_Create(t *testing.T) {
-
-	rescueStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "create", "--fleet", fleetName, "--domain_id=" + domain_id})
-
-	w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = rescueStdout
-	fleetId = string(out)
-
+	out := testing_setup([]string{"", "fleet", "create", "--ft", fleetName, "--domain_id=" + domain_id}, t)
+	if out != "" {
+		fleetId = out
+	}
 }
 
 func Test_Fleet_List(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "list"})
+	testing_setup([]string{"", "fleet", "list"}, t)
 }
 
 func Test_Ship_Create_Gru(t *testing.T) {
-	rescueStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
+	out := testing_setup([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=" + plan}, t)
 
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=" + plan})
-
-	w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = rescueStdout
-	gruId = string(out)
+	if out != "" {
+		gruId = out
+	}
 }
 
 func Test_Ship_Create_Minion(t *testing.T) {
-	rescueStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=" + plan})
-
-	w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = rescueStdout
-	minionId = string(out)
+	out := testing_setup([]string{"", "ship", "create", "--fleet=" + fleetName, "--plan=" + plan}, t)
+	if out != "" {
+		minionId = out
+	}
 }
 
 func Test_Ship_List(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "list"})
+	testing_setup([]string{"", "ship", "list"}, t)
 }
 
 func Test_Fleet_Attach_Net(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "attach_net", "--id=" + fleetId})
+	testing_setup([]string{"", "fleet", "attach_net", "--id=" + fleetId}, t)
 }
 
 func Test_Fleet_Start(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "start", "--id=" + fleetId})
+	testing_setup([]string{"", "fleet", "start", "--id=" + fleetId}, t)
 }
 
 func Test_Fleet_Stop(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "stop", "--id=" + fleetId})
+	testing_setup([]string{"", "fleet", "stop", "--id=" + fleetId}, t)
 }
 
 func Test_Ship_Start(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "start", "--id=" + gruId})
+	testing_setup([]string{"", "ship", "start", "--id=" + gruId}, t)
 }
 
 func Test_Ship_Restart(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "restart", "--id=" + gruId})
+	testing_setup([]string{"", "ship", "restart", "--id=" + gruId}, t)
 }
 
 func Test_Ship_Stop(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "stop", "--id=" + gruId})
+	testing_setup([]string{"", "ship", "stop", "--id=" + gruId}, t)
 }
 
 func Test_Ship_Delete(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "ship", "delete", "--id=" + minionId})
+	testing_setup([]string{"", "ship", "delete", "--id=" + minionId}, t)
 }
 
 func Test_Fleet_Empty(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "empty", "--id=" + fleetId})
+	testing_setup([]string{"", "fleet", "empty", "--id=" + fleetId}, t)
 }
 
 func Test_Fleet_Delete(t *testing.T) {
-	app := cli.NewApp()
-	app.Commands = ClientCommands
-	app.Run([]string{"", "fleet", "delete", "--id=" + fleetId})
+	testing_setup([]string{"", "fleet", "delete", "--id=" + fleetId}, t)
+
 }
+
+// func Test_Container() {
+// testing_setup([]string{"", "container", "--ship"},t)
+// }
+
+// func Test_Cluster() {
+// testing_setup([]string{"", "cluster", "--fleet"},t)
+// }
