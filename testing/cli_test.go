@@ -97,16 +97,15 @@ func testing_setup(flags []string, t *testing.T) string {
 }
 
 func get_state_fleet(id string, t *testing.T) string {
-	out := strings.TrimSpace(testing_setup([]string{"", "fleet", "list"}, t))
-	// println(out)
-	rows := strings.Fields(out)
-	// starting_point := 18
-	// println(rows[20])
+	values := strings.Fields(testing_setup([]string{"", "fleet", "list"}, t))
+	// println("running again\n\n")
+	for i := 18; i <= (len(values) - 9); i = i + 9 {
 
-	for i := 18; i < (len(rows) - 9); i = i + 9 {
-		if rows[i+2] == id {
-			println(rows[i+3])
-			return rows[i+3]
+		// println(values[i+3])
+		// println(values[i+2])
+		if strings.TrimSpace(values[i+2]) == strings.TrimSpace(id) {
+			// println("return " + values[i+3])
+			return strings.TrimSpace(values[i+3])
 		}
 	}
 
@@ -115,9 +114,9 @@ func get_state_fleet(id string, t *testing.T) string {
 
 func get_state_ship(id string, t *testing.T) string {
 	out := testing_setup([]string{"", "ship", "list"}, t)
-	rows := strings.Fields(out)
+	values := strings.Fields(out)
 
-	for _, row := range rows {
+	for _, row := range values {
 		values := strings.Split(row, "\t")
 		if values[2] == id {
 			return values[6]
@@ -161,22 +160,26 @@ func Test_Ship_List(t *testing.T) {
 }
 
 func Test_Fleet_Stop(t *testing.T) {
+	// println("Stopping fleet id " + fleetId)
 	state := get_state_fleet(fleetId, t)
 	for state != "operational" {
 		time.Sleep(30 * time.Second)
 		state = get_state_fleet(fleetId, t)
 	}
-
+	time.Sleep(120 * time.Second)
 	testing_setup([]string{"", "fleet", "stop", "--id=" + fleetId}, t)
 }
 
 func Test_Fleet_Start(t *testing.T) {
 	state := get_state_fleet(fleetId, t)
+	if state == "operational" {
+		t.Error("The previous fleet stop operation did not succeed; cannot continue testing")
+	}
 	for state != "inactive" {
 		time.Sleep(30 * time.Second)
 		state = get_state_fleet(fleetId, t)
 	}
-
+	time.Sleep(60 * time.Second)
 	testing_setup([]string{"", "fleet", "start", "--id=" + fleetId}, t)
 }
 
