@@ -5,6 +5,10 @@ import (
 	"encoding/pem"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/admin"
+	"github.com/flexiant/concerto/audit"
+	"github.com/flexiant/concerto/blueprint_scripts"
+	"github.com/flexiant/concerto/blueprint_services"
 	"github.com/flexiant/concerto/cluster"
 	"github.com/flexiant/concerto/container"
 	"github.com/flexiant/concerto/converge"
@@ -51,7 +55,7 @@ var ServerCommands = []cli.Command{
 var ClientCommands = []cli.Command{
 	{
 		Name:  "ship",
-		Usage: "Manages a Ships",
+		Usage: "Manages Ships",
 		Subcommands: append(
 			ship.SubCommands(),
 		),
@@ -84,6 +88,34 @@ var ClientCommands = []cli.Command{
 			},
 		},
 		Action: cluster.CmbHijack,
+	},
+	{
+		Name:  "reports",
+		Usage: "Provides historical uptime of servers",
+		Subcommands: append(
+			admin.SubCommands(),
+		),
+	},
+	{
+		Name:  "events",
+		Usage: "Events allow the user to track their actions and the state of their servers",
+		Subcommands: append(
+			audit.SubCommands(),
+		),
+	},
+	{
+		Name:  "scripts",
+		Usage: "Allow the user to manage the scripts they want to run on the servers",
+		Subcommands: append(
+			blueprint_scripts.SubCommands(),
+		),
+	},
+	{
+		Name:  "services",
+		Usage: "Provides information on services",
+		Subcommands: append(
+			blueprint_services.SubCommands(),
+		),
 	},
 }
 

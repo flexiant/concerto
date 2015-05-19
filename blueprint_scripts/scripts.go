@@ -1,0 +1,213 @@
+package blueprint_scripts
+
+import (
+	"encoding/json"
+	"fmt"
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/utils"
+	"github.com/flexiant/concerto/webservice"
+	"os"
+	"text/tabwriter"
+	// "time"
+)
+
+type Script struct {
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Code        string   `json:"code"`
+	Parameters  []string `json:"parameters"`
+}
+
+func cmdList(c *cli.Context) {
+	var scripts []Script
+
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get("/v1/blueprint/scripts")
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &scripts)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tCODE\tPARAMETERS\r")
+
+	for _, script := range scripts {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", script.Id, script.Name, script.Description, script.Code, script.Parameters)
+	}
+
+	w.Flush()
+}
+
+func cmdShow(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	var script Script
+
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &script)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tCODE\tPARAMETERS\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", script.Id, script.Name, script.Description, script.Code, script.Parameters)
+
+	w.Flush()
+}
+
+func cmdCreate(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"name", "description", "code"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	v := make(map[string]string)
+
+	v["name"] = c.String("name")
+	v["description"] = c.String("description")
+	v["code"] = c.String("code")
+	if c.IsSet("parameters") {
+		v["parameters"] = c.String("parameters")
+	}
+
+	json, err := json.Marshal(v)
+	utils.CheckError(err)
+	err, res, code := webservice.Post("/v1/blueprint/scripts", json)
+	if res == "" {
+		log.Fatal(err)
+	}
+	utils.CheckError(err)
+	utils.CheckReturnCode(code)
+	fmt.Println(res)
+
+}
+
+func cmdUpdate(c *cli.Context) {
+	// utils.FlagsRequired(c, []string{"id"})
+	// webservice, err := webservice.NewWebService()
+	// utils.CheckError(err)
+
+	// v := make(map[string]string)
+	// if c.IsSet("name") {
+	// 	v["name"] = c.String("name")
+	// }
+	// if c.IsSet("description") {
+	// 	v["description"] = c.String("description")
+	// }
+	// if c.IsSet("code") {
+	// 	v["code"] = c.String("code")
+	// }
+	// if c.IsSet("parameters") {
+	// 	v["parameters"] = c.String("parameters")
+	// }
+
+	// json, err := json.Marshal(v)
+	// utils.CheckError(err)
+	// err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
+	// // if res == "" {
+	// // 	log.Fatal(err)
+	// // }
+	// utils.CheckError(err)
+	// fmt.Println(res)
+}
+
+func cmdDelete(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	err, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
+	utils.CheckError(err)
+	utils.CheckReturnCode(res)
+
+	fmt.Println(res)
+}
+
+func SubCommands() []cli.Command {
+	return []cli.Command{
+		{
+			Name:   "list",
+			Usage:  "Lists all available scripts",
+			Action: cmdList,
+		},
+		{
+			Name:   "show",
+			Usage:  "Shows information about a specific script",
+			Action: cmdShow,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "id",
+					Usage: "Script Id",
+				},
+			},
+		},
+		{
+			Name:   "create",
+			Usage:  "Creates a new script to be used in the templates. ",
+			Action: cmdShow,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "name",
+					Usage: "Name of the script",
+				},
+				cli.StringFlag{
+					Name:  "description",
+					Usage: "Description of the script's purpose ",
+				},
+				cli.StringFlag{
+					Name:  "code",
+					Usage: "The script's code",
+				},
+				cli.StringFlag{
+					Name:  "parameters",
+					Usage: "The names of the script's parameters",
+				},
+			},
+		},
+		{
+			Name:   "update",
+			Usage:  "Updates an existing script",
+			Action: cmdShow,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "id",
+					Usage: "Script Id",
+				},
+				cli.StringFlag{
+					Name:  "name",
+					Usage: "Name of the script",
+				},
+				cli.StringFlag{
+					Name:  "description",
+					Usage: "Description of the script's purpose ",
+				},
+				cli.StringFlag{
+					Name:  "code",
+					Usage: "The script's code",
+				},
+				cli.StringFlag{
+					Name:  "parameters",
+					Usage: "The names of the script's parameters",
+				},
+			},
+		},
+		{
+			Name:   "delete",
+			Usage:  "Deletes a script",
+			Action: cmdShow,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "id",
+					Usage: "Script Id",
+				},
+			},
+		},
+	}
+}
