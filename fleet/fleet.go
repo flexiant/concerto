@@ -54,7 +54,7 @@ func cmdDelete(c *cli.Context) {
 
 	err, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
 	utils.CheckError(err)
-	// utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res)
 
 	fmt.Println(res)
 }
@@ -67,7 +67,7 @@ func cmdStart(c *cli.Context) {
 
 	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")))
 	utils.CheckError(err)
-	// utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res)
 
 	fmt.Println(res)
 }
@@ -80,7 +80,7 @@ func cmdStop(c *cli.Context) {
 
 	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")))
 	utils.CheckError(err)
-	// utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res)
 
 	fmt.Println(res)
 }
@@ -93,7 +93,7 @@ func cmdEmpty(c *cli.Context) {
 
 	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")))
 	utils.CheckError(err)
-	// utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res)
 
 	fmt.Println(res)
 }
@@ -106,7 +106,7 @@ func cmdAttachNet(c *cli.Context) {
 
 	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")))
 	utils.CheckError(err)
-	// utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res)
 
 	fmt.Println(res)
 }

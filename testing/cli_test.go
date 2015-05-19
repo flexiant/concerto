@@ -96,12 +96,42 @@ func testing_setup(flags []string, t *testing.T) string {
 	return string(out)
 }
 
+func get_state_fleet(id string, t *testing.T) string {
+	out := strings.TrimSpace(testing_setup([]string{"", "fleet", "list"}, t))
+	// println(out)
+	rows := strings.Fields(out)
+	// starting_point := 18
+	// println(rows[20])
+
+	for i := 18; i < (len(rows) - 9); i = i + 9 {
+		if rows[i+2] == id {
+			println(rows[i+3])
+			return rows[i+3]
+		}
+	}
+
+	return ""
+}
+
+func get_state_ship(id string, t *testing.T) string {
+	out := testing_setup([]string{"", "ship", "list"}, t)
+	rows := strings.Fields(out)
+
+	for _, row := range rows {
+		values := strings.Split(row, "\t")
+		if values[2] == id {
+			return values[6]
+		}
+	}
+	return ""
+}
+
 func TestBlob(t *testing.T) {
 	println("Testing started")
 }
 
 func Test_Fleet_Create(t *testing.T) {
-	out := testing_setup([]string{"", "fleet", "create", "--ft", fleetName, "--domain_id=" + domain_id}, t)
+	out := testing_setup([]string{"", "fleet", "create", "--fleet", fleetName, "--domain_id=" + domain_id}, t)
 	if out != "" {
 		fleetId = out
 	}
@@ -130,28 +160,61 @@ func Test_Ship_List(t *testing.T) {
 	testing_setup([]string{"", "ship", "list"}, t)
 }
 
-func Test_Fleet_Attach_Net(t *testing.T) {
-	testing_setup([]string{"", "fleet", "attach_net", "--id=" + fleetId}, t)
-}
-
-func Test_Fleet_Start(t *testing.T) {
-	testing_setup([]string{"", "fleet", "start", "--id=" + fleetId}, t)
-}
-
 func Test_Fleet_Stop(t *testing.T) {
+	state := get_state_fleet(fleetId, t)
+	for state != "operational" {
+		time.Sleep(30 * time.Second)
+		state = get_state_fleet(fleetId, t)
+	}
+
 	testing_setup([]string{"", "fleet", "stop", "--id=" + fleetId}, t)
 }
 
+func Test_Fleet_Start(t *testing.T) {
+	state := get_state_fleet(fleetId, t)
+	for state != "inactive" {
+		time.Sleep(30 * time.Second)
+		state = get_state_fleet(fleetId, t)
+	}
+
+	testing_setup([]string{"", "fleet", "start", "--id=" + fleetId}, t)
+}
+
+// func Test_Fleet_Attach_Net(t *testing.T) {
+// 	state := get_state_ship(gruId, t)
+// 	for state != "operational" {
+// 		time.Sleep(30 * time.Second)
+// 		state = get_state_fleet(fleetId, t)
+// 	}
+// 	testing_setup([]string{"", "fleet", "attach_net", "--id=" + fleetId}, t)
+// }
+
+func Test_Ship_Stop(t *testing.T) {
+	state := get_state_ship(gruId, t)
+	for state != "operational" {
+		time.Sleep(30 * time.Second)
+		state = get_state_fleet(fleetId, t)
+	}
+	testing_setup([]string{"", "ship", "stop", "--id=" + gruId}, t)
+}
+
 func Test_Ship_Start(t *testing.T) {
+	state := get_state_ship(gruId, t)
+	for state != "inactive" {
+		time.Sleep(30 * time.Second)
+		state = get_state_fleet(fleetId, t)
+	}
+
 	testing_setup([]string{"", "ship", "start", "--id=" + gruId}, t)
 }
 
 func Test_Ship_Restart(t *testing.T) {
-	testing_setup([]string{"", "ship", "restart", "--id=" + gruId}, t)
-}
-
-func Test_Ship_Stop(t *testing.T) {
-	testing_setup([]string{"", "ship", "stop", "--id=" + gruId}, t)
+	state := get_state_ship(minionId, t)
+	for state != "operational" {
+		time.Sleep(30 * time.Second)
+		state = get_state_fleet(fleetId, t)
+	}
+	testing_setup([]string{"", "ship", "restart", "--id=" + minionId}, t)
 }
 
 func Test_Ship_Delete(t *testing.T) {

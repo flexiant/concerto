@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -15,7 +16,7 @@ func CheckError(err error) {
 
 func CheckReturnCode(res int) {
 	if res >= 300 {
-		log.Fatal(res)
+		log.Warn(fmt.Sprintf("There was an issue with your http request; error code: %d", res))
 	}
 }
 
