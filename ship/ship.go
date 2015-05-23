@@ -55,7 +55,7 @@ func cmdStart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 	fmt.Println(res)
@@ -67,7 +67,7 @@ func cmdStop(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 	fmt.Println(res)
@@ -79,7 +79,7 @@ func cmdRestart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")))
+	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 	fmt.Println(res)

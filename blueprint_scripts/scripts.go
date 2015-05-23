@@ -1,6 +1,7 @@
 package blueprint_scripts
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
@@ -9,7 +10,6 @@ import (
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
-	// "time"
 )
 
 type Script struct {
@@ -76,45 +76,43 @@ func cmdCreate(c *cli.Context) {
 		v["parameters"] = c.String("parameters")
 	}
 
-	json, err := json.Marshal(v)
+	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, code := webservice.Post("/v1/blueprint/scripts", json)
+	err, res, _ := webservice.Post("/v1/blueprint/scripts", jsonBytes)
 	if res == "" {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
-	utils.CheckReturnCode(code)
-	fmt.Println(res)
 
 }
 
 func cmdUpdate(c *cli.Context) {
-	// utils.FlagsRequired(c, []string{"id"})
-	// webservice, err := webservice.NewWebService()
-	// utils.CheckError(err)
+	utils.FlagsRequired(c, []string{"id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
-	// v := make(map[string]string)
-	// if c.IsSet("name") {
-	// 	v["name"] = c.String("name")
-	// }
-	// if c.IsSet("description") {
-	// 	v["description"] = c.String("description")
-	// }
-	// if c.IsSet("code") {
-	// 	v["code"] = c.String("code")
-	// }
-	// if c.IsSet("parameters") {
-	// 	v["parameters"] = c.String("parameters")
-	// }
+	v := make(map[string]string)
+	if c.IsSet("name") {
+		v["name"] = c.String("name")
+	}
+	if c.IsSet("description") {
+		v["description"] = c.String("description")
+	}
+	if c.IsSet("code") {
+		v["code"] = c.String("code")
+	}
+	if c.IsSet("parameters") {
+		v["parameters"] = c.String("parameters")
+	}
 
-	// json, err := json.Marshal(v)
-	// utils.CheckError(err)
-	// err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
-	// // if res == "" {
-	// // 	log.Fatal(err)
-	// // }
-	// utils.CheckError(err)
-	// fmt.Println(res)
+	json, err := json.Marshal(v)
+	utils.CheckError(err)
+	err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")), bytes.NewReader(json))
+	// if res == "" {
+	// 	log.Fatal(err)
+	// }
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 
 func cmdDelete(c *cli.Context) {
@@ -151,7 +149,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "create",
 			Usage:  "Creates a new script to be used in the templates. ",
-			Action: cmdShow,
+			Action: cmdCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "name",
@@ -174,7 +172,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "update",
 			Usage:  "Updates an existing script",
-			Action: cmdShow,
+			Action: cmdUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -201,7 +199,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete",
 			Usage:  "Deletes a script",
-			Action: cmdShow,
+			Action: cmdDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
