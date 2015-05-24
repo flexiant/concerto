@@ -1,15 +1,15 @@
-package cloud
+package cloud_servers
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	log "github.com/Sirupsen/logrus"
+	// "bytes"
+	// "encoding/json"
+	// "fmt"
+	// log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
+	// "github.com/flexiant/concerto/utils"
+	// "github.com/flexiant/concerto/webservice"
+	// "os"
+	// "text/tabwriter"
 	"time"
 )
 
@@ -34,11 +34,11 @@ type Event struct {
 }
 
 type ScriptChar struct {
-	Id               string `json:"id"`
-	Type             string `json:"type"`
-	Parameter_values object `json:"parameter_values"`
-	Template_id      string `json:"template_id"`
-	Script_id        string `json:"script_id"`
+	Id               string   `json:"id"`
+	Type             string   `json:"type"`
+	Parameter_values struct{} `json:"parameter_values"`
+	Template_id      string   `json:"template_id"`
+	Script_id        string   `json:"script_id"`
 }
 
 func cmdShow(c *cli.Context) {

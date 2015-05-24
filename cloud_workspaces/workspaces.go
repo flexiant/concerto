@@ -1,4 +1,4 @@
-package cloud
+package cloud_workspaces
 
 import (
 	"bytes"

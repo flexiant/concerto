@@ -1,1 +1,1 @@
-package cloud
+package cloud_generic_images

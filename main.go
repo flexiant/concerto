@@ -10,7 +10,8 @@ import (
 	"github.com/flexiant/concerto/blueprint_scripts"
 	"github.com/flexiant/concerto/blueprint_services"
 	"github.com/flexiant/concerto/blueprint_templates"
-	"github.com/flexiant/concerto/cloud"
+	"github.com/flexiant/concerto/cloud_servers"
+	"github.com/flexiant/concerto/cloud_workspaces"
 	"github.com/flexiant/concerto/cluster"
 	"github.com/flexiant/concerto/container"
 	"github.com/flexiant/concerto/converge"
@@ -130,7 +131,14 @@ var ClientCommands = []cli.Command{
 		Name:  "workspaces",
 		Usage: "Provides information on workspaces",
 		Subcommands: append(
-			cloud.SubCommands(),
+			cloud_workspaces.SubCommands(),
+		),
+	},
+	{
+		Name:  "servers",
+		Usage: "Provides information on servers",
+		Subcommands: append(
+			cloud_servers.SubCommands(),
 		),
 	},
 }
