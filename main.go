@@ -10,7 +10,9 @@ import (
 	"github.com/flexiant/concerto/blueprint_scripts"
 	"github.com/flexiant/concerto/blueprint_services"
 	"github.com/flexiant/concerto/blueprint_templates"
+	"github.com/flexiant/concerto/cloud_generic_images"
 	"github.com/flexiant/concerto/cloud_servers"
+	"github.com/flexiant/concerto/cloud_ssh_profiles"
 	"github.com/flexiant/concerto/cloud_workspaces"
 	"github.com/flexiant/concerto/cluster"
 	"github.com/flexiant/concerto/container"
@@ -139,6 +141,20 @@ var ClientCommands = []cli.Command{
 		Usage: "Provides information on servers",
 		Subcommands: append(
 			cloud_servers.SubCommands(),
+		),
+	},
+	{
+		Name:  "generic_image",
+		Usage: "Provides information on generic images",
+		Subcommands: append(
+			cloud_generic_images.SubCommands(),
+		),
+	},
+	{
+		Name:  "ssh_profile",
+		Usage: "Provides information on SSH profiles",
+		Subcommands: append(
+			cloud_ssh_profiles.SubCommands(),
 		),
 	},
 }

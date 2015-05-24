@@ -1,15 +1,15 @@
 package cloud_servers
 
 import (
-	// "bytes"
-	// "encoding/json"
-	// "fmt"
-	// log "github.com/Sirupsen/logrus"
+	"bytes"
+	"encoding/json"
+	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	// "github.com/flexiant/concerto/utils"
-	// "github.com/flexiant/concerto/webservice"
-	// "os"
-	// "text/tabwriter"
+	"github.com/flexiant/concerto/utils"
+	"github.com/flexiant/concerto/webservice"
+	"os"
+	"text/tabwriter"
 	"time"
 )
 
@@ -25,12 +25,21 @@ type Server struct {
 	Ssh_profile_id string `json:"ssh_profile_id"`
 }
 
+type Dns struct {
+	Id        string `json:"id"`
+	Name      string `json:"name"`
+	Content   string `json:"content"`
+	Type      string `json:"type"`
+	IsFQDN    bool   `json:"is_fqdn"`
+	Domain_id string `json:"domain_id"`
+}
+
 type Event struct {
 	Id          string    `json:"id"`
-	Timestamp   time.Time `json:"name"`
-	Level       string    `json:"fqdn"`
-	Header      string    `json:"state"`
-	Description string    `json:"public_ip"`
+	Timestamp   time.Time `json:"timestamp"`
+	Level       string    `json:"level"`
+	Header      string    `json:"header"`
+	Description string    `json:"description"`
 }
 
 type ScriptChar struct {
@@ -42,51 +51,203 @@ type ScriptChar struct {
 }
 
 func cmdShow(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	var server Server
 
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdCommission(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"name", "fqdn", "workspace_id", "template_id", "server_plan_id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	v := make(map[string]string)
+
+	v["name"] = c.String("name")
+	v["fqdn"] = c.String("fqdn")
+	v["workspace_id"] = c.String("workspace_id")
+	v["template_id"] = c.String("template_id")
+	v["server_plan_id"] = c.String("server_plan_id")
+
+	jsonBytes, err := json.Marshal(v)
+	utils.CheckError(err)
+	err, res, _ := webservice.Post("/v1/cloud/servers/", jsonBytes)
+	if res == "" {
+		log.Fatal(err)
+	}
+	utils.CheckError(err)
 }
 
 func cmdUpdate(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	v := make(map[string]string)
+
+	if c.IsSet("name") {
+		v["name"] = c.String("name")
+	}
+	if c.IsSet("fqdn") {
+		v["fqdn"] = c.String("fqdn")
+	}
+
+	jsonBytes, err := json.Marshal(v)
+	utils.CheckError(err)
+	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")), bytes.NewReader(jsonBytes))
+
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 
 func cmdBoot(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot ", c.String("id")), nil)
+
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 
 func cmdReboot(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot ", c.String("id")), nil)
+
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 
 func cmdShutdown(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown ", c.String("id")), nil)
+
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 
 func cmdOverride(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override ", c.String("id")), nil)
+
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 
 func cmdDecommission(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
 
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	err, res := webservice.Delete(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
+	utils.CheckError(err)
+	utils.CheckReturnCode(res)
+
+	fmt.Println(res)
 }
 
 func cmdListDNS(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	var dnsList []Dns
 
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/records", c.String("id")))
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &dnsList)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tCONTENT\tTYPE\tIS FQDN\tDOMAIN ID\r")
+
+	for _, dns := range dnsList {
+		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\t%s\n", dns.Id, dns.Name, dns.Content, dns.Type, dns.IsFQDN, dns.Domain_id)
+	}
+
+	w.Flush()
 }
 
 func cmdListEvents(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	var events []Event
 
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/events", c.String("id")))
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &events)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTIMESTAMP\tLEVEL\tHEADER\tDESCRIPTION\r")
+
+	for _, event := range events {
+		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\n", event.Id, event.Timestamp, event.Level, event.Header, event.Description)
+	}
+
+	w.Flush()
 }
 
 func cmdListScripts(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"id"})
+	var scripts []ScriptChar
 
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", c.String("id")))
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &scripts)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTYPE\tPARAMETER VALUES\tTEMPLATE ID\tSCRIPT ID\r")
+
+	for _, script := range scripts {
+		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\n", script.Id, script.Type, script.Parameter_values, script.Template_id, script.Script_id)
+	}
+
+	w.Flush()
 }
 
 func cmdExecuteScript(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"server_id", "script_id"})
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
+	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", c.String("server_id"), c.String("script_id")), nil)
+	utils.CheckError(err)
+	fmt.Println(res)
 }
 func SubCommands() []cli.Command {
 	return []cli.Command{

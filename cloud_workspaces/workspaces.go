@@ -63,7 +63,7 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf(" /v1/cloud/workspaces/%s", c.String("workspace_id")))
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("workspace_id")))
 	utils.CheckError(err)
 
 	err = json.Unmarshal(data, &workspace)
@@ -145,7 +145,7 @@ func cmdListWorkspaceServers(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf(" /v1/cloud/workspaces/%s/servers", c.String("workspace_id")))
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/workspaces/%s/servers", c.String("workspace_id")))
 	utils.CheckError(err)
 
 	err = json.Unmarshal(data, &workspaceServers)
