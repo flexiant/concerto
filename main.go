@@ -21,8 +21,10 @@ import (
 	"github.com/flexiant/concerto/container"
 	"github.com/flexiant/concerto/converge"
 	"github.com/flexiant/concerto/dispatcher"
+	"github.com/flexiant/concerto/dns"
 	"github.com/flexiant/concerto/firewall"
 	"github.com/flexiant/concerto/fleet"
+	"github.com/flexiant/concerto/licensee"
 	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
 	"io/ioutil"
@@ -179,6 +181,20 @@ var ClientCommands = []cli.Command{
 		Usage: "Provides information about SAAS providers",
 		Subcommands: append(
 			cloud_saas_providers.SubCommands(),
+		),
+	},
+	{
+		Name:  "dns_domains",
+		Usage: "Provides information about DNS records",
+		Subcommands: append(
+			dns.SubCommands(),
+		),
+	},
+	{
+		Name:  "licensee_reports",
+		Usage: "Provides information about licensee reports",
+		Subcommands: append(
+			licensee.SubCommands(),
 		),
 	},
 }
