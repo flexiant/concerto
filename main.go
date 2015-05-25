@@ -11,6 +11,9 @@ import (
 	"github.com/flexiant/concerto/blueprint_services"
 	"github.com/flexiant/concerto/blueprint_templates"
 	"github.com/flexiant/concerto/cloud_generic_images"
+	"github.com/flexiant/concerto/cloud_providers"
+	"github.com/flexiant/concerto/cloud_saas_providers"
+	"github.com/flexiant/concerto/cloud_server_plan"
 	"github.com/flexiant/concerto/cloud_servers"
 	"github.com/flexiant/concerto/cloud_ssh_profiles"
 	"github.com/flexiant/concerto/cloud_workspaces"
@@ -155,6 +158,27 @@ var ClientCommands = []cli.Command{
 		Usage: "Provides information on SSH profiles",
 		Subcommands: append(
 			cloud_ssh_profiles.SubCommands(),
+		),
+	},
+	{
+		Name:  "cloud_providers",
+		Usage: "Provides information on cloud providers",
+		Subcommands: append(
+			cloud_providers.SubCommands(),
+		),
+	},
+	{
+		Name:  "cloud_server_plan",
+		Usage: "Provides information on server plans",
+		Subcommands: append(
+			cloud_server_plan.SubCommands(),
+		),
+	},
+	{
+		Name:  "saas_providers",
+		Usage: "Provides information about SAAS providers",
+		Subcommands: append(
+			cloud_saas_providers.SubCommands(),
 		),
 	},
 }
