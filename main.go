@@ -25,8 +25,17 @@ import (
 	"github.com/flexiant/concerto/firewall"
 	"github.com/flexiant/concerto/fleet"
 	"github.com/flexiant/concerto/licensee"
+	"github.com/flexiant/concerto/network_firewall_profiles"
+	"github.com/flexiant/concerto/network_load_balancers"
+	"github.com/flexiant/concerto/settings_cloud_accounts"
+	"github.com/flexiant/concerto/settings_reports"
+	"github.com/flexiant/concerto/settings_saas_accounts"
 	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
+	"github.com/flexiant/concerto/wizard_apps"
+	"github.com/flexiant/concerto/wizard_cloud_providers"
+	"github.com/flexiant/concerto/wizard_locations"
+	"github.com/flexiant/concerto/wizard_server_plans"
 	"io/ioutil"
 	"os"
 	"path"
@@ -149,14 +158,14 @@ var ClientCommands = []cli.Command{
 		),
 	},
 	{
-		Name:  "generic_image",
+		Name:  "generic_images",
 		Usage: "Provides information on generic images",
 		Subcommands: append(
 			cloud_generic_images.SubCommands(),
 		),
 	},
 	{
-		Name:  "ssh_profile",
+		Name:  "ssh_profiles",
 		Usage: "Provides information on SSH profiles",
 		Subcommands: append(
 			cloud_ssh_profiles.SubCommands(),
@@ -195,6 +204,69 @@ var ClientCommands = []cli.Command{
 		Usage: "Provides information about licensee reports",
 		Subcommands: append(
 			licensee.SubCommands(),
+		),
+	},
+	{
+		Name:  "firewall_profiles",
+		Usage: "Provides information about firewall profiles",
+		Subcommands: append(
+			network_firewall_profiles.SubCommands(),
+		),
+	},
+	{
+		Name:  "load_balancers",
+		Usage: "Provides information about load balancers",
+		Subcommands: append(
+			network_load_balancers.SubCommands(),
+		),
+	},
+	{
+		Name:  "cloud_accounts",
+		Usage: "Provides information about cloud accounts",
+		Subcommands: append(
+			settings_cloud_accounts.SubCommands(),
+		),
+	},
+	{
+		Name:  "settings_reports",
+		Usage: "Provides information about reports",
+		Subcommands: append(
+			settings_reports.SubCommands(),
+		),
+	},
+	{
+		Name:  "saas_accounts",
+		Usage: "Provides information about SaaS accounts",
+		Subcommands: append(
+			settings_saas_accounts.SubCommands(),
+		),
+	},
+	{
+		Name:  "apps",
+		Usage: "Provides information about apps",
+		Subcommands: append(
+			wizard_apps.SubCommands(),
+		),
+	},
+	{
+		Name:  "cloud_providers",
+		Usage: "Provides information about cloud providers",
+		Subcommands: append(
+			wizard_cloud_providers.SubCommands(),
+		),
+	},
+	{
+		Name:  "locations",
+		Usage: "Provides information about locations",
+		Subcommands: append(
+			wizard_locations.SubCommands(),
+		),
+	},
+	{
+		Name:  "server_plans",
+		Usage: "Provides information about server plans",
+		Subcommands: append(
+			wizard_server_plans.SubCommands(),
 		),
 	},
 }

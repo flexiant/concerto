@@ -79,10 +79,18 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/blueprint/scripts", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	var new_script Script
+	err = json.Unmarshal(res, &new_script)
+	utils.CheckError(err)
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tCODE\tPARAMETERS\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", new_script.Id, new_script.Name, new_script.Description, new_script.Code, new_script.Parameters)
+
+	w.Flush()
 
 }
 
@@ -105,14 +113,21 @@ func cmdUpdate(c *cli.Context) {
 		v["parameters"] = c.String("parameters")
 	}
 
-	json, err := json.Marshal(v)
+	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")), bytes.NewReader(json))
-	// if res == "" {
-	// 	log.Fatal(err)
-	// }
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	if res == nil {
+		log.Fatal(err)
+	}
 	utils.CheckError(err)
-	fmt.Println(res)
+	var new_script Script
+	err = json.Unmarshal(res, &new_script)
+	utils.CheckError(err)
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tCODE\tPARAMETERS\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", new_script.Id, new_script.Name, new_script.Description, new_script.Code, new_script.Parameters)
+
+	w.Flush()
 }
 
 func cmdDelete(c *cli.Context) {
@@ -121,7 +136,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 

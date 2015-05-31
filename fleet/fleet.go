@@ -52,7 +52,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -65,7 +65,7 @@ func cmdStart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")), nil)
+	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -78,7 +78,7 @@ func cmdStop(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")), nil)
+	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -91,7 +91,7 @@ func cmdEmpty(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")), nil)
+	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -104,7 +104,7 @@ func cmdAttachNet(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")), nil)
+	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 

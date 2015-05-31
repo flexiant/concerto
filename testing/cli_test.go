@@ -131,6 +131,7 @@ func TestBlob(t *testing.T) {
 
 func Test_Fleet_Create(t *testing.T) {
 	out := testing_setup([]string{"", "fleet", "create", "--fleet", fleetName, "--domain_id=" + domain_id}, t)
+	id := ""
 	if out != "" {
 		fleetId = out
 	}

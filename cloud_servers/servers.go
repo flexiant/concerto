@@ -86,10 +86,20 @@ func cmdCommission(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/cloud/servers/", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdUpdate(c *cli.Context) {
@@ -108,10 +118,19 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdBoot(c *cli.Context) {
@@ -119,10 +138,19 @@ func cmdBoot(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot ", c.String("id")), nil)
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdReboot(c *cli.Context) {
@@ -130,10 +158,19 @@ func cmdReboot(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot ", c.String("id")), nil)
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdShutdown(c *cli.Context) {
@@ -141,10 +178,19 @@ func cmdShutdown(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown ", c.String("id")), nil)
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdOverride(c *cli.Context) {
@@ -152,10 +198,19 @@ func cmdOverride(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override ", c.String("id")), nil)
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdDecommission(c *cli.Context) {
@@ -164,11 +219,19 @@ func cmdDecommission(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
+	err, res, code := webservice.Delete(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(code)
 
-	fmt.Println(res)
+	var server Server
+	err = json.Unmarshal(res, &server)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+
+	w.Flush()
 }
 
 func cmdListDNS(c *cli.Context) {
@@ -188,7 +251,7 @@ func cmdListDNS(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tCONTENT\tTYPE\tIS FQDN\tDOMAIN ID\r")
 
 	for _, dns := range dnsList {
-		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\t%s\n", dns.Id, dns.Name, dns.Content, dns.Type, dns.IsFQDN, dns.Domain_id)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%t\t%s\n", dns.Id, dns.Name, dns.Content, dns.Type, dns.IsFQDN, dns.Domain_id)
 	}
 
 	w.Flush()
@@ -211,7 +274,7 @@ func cmdListEvents(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tTIMESTAMP\tLEVEL\tHEADER\tDESCRIPTION\r")
 
 	for _, event := range events {
-		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\n", event.Id, event.Timestamp, event.Level, event.Header, event.Description)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", event.Id, event.Timestamp, event.Level, event.Header, event.Description)
 	}
 
 	w.Flush()
@@ -245,9 +308,18 @@ func cmdExecuteScript(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", c.String("server_id"), c.String("script_id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", c.String("server_id"), c.String("script_id")), nil)
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var event Event
+	err = json.Unmarshal(res, &event)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTIMESTAMP\tLEVEL\tHEADER\tDESCRIPTION\r")
+	fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\n", event.Id, event.Timestamp, event.Level, event.Header, event.Description)
+
+	w.Flush()
 }
 func SubCommands() []cli.Command {
 	return []cli.Command{
@@ -263,7 +335,7 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "comission_server",
+			Name:   "commission_server",
 			Usage:  "Creates a new server.",
 			Action: cmdCommission,
 			Flags: []cli.Flag{
