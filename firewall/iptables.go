@@ -14,7 +14,6 @@ func driverName() string {
 func apply(policy Policy) error {
 	utils.RunCmd("/sbin/iptables -w -N CONCERTO")
 	utils.RunCmd("/sbin/iptables -w -F CONCERTO")
-	utils.RunCmd("/sbin/iptables -w -F INPUT")
 	utils.RunCmd("/sbin/iptables -w -P INPUT DROP")
 	utils.RunCmd("/sbin/iptables -w -A INPUT -i lo -j ACCEPT")
 	utils.RunCmd("/sbin/iptables -w -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT")
@@ -31,7 +30,6 @@ func apply(policy Policy) error {
 func flush() error {
 	utils.RunCmd("/sbin/iptables -w -P INPUT ACCEPT")
 	utils.RunCmd("/sbin/iptables -w -F CONCERTO")
-	utils.RunCmd("/sbin/iptables -w -F INPUT")
 	utils.RunCmd("/sbin/iptables -w -X CONCERTO")
 	return nil
 }
