@@ -22,7 +22,7 @@ func apply(policy Policy) error {
 		utils.RunCmd(fmt.Sprintf("/sbin/iptables -w -A CONCERTO -s %s -p %s --dport %d:%d -j ACCEPT", rule.Cidr, rule.Protocol, rule.MinPort, rule.MaxPort))
 	}
 
-	utils.RunCmd("/sbin/iptables -w -A INPUT -j CONCERTO")
+	utils.RunCmd("/sbin/iptables -w -C INPUT -j CONCERTO && /sbin/iptables -w -A INPUT -j CONCERTO")
 
 	return nil
 }
