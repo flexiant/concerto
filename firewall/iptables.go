@@ -12,20 +12,24 @@ func driverName() string {
 }
 
 func apply(policy Policy) error {
-	utils.RunCmd("/sbin/iptables -F INPUT")
-	utils.RunCmd("/sbin/iptables -P INPUT DROP")
-	utils.RunCmd("/sbin/iptables -A INPUT -i lo -j ACCEPT")
-	utils.RunCmd("/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT")
+	utils.RunCmd("/sbin/iptables -w -N CONCERTO")
+	utils.RunCmd("/sbin/iptables -w -F INPUT CONCERTO")
+	utils.RunCmd("/sbin/iptables -w -P INPUT DROP")
+	utils.RunCmd("/sbin/iptables -w -A INPUT -i lo -j ACCEPT")
+	utils.RunCmd("/sbin/iptables -w -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT")
 
 	for _, rule := range policy.Rules {
-		utils.RunCmd(fmt.Sprintf("/sbin/iptables -A INPUT -s %s -p %s --dport %d:%d -j ACCEPT", rule.Cidr, rule.Protocol, rule.MinPort, rule.MaxPort))
+		utils.RunCmd(fmt.Sprintf("/sbin/iptables -w -A CONCERTO -s %s -p %s --dport %d:%d -j ACCEPT", rule.Cidr, rule.Protocol, rule.MinPort, rule.MaxPort))
 	}
+
+	utils.RunCmd("/sbin/iptables -w -A INPUT -j CONCERTO")
 
 	return nil
 }
 
 func flush() error {
-	utils.RunCmd("/sbin/iptables -P INPUT DROP")
-	utils.RunCmd("/sbin/iptables -F INPUT")
+	utils.RunCmd("/sbin/iptables -w -P INPUT ACCEPT")
+	utils.RunCmd("/sbin/iptables -w -F INPUT CONCERTO")
+	utils.RunCmd("/sbin/iptables -w -X CONCERTO")
 	return nil
 }
