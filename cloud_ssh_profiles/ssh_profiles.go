@@ -78,11 +78,19 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/cloud/ssh_profiles", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
 
+	var sshProfile SSHProfile
+	err = json.Unmarshal(res, &sshProfile)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\rPUBLIC KEY\tPRIVATE KEY\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", sshProfile.Id, sshProfile.Name, sshProfile.Public_key, sshProfile.Private_key)
+	w.Flush()
 }
 
 func cmdUpdate(c *cli.Context) {
@@ -104,10 +112,18 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var sshProfile SSHProfile
+	err = json.Unmarshal(res, &sshProfile)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\rPUBLIC KEY\tPRIVATE KEY\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", sshProfile.Id, sshProfile.Name, sshProfile.Public_key, sshProfile.Private_key)
+	w.Flush()
 }
 
 func cmdDelete(c *cli.Context) {
@@ -116,7 +132,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 

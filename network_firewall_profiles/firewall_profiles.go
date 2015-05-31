@@ -1,4 +1,4 @@
-package network
+package network_firewall_profiles
 
 import (
 	"bytes"
@@ -85,7 +85,7 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/network/firewall_profiles", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
@@ -111,7 +111,7 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
 	fmt.Println(res)
@@ -123,7 +123,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 

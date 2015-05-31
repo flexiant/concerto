@@ -1,4 +1,4 @@
-package settings
+package settings_reports
 
 import (
 	"encoding/json"

@@ -62,7 +62,6 @@ func cmdList(c *cli.Context) {
 	w.Flush()
 }
 
-//FIXME
 func cmdShow(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id"})
 	var template Template
@@ -102,10 +101,19 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/blueprint/templates", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var template Template
+	err = json.Unmarshal(res, &template)
+	utils.CheckError(err)
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, template.ConfigurationAttributes)
+
+	w.Flush()
 
 }
 
@@ -128,10 +136,18 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
-	fmt.Println(res)
+	var template Template
+	err = json.Unmarshal(res, &template)
+	utils.CheckError(err)
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, template.ConfigurationAttributes)
+
+	w.Flush()
+
 }
 
 func cmdDelete(c *cli.Context) {
@@ -140,7 +156,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -203,10 +219,20 @@ func cmdCreateTemplateScript(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", c.String("template_id")), jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var templateScript TemplateScript
+	err = json.Unmarshal(res, &templateScript)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTYPE\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+
+	w.Flush()
 }
 
 func cmdUpdateTemplateScript(c *cli.Context) {
@@ -222,9 +248,19 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), bytes.NewReader(jsonBytes))
 	utils.CheckError(err)
 	fmt.Println(res)
+
+	var templateScript TemplateScript
+	err = json.Unmarshal(res, &templateScript)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTYPE\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+
+	w.Flush()
 }
 
 func cmdDeleteTemplateScript(c *cli.Context) {
@@ -233,7 +269,7 @@ func cmdDeleteTemplateScript(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -250,7 +286,7 @@ func cmdPlaceTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s/place", c.String("template_id"), c.String("id")), bytes.NewReader(jsonBytes))
+	err, _, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s/place", c.String("template_id"), c.String("id")), bytes.NewReader(jsonBytes))
 	utils.CheckError(err)
 	fmt.Println(res)
 }
@@ -290,7 +326,7 @@ func SubCommands() []cli.Command {
 			Action: cmdShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "template_id",
+					Name:  "id",
 					Usage: "Template Id",
 				},
 			},
@@ -324,7 +360,7 @@ func SubCommands() []cli.Command {
 			Action: cmdUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "template_id",
+					Name:  "id",
 					Usage: "Template Id",
 				},
 				cli.StringFlag{
@@ -347,7 +383,7 @@ func SubCommands() []cli.Command {
 			Action: cmdDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "template_id",
+					Name:  "id",
 					Usage: "Template Id",
 				},
 			},

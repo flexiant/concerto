@@ -94,10 +94,20 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/dns/domains", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var d Domain
+	err = json.Unmarshal(res, &d)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+
+	w.Flush()
 
 }
 
@@ -120,10 +130,19 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var d Domain
+	err = json.Unmarshal(res, &d)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+
+	w.Flush()
 }
 
 func cmdDelete(c *cli.Context) {
@@ -132,7 +151,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -207,10 +226,20 @@ func cmdCreateDomainRecords(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")), jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var dr DomainRecord
+	err = json.Unmarshal(res, &dr)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
+
+	w.Flush()
 
 }
 
@@ -238,10 +267,20 @@ func cmdUpdateDomainRecords(c *cli.Context) {
 	}
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var dr DomainRecord
+	err = json.Unmarshal(res, &dr)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
+
+	w.Flush()
+
 }
 
 func cmdDeleteDomainRecords(c *cli.Context) {
@@ -250,7 +289,7 @@ func cmdDeleteDomainRecords(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -394,7 +433,7 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "update",
+			Name:   "update_domain_record",
 			Usage:  "Updates an existing DNS record.",
 			Action: cmdUpdateDomainRecords,
 			Flags: []cli.Flag{
@@ -429,7 +468,7 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "delete",
+			Name:   "delete_domain_record",
 			Usage:  "Deletes a DNS record",
 			Action: cmdDeleteDomainRecords,
 			Flags: []cli.Flag{

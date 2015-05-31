@@ -55,15 +55,14 @@ func cmdList(c *cli.Context) {
 	w.Flush()
 }
 
-// //FIXME
 func cmdShow(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"workspace_id"})
+	utils.FlagsRequired(c, []string{"id"})
 	var workspace Workspace
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("workspace_id")))
+	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("id")))
 	utils.CheckError(err)
 
 	err = json.Unmarshal(data, &workspace)
@@ -91,15 +90,25 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/cloud/workspaces", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
 
+	var workspace Workspace
+	err = json.Unmarshal(res, &workspace)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDEFAULT\tDOMAIN ID\tSSH PROFILE ID\tFIREWALL PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%s\t%s\n", workspace.Id, workspace.Name, workspace.Default, workspace.Domain_id, workspace.Ssh_profile_id, workspace.Firewall_profile_id)
+
+	w.Flush()
+
 }
 
 func cmdUpdate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"workspace_id"})
+	utils.FlagsRequired(c, []string{"id"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
@@ -120,19 +129,29 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("workspace_id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
 	fmt.Println(res)
+
+	var workspace Workspace
+	err = json.Unmarshal(res, &workspace)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDEFAULT\tDOMAIN ID\tSSH PROFILE ID\tFIREWALL PROFILE ID\r")
+	fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%s\t%s\n", workspace.Id, workspace.Name, workspace.Default, workspace.Domain_id, workspace.Ssh_profile_id, workspace.Firewall_profile_id)
+
+	w.Flush()
 }
 
 func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"workspace_id"})
+	utils.FlagsRequired(c, []string{"id"})
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("workspace_id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/cloud/workspaces/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -173,7 +192,7 @@ func SubCommands() []cli.Command {
 			Action: cmdShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "workspace_id",
+					Name:  "id",
 					Usage: "Workspace Id",
 				},
 			},
@@ -207,7 +226,7 @@ func SubCommands() []cli.Command {
 			Action: cmdUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "workspace_id",
+					Name:  "id",
 					Usage: "Workspace Id",
 				},
 				cli.StringFlag{
@@ -234,7 +253,7 @@ func SubCommands() []cli.Command {
 			Action: cmdDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "workspace_id",
+					Name:  "id",
 					Usage: "Workspace Id",
 				},
 			},

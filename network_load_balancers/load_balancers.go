@@ -1,4 +1,4 @@
-package network
+package network_load_balancers
 
 import (
 	"bytes"
@@ -110,7 +110,7 @@ func cmdCreate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/network/load_balancers", jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
@@ -140,7 +140,7 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res := webservice.Put(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")), bytes.NewReader(jsonBytes))
 
 	utils.CheckError(err)
 	fmt.Println(res)
@@ -152,7 +152,7 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
@@ -196,7 +196,7 @@ func cmdAddNode(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")), jsonBytes)
-	if res == "" {
+	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
@@ -209,7 +209,7 @@ func cmdDelNode(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", c.String("balancer_id"), c.String("node_id")))
+	err, _, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", c.String("balancer_id"), c.String("node_id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 

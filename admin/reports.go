@@ -13,28 +13,20 @@ import (
 )
 
 type Report struct {
-	Id             string     `json:"id"`
-	Year           int        `json:"year"`
-	Month          time.Month `json:"month"`
-	Start_time     time.Time  `json:"start_time"`
-	End_time       time.Time  `json:"end_time"`
-	Server_seconds float32    `json:"server_seconds"`
-	Closed         bool       `json:"closed"`
+	Id             string          `json:"id"`
+	Year           int             `json:"year"`
+	Month          time.Month      `json:"month"`
+	Start_time     time.Time       `json:"start_time"`
+	End_time       time.Time       `json:"end_time"`
+	Server_seconds float32         `json:"server_seconds"`
+	Closed         bool            `json:"closed"`
+	Lines          json.RawMessage `json:"lines"`
+	Account_group  AccountGroup    `json:"account_group"`
 }
 
-type Lines struct {
-	Id                string    `json:"_id"`
-	Commissioned_at   time.Time `json:"commissioned_at"`
-	Decommissioned_at time.Time `json:"decommissioned_at"`
-	Instance_id       string    `json:"instance_id"`
-	Instance_name     string    `json:"instance_name"`
-	Instance_fqdn     string    `json:"instance_fqdn"`
-	Consumption       time.Time `json:"consumption"`
-}
-
-type ShowVals struct {
-	Re *Report
-	Li *[]Lines
+type AccountGroup struct {
+	Id   string `json:"_id"`
+	Name string `json:"name"`
 }
 
 func cmdList(c *cli.Context) {
@@ -60,25 +52,24 @@ func cmdList(c *cli.Context) {
 }
 
 func cmdShow(c *cli.Context) {
-	// var vals ShowVals
+	var vals Report
 
-	// utils.FlagsRequired(c, []string{"id"})
+	utils.FlagsRequired(c, []string{"id"})
 
-	// webservice, err := webservice.NewWebService()
-	// utils.CheckError(err)
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
-	// data, err := webservice.Get(fmt.Sprintf("/v1/admin/reports/%s", c.String("id")))
-	// utils.CheckError(err)
+	data, err := webservice.Get(fmt.Sprintf("/v1/admin/reports/%s", c.String("id")))
+	utils.CheckError(err)
 
-	// err = json.Unmarshal(data, &vals)
-	// utils.CheckError(err)
+	err = json.Unmarshal(data, &vals)
+	utils.CheckError(err)
 
-	// w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 
-	// fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\r")
-	// fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", vals.Re.Id, vals.Re.Year, vals.Re.Month, vals.Re.Start_time, vals.Re.End_time, vals.Re.Server_seconds, vals.Re.Closed)
-
-	// w.Flush()
+	fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\tLINES\tACCOUNT GROUP ID\tACCOUNT GROUP NAME\r")
+	fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\t%s\t%s\t%s\n", vals.Id, vals.Year, vals.Month, vals.Start_time, vals.End_time, vals.Server_seconds, vals.Closed, vals.Lines, vals.Account_group.Id, vals.Account_group.Name)
+	w.Flush()
 
 }
 
@@ -90,7 +81,7 @@ func SubCommands() []cli.Command {
 			Action: cmdList,
 		},
 		{
-			Name:   "show_report",
+			Name:   "show",
 			Usage:  "Returns details about a particular report associated to any account group of the tenant. The authenticated user must be an admin.",
 			Action: cmdShow,
 			Flags: []cli.Flag{
