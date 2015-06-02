@@ -165,11 +165,11 @@ func cmdDelete(c *cli.Context) {
 
 func cmdListTemplateScripts(c *cli.Context) {
 	var templateScripts []TemplateScript
-	utils.FlagsRequired(c, []string{"template_id"})
+	utils.FlagsRequired(c, []string{"template_id", "type"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", c.String("template_id")))
+	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", c.String("template_id"), c.String("type")))
 	utils.CheckError(err)
 
 	err = json.Unmarshal(data, &templateScripts)
@@ -397,10 +397,10 @@ func SubCommands() []cli.Command {
 					Name:  "template_id",
 					Usage: "Template Id",
 				},
-				// cli.StringFlag{
-				// 	Name:  "type",
-				// 	Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
-				// },
+				cli.StringFlag{
+					Name:  "type",
+					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
+				},
 			},
 		},
 		{

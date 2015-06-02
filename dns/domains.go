@@ -201,6 +201,21 @@ func cmdShowDomainRecords(c *cli.Context) {
 
 func cmdCreateDomainRecords(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"domain_id", "type"})
+	if c.String("type") == "A" {
+		//FIXME add content of server_id
+		utils.FlagsRequired(c, []string{"name"})
+	}
+	if c.String("type") == "AAAA" {
+		utils.FlagsRequired(c, []string{"name", "content"})
+	}
+
+	if c.String("type") == "CNAME" {
+		utils.FlagsRequired(c, []string{"name", "content"})
+	}
+
+	if c.String("type") == "MX" {
+		utils.FlagsRequired(c, []string{"name", "content", "prio"})
+	}
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 

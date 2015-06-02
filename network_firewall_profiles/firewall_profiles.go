@@ -16,12 +16,12 @@ type FirewallProfile struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Default     bool   `json:"default"`
+	Default     string `json:"default"`
 	Rules       []Rule `json:"rules"`
 }
 
 type Rule struct {
-	Protocol string `json:"protocol"`
+	Protocol string `json:"ip_protocol"`
 	MinPort  int    `json:"min_port"`
 	MaxPort  int    `json:"max_port"`
 	CidrIp   string `json:"cidr_ip"`
@@ -43,7 +43,7 @@ func cmdList(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
 
 	for _, firewallProfile := range firewallProfiles {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	}
 
 	w.Flush()
@@ -63,9 +63,13 @@ func cmdShow(c *cli.Context) {
 	utils.CheckError(err)
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\tRULES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%t\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default, firewallProfile.Rules)
-
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+	fmt.Fprintln(w, "RULES:\r")
+	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
+	for _, r := range firewallProfile.Rules {
+		fmt.Fprintf(w, "\t%s\t%d\t%d\t%s\n", r.Protocol, r.MinPort, r.MaxPort, r.CidrIp)
+	}
 	w.Flush()
 }
 
@@ -89,6 +93,21 @@ func cmdCreate(c *cli.Context) {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var firewallProfile FirewallProfile
+
+	err = json.Unmarshal(res, &firewallProfile)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+	fmt.Fprintln(w, "RULES:\r")
+	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
+	for _, r := range firewallProfile.Rules {
+		fmt.Fprintf(w, "\t%s\t%d\t%d\t%s\n", r.Protocol, r.MinPort, r.MaxPort, r.CidrIp)
+	}
+	w.Flush()
 
 }
 
@@ -115,6 +134,22 @@ func cmdUpdate(c *cli.Context) {
 
 	utils.CheckError(err)
 	fmt.Println(res)
+
+	var firewallProfile FirewallProfile
+
+	err = json.Unmarshal(res, &firewallProfile)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+	fmt.Fprintln(w, "RULES:\r")
+	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
+	for _, r := range firewallProfile.Rules {
+		fmt.Fprintf(w, "\t%s\t%d\t%d\t%s\n", r.Protocol, r.MinPort, r.MaxPort, r.CidrIp)
+	}
+	w.Flush()
+
 }
 
 func cmdDelete(c *cli.Context) {

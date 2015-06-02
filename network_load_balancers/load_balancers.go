@@ -52,7 +52,7 @@ func cmdList(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
 
 	for _, lb := range loadBalancers {
-		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%s\t%s\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
 	}
 
 	w.Flush()
@@ -73,13 +73,14 @@ func cmdShow(c *cli.Context) {
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
-	fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%s\t%s\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
 
 	w.Flush()
 }
 
 func cmdCreate(c *cli.Context) {
-	if c.String("protocol") == "HTTPS" {
+	utils.FlagsRequired(c, []string{"protocol"})
+	if c.String("protocol") == "https" {
 		utils.FlagsRequired(c, []string{"name", "fqdn", "protocol", "domain_id", "cloud_provider_id", "ssl_certificate", "ssl_certificate_private_key"})
 	} else {
 		utils.FlagsRequired(c, []string{"name", "fqdn", "protocol", "domain_id", "cloud_provider_id"})
@@ -115,6 +116,17 @@ func cmdCreate(c *cli.Context) {
 	}
 	utils.CheckError(err)
 
+	var lb LoadBalancer
+
+	err = json.Unmarshal(res, &lb)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+
+	w.Flush()
+
 }
 
 func cmdUpdate(c *cli.Context) {
@@ -144,6 +156,18 @@ func cmdUpdate(c *cli.Context) {
 
 	utils.CheckError(err)
 	fmt.Println(res)
+
+	var lb LoadBalancer
+
+	err = json.Unmarshal(res, &lb)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+
+	w.Flush()
+
 }
 
 func cmdDelete(c *cli.Context) {
@@ -200,6 +224,17 @@ func cmdAddNode(c *cli.Context) {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+
+	var n Node
+
+	err = json.Unmarshal(res, &n)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tPUBLIC IP\tSTATE\tSERVER ID\tPORT\r")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%d\n", n.Id, n.Name, n.PublicIp, n.State, n.ServerId, n.Port)
+
+	w.Flush()
 
 }
 

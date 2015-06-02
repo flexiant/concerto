@@ -11,17 +11,17 @@ import (
 	"text/tabwriter"
 )
 
-type FlavourRequirement struct {
-	MinMem      int      `json:"min_men"`
-	Cpus        int      `json:"cpus"`
-	StorageVals []string `json:"storage_vals"`
-}
+// type FlavourRequirement struct {
+// 	MinMem      int      `json:"min_men"`
+// 	Cpus        int      `json:"cpus"`
+// 	StorageVals []string `json:"storage_vals"`
+// }
 
 type WizardApp struct {
-	Id                   string               `json:"id"`
-	Name                 string               `json:"name"`
-	Flavour_requirements []FlavourRequirement `json:"flavour_requirements"`
-	Generic_image_id     string               `json:"generic_image_id"`
+	Id                   string          `json:"id"`
+	Name                 string          `json:"name"`
+	Flavour_requirements json.RawMessage `json:"flavour_requirements"`
+	Generic_image_id     string          `json:"generic_image_id"`
 }
 
 func cmdList(c *cli.Context) {
