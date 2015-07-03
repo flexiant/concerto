@@ -91,7 +91,7 @@ func cmdCheck(c *cli.Context) {
 	}
 	policy := get()
 
-	fmt.Printf("%t", check(policy, *newRule))
+	fmt.Printf("%t\n", check(policy, *newRule))
 }
 
 func cmdAdd(c *cli.Context) {
