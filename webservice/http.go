@@ -70,10 +70,11 @@ func (w *Webservice) Post(endpoint string, json []byte) (error, []byte, int) {
 	return nil, body, response.StatusCode
 }
 
-func (w *Webservice) Put(endpoint string, b io.Reader) (error, []byte, int) {
+func (w *Webservice) Put(endpoint string, json []byte) (error, []byte, int) {
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+	output := strings.NewReader(string(json))
 
-	request, err := http.NewRequest("PUT", w.config.ApiEndpoint+endpoint, b)
+	request, err := http.NewRequest("PUT", w.config.ApiEndpoint+endpoint, output)
 	response, err := w.client.Do(request)
 
 	log.Debugf("Putting: %s", endpoint)

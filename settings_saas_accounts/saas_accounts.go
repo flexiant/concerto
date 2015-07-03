@@ -1,7 +1,6 @@
 package settings_saas_accounts
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
@@ -72,7 +71,7 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/settings/saas_accounts/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/settings/saas_accounts/%s", c.String("id")), jsonBytes)
 
 	utils.CheckError(err)
 	fmt.Println(res)
