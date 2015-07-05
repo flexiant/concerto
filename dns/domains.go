@@ -199,21 +199,25 @@ func cmdShowDomainRecords(c *cli.Context) {
 }
 
 func cmdCreateDomainRecords(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"domain_id", "type"})
+	utils.FlagsRequired(c, []string{"domain_id", "type", "name"})
 	if c.String("type") == "A" {
-		//FIXME add content of server_id
-		utils.FlagsRequired(c, []string{"name"})
+		if !c.IsSet("content") && !c.IsSet("server_id") {
+			log.Warn(fmt.Sprintf("Please use either parameter --content or --server_id"))
+			fmt.Printf("\n")
+			cli.ShowCommandHelp(c, c.Command.Name)
+			os.Exit(2)
+		}
 	}
 	if c.String("type") == "AAAA" {
-		utils.FlagsRequired(c, []string{"name", "content"})
+		utils.FlagsRequired(c, []string{"content"})
 	}
 
 	if c.String("type") == "CNAME" {
-		utils.FlagsRequired(c, []string{"name", "content"})
+		utils.FlagsRequired(c, []string{"content"})
 	}
 
 	if c.String("type") == "MX" {
-		utils.FlagsRequired(c, []string{"name", "content", "prio"})
+		utils.FlagsRequired(c, []string{"content", "prio"})
 	}
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -488,6 +492,10 @@ func SubCommands() []cli.Command {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
+					Usage: "Record Id",
+				},
+				cli.StringFlag{
+					Name:  "domain_id",
 					Usage: "Record Id",
 				},
 			},
