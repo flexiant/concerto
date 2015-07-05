@@ -1,10 +1,12 @@
 package firewall
 
 import (
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
@@ -14,6 +16,7 @@ const endpoint = "cloud/firewall_profile"
 
 type Policy struct {
 	Rules []Rule `json:"rules"`
+	Md5   string
 }
 
 type Rule struct {
@@ -51,6 +54,7 @@ func get() Policy {
 	if err != nil {
 		log.Fatal(err)
 	}
+	policy.Md5 = fmt.Sprintf("%x", md5.Sum(data))
 	return policy
 }
 
@@ -66,6 +70,64 @@ func cmdFlush(c *cli.Context) {
 	flush()
 }
 
+func check(policy Policy, rule Rule) bool {
+	exists := false
+	for _, policyRule := range policy.Rules {
+		if (policyRule.Cidr == rule.Cidr) && (policyRule.MaxPort == rule.MaxPort) && (policyRule.MinPort == rule.MinPort) && (policyRule.Protocol == rule.Protocol) {
+			exists = true
+		}
+	}
+	return exists
+}
+
+func cmdCheck(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
+
+	newRule := &Rule{
+		c.String("ipProtocol"),
+		c.String("cidr"),
+		c.Int("minPort"),
+		c.Int("maxPort"),
+	}
+	policy := get()
+
+	fmt.Printf("%t\n", check(policy, *newRule))
+}
+
+func cmdAdd(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
+
+	newRule := &Rule{
+		c.String("ipProtocol"),
+		c.String("cidr"),
+		c.Int("minPort"),
+		c.Int("maxPort"),
+	}
+	policy := get()
+
+	exists := check(policy, *newRule)
+
+	if exists == false {
+		fmt.Printf("%#v", newRule)
+		fmt.Printf("We are going to insert firewall")
+		policy.Rules = append(policy.Rules, *newRule)
+		fmt.Printf("\n\n%#v\n\n", policy)
+
+		webservice, err := webservice.NewWebService()
+		utils.CheckError(err)
+
+		json, err := json.Marshal(policy)
+		utils.CheckError(err)
+		err, res, code := webservice.Put("/v1/network/firewall_profiles/", json)
+		if res == nil {
+			log.Fatal(err)
+		}
+		utils.CheckError(err)
+		utils.CheckReturnCode(code)
+	}
+
+}
+
 func SubCommands() []cli.Command {
 	return []cli.Command{
 		{
@@ -77,6 +139,52 @@ func SubCommands() []cli.Command {
 			Name:   "flush",
 			Usage:  "Flushes all firewall rules from host",
 			Action: cmdFlush,
+		},
+		{
+			Name:   "check",
+			Usage:  "Checks if a firewall rule exists in host",
+			Action: cmdCheck,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "cidr",
+					Usage: "CIDR",
+				},
+				cli.IntFlag{
+					Name:  "minPort",
+					Usage: "Minimum Port",
+				},
+				cli.IntFlag{
+					Name:  "maxPort",
+					Usage: "Maximum Port",
+				},
+				cli.StringFlag{
+					Name:  "ipProtocol",
+					Usage: "Ip protocol udp or tcp",
+				},
+			},
+		},
+		{
+			Name:   "add",
+			Usage:  "Adds a firewall rule to host",
+			Action: cmdAdd,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "cidr",
+					Usage: "CIDR",
+				},
+				cli.IntFlag{
+					Name:  "minPort",
+					Usage: "Minimum Port",
+				},
+				cli.IntFlag{
+					Name:  "maxPort",
+					Usage: "Maximum Port",
+				},
+				cli.StringFlag{
+					Name:  "ipProtocol",
+					Usage: "Ip protocol udp or tcp",
+				},
+			},
 		},
 		{
 			Name:   "list",

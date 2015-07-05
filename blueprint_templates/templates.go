@@ -1,7 +1,6 @@
 package blueprint_templates
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
@@ -136,7 +135,7 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), jsonBytes)
 
 	utils.CheckError(err)
 	var template Template
@@ -248,7 +247,7 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), bytes.NewReader(jsonBytes))
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
 	utils.CheckError(err)
 	fmt.Println(res)
 
@@ -286,7 +285,7 @@ func cmdPlaceTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, _, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s/place", c.String("template_id"), c.String("id")), bytes.NewReader(jsonBytes))
+	err, _, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s/place", c.String("template_id"), c.String("id")), jsonBytes)
 	utils.CheckError(err)
 	fmt.Println(res)
 }
