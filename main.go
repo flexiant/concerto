@@ -71,57 +71,7 @@ var ServerCommands = []cli.Command{
 	},
 }
 
-var ClientCommands = []cli.Command{
-	{
-		Name:  "ship",
-		Usage: "Manages Ships",
-		Subcommands: append(
-			ship.SubCommands(),
-		),
-	},
-	{
-		Name:  "fleet",
-		Usage: "Manages a Fleet",
-		Subcommands: append(
-			fleet.SubCommands(),
-		),
-	},
-	{
-		Name:  "container",
-		Usage: "Manages Containers in a Ship",
-		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "ship",
-				Usage: "Ship Name",
-			},
-		},
-		Action: container.CmbHijack,
-	},
-	{
-		Name:  "cluster",
-		Usage: "Manages Cluster in a Fleet",
-		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "fleet",
-				Usage: "Fleet Name",
-			},
-		},
-		Action: cluster.CmbHijack,
-	},
-	{
-		Name:  "reports",
-		Usage: "Provides historical uptime of servers",
-		Subcommands: append(
-			admin.SubCommands(),
-		),
-	},
-	{
-		Name:  "events",
-		Usage: "Events allow the user to track their actions and the state of their servers",
-		Subcommands: append(
-			audit.SubCommands(),
-		),
-	},
+var BlueprintCommands = []cli.Command{
 	{
 		Name:  "scripts",
 		Usage: "Allow the user to manage the scripts they want to run on the servers",
@@ -143,6 +93,9 @@ var ClientCommands = []cli.Command{
 			blueprint_templates.SubCommands(),
 		),
 	},
+}
+
+var CloudCommands = []cli.Command{
 	{
 		Name:  "workspaces",
 		Usage: "Provides information on workspaces",
@@ -192,20 +145,9 @@ var ClientCommands = []cli.Command{
 			cloud_saas_providers.SubCommands(),
 		),
 	},
-	{
-		Name:  "dns_domains",
-		Usage: "Provides information about DNS records",
-		Subcommands: append(
-			dns.SubCommands(),
-		),
-	},
-	{
-		Name:  "licensee_reports",
-		Usage: "Provides information about licensee reports",
-		Subcommands: append(
-			licensee.SubCommands(),
-		),
-	},
+}
+
+var NetCommands = []cli.Command{
 	{
 		Name:  "firewall_profiles",
 		Usage: "Provides information about firewall profiles",
@@ -220,6 +162,9 @@ var ClientCommands = []cli.Command{
 			network_load_balancers.SubCommands(),
 		),
 	},
+}
+
+var SettingsCommands = []cli.Command{
 	{
 		Name:  "cloud_accounts",
 		Usage: "Provides information about cloud accounts",
@@ -228,7 +173,7 @@ var ClientCommands = []cli.Command{
 		),
 	},
 	{
-		Name:  "settings_reports",
+		Name:  "reports",
 		Usage: "Provides information about reports",
 		Subcommands: append(
 			settings_reports.SubCommands(),
@@ -241,6 +186,9 @@ var ClientCommands = []cli.Command{
 			settings_saas_accounts.SubCommands(),
 		),
 	},
+}
+
+var WizardCommands = []cli.Command{
 	{
 		Name:  "apps",
 		Usage: "Provides information about apps",
@@ -267,6 +215,122 @@ var ClientCommands = []cli.Command{
 		Usage: "Provides information about server plans",
 		Subcommands: append(
 			wizard_server_plans.SubCommands(),
+		),
+	},
+}
+
+var ClientCommands = []cli.Command{
+	{
+		Name:      "ship",
+		ShortName: "sh",
+		Usage:     "Manages Ships",
+		Subcommands: append(
+			ship.SubCommands(),
+		),
+	},
+	{
+		Name:      "fleet",
+		ShortName: "fl",
+		Usage:     "Manages a Fleet",
+		Subcommands: append(
+			fleet.SubCommands(),
+		),
+	},
+	{
+		Name:      "container",
+		ShortName: "co",
+		Usage:     "Manages Containers in a Ship",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "ship",
+				Usage: "Ship Name",
+			},
+		},
+		Action: container.CmbHijack,
+	},
+	{
+		Name:      "cluster",
+		ShortName: "clu",
+		Usage:     "Manages Cluster in a Fleet",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "fleet",
+				Usage: "Fleet Name",
+			},
+		},
+		Action: cluster.CmbHijack,
+	},
+	{
+		Name:      "reports",
+		ShortName: "rep",
+		Usage:     "Provides historical uptime of servers",
+		Subcommands: append(
+			admin.SubCommands(),
+		),
+	},
+	{
+		Name:      "events",
+		ShortName: "ev",
+		Usage:     "Events allow the user to track their actions and the state of their servers",
+		Subcommands: append(
+			audit.SubCommands(),
+		),
+	},
+
+	{
+		Name:      "blueprint",
+		ShortName: "bl",
+		Usage:     "Manages blueprint commands for scripts, services and templates",
+		Subcommands: append(
+			BlueprintCommands,
+		),
+	},
+	{
+		Name:      "cloud",
+		ShortName: "clo",
+		Usage:     "Manages cloud related commands for workspaces, servers, generic images, ssh profiles, cloud providers, server plans and Saas providers",
+		Subcommands: append(
+			CloudCommands,
+		),
+	},
+	{
+		Name:      "dns_domains",
+		ShortName: "dns",
+		Usage:     "Provides information about DNS records",
+		Subcommands: append(
+			dns.SubCommands(),
+		),
+	},
+	{
+		Name:      "licensee_reports",
+		ShortName: "lic",
+		Usage:     "Provides information about licensee reports",
+		Subcommands: append(
+			licensee.SubCommands(),
+		),
+	},
+	{
+		Name:      "network",
+		ShortName: "net",
+		Usage:     "Manages network related commands for firewall profiles and load balancers",
+		Subcommands: append(
+			NetCommands,
+		),
+	},
+	{
+		Name:      "settings",
+		ShortName: "set",
+		Usage:     "Provides settings for cloud and Saas accounts as well as reports",
+		Subcommands: append(
+			SettingsCommands,
+		),
+	},
+	{
+		Name:      "wizard",
+		ShortName: "wiz",
+		Usage:     "Manages wizard related commands for apps, locations, cloud providers, server plans",
+		Subcommands: append(
+			WizardCommands,
 		),
 	},
 }
