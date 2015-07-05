@@ -74,6 +74,13 @@ func (w *Webservice) Put(endpoint string, b io.Reader) (error, []byte, int) {
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 
 	request, err := http.NewRequest("PUT", w.config.ApiEndpoint+endpoint, b)
+	if err != nil {
+		return err, nil, -1
+	}
+
+	request.Header = map[string][]string{"Content-type": {"application/json"}}
+	request.Close = true
+
 	response, err := w.client.Do(request)
 
 	log.Debugf("Putting: %s", endpoint)
