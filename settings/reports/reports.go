@@ -30,7 +30,7 @@ type Lines struct {
 	Instance_id       string    `json:"instance_id"`
 	Instance_name     string    `json:"instance_name"`
 	Instance_fqdn     string    `json:"instance_fqdn"`
-	Consumption       time.Time `json:"consumption"`
+	Consumption       float32   `json:"consumption"`
 }
 
 func cmdList(c *cli.Context) {
@@ -77,7 +77,7 @@ func cmdShow(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tCOMMISSIONED AT\tDECOMMISSIONED AT\tINSTANCE ID\tINSTANCE NAME\tINSTANCE FQDN\tCONSUMPTION\r")
 
 	for _, l := range report.Li {
-		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", l.Id, l.Commissioned_at, l.Decommissioned_at, l.Instance_id, l.Instance_name, l.Instance_fqdn, l.Consumption)
+		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%s\t%g\n", l.Id, l.Commissioned_at, l.Decommissioned_at, l.Instance_id, l.Instance_name, l.Instance_fqdn, l.Consumption)
 	}
 	w.Flush()
 
