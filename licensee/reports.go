@@ -19,6 +19,17 @@ type LicenseeReport struct {
 	EndTime       time.Time  `json:"end_time"`
 	ServerSeconds float32    `json:"server_seconds"`
 	Closed        bool       `json:"closed"`
+	Li            []Lines    `json:"lines"`
+}
+
+type Lines struct {
+	Id                string    `json:"_id"`
+	Commissioned_at   time.Time `json:"commissioned_at"`
+	Decommissioned_at time.Time `json:"decommissioned_at"`
+	Instance_id       string    `json:"instance_id"`
+	Instance_name     string    `json:"instance_name"`
+	Instance_fqdn     string    `json:"instance_fqdn"`
+	Consumption       float32   `json:"consumption"`
 }
 
 func cmdList(c *cli.Context) {
@@ -37,30 +48,39 @@ func cmdList(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\r")
 
 	for _, lr := range licenseeReports {
-		fmt.Fprintf(w, "%s\t%s\t%d\t%g\t%d\t%s\t%s\n", lr.Id, lr.Year, lr.Month, lr.StartTime, lr.EndTime, lr.ServerSeconds, lr.Closed)
+		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", lr.Id, lr.Year, lr.Month, lr.StartTime, lr.EndTime, lr.ServerSeconds, lr.Closed)
 	}
 
 	w.Flush()
 }
 
 func cmdShow(c *cli.Context) {
-	// utils.FlagsRequired(c, []string{"id"})
-	// var sp ServerPlan
+	var vals LicenseeReport
 
-	// webservice, err := webservice.NewWebService()
-	// utils.CheckError(err)
+	utils.FlagsRequired(c, []string{"id"})
 
-	// data, err := webservice.Get(fmt.Sprintf("/v1/cloud/server_plans/%s", c.String("id")))
-	// utils.CheckError(err)
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
-	// err = json.Unmarshal(data, &sp)
-	// utils.CheckError(err)
+	data, err := webservice.Get(fmt.Sprintf("/v1/licensee/reports/%s", c.String("id")))
+	utils.CheckError(err)
 
-	// w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	// fmt.Fprintln(w, "ID\tNAME\tMEMORY\tCPUS\tSTORAGE\tLOCATION ID\tCLOUD PROVIDER ID\r")
-	// fmt.Fprintf(w, "%s\t%s\t%d\t%g\t%d\t%s\t%s\n", sp.Id, sp.Name, sp.Memory, sp.CPUs, sp.Storage, sp.LocationId, sp.CloudProviderId)
+	err = json.Unmarshal(data, &vals)
+	utils.CheckError(err)
 
-	// w.Flush()
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+
+	fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\r")
+	fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", vals.Id, vals.Year, vals.Month, vals.StartTime, vals.EndTime, vals.ServerSeconds, vals.Closed)
+
+	fmt.Fprintln(w, "LINES:\r")
+	fmt.Fprintln(w, "ID\tCOMMISSIONED AT\tDECOMMISSIONED AT\tINSTANCE ID\tINSTANCE NAME\tINSTANCE FQDN\tCONSUMPTION\r")
+
+	for _, l := range vals.Li {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%g\n", l.Id, l.Commissioned_at, l.Decommissioned_at, l.Instance_id, l.Instance_name, l.Instance_fqdn, l.Consumption)
+	}
+	w.Flush()
+
 }
 
 func SubCommands() []cli.Command {
