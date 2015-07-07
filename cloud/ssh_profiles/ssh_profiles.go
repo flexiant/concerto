@@ -60,16 +60,15 @@ func cmdShow(c *cli.Context) {
 }
 
 func cmdCreate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"name"})
+	utils.FlagsRequired(c, []string{"name", "public_key"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
 	v := make(map[string]string)
 
 	v["name"] = c.String("name")
-	if c.IsSet("public_key") {
-		v["public_key"] = c.String("public_key")
-	}
+	v["public_key"] = c.String("public_key")
+
 	if c.IsSet("private_key") {
 		v["private_key"] = c.String("private_key")
 	}
