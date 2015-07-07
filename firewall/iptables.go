@@ -42,6 +42,7 @@ func apply(policy Policy) error {
 func flush() error {
 	utils.RunCmd("/sbin/iptables -w -P INPUT ACCEPT")
 	utils.RunCmd("/sbin/iptables -w -F CONCERTO")
+	utils.RunCmd("/sbin/iptables  -w -D INPUT -j CONCERTO")
 	utils.RunCmd("/sbin/iptables -w -X CONCERTO")
 	return nil
 }
