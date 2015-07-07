@@ -118,7 +118,7 @@ func cmdAdd(c *cli.Context) {
 
 		json, err := json.Marshal(policy)
 		utils.CheckError(err)
-		err, res, code := webservice.Put("/v1/network/firewall_profiles/", json)
+		err, res, code := webservice.Put(endpoint, json)
 		if res == nil {
 			log.Fatal(err)
 		}
