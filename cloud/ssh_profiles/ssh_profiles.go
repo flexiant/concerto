@@ -181,6 +181,10 @@ func SubCommands() []cli.Command {
 			Action: cmdUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
+					Name:  "id",
+					Usage: "SSH profile id",
+				},
+				cli.StringFlag{
 					Name:  "name",
 					Usage: "Name of the SSH profile",
 				},

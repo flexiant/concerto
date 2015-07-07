@@ -137,7 +137,7 @@ func cmdBoot(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot", c.String("id")), nil)
 
 	utils.CheckError(err)
 
@@ -157,7 +157,7 @@ func cmdReboot(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot", c.String("id")), nil)
 
 	utils.CheckError(err)
 
@@ -177,7 +177,7 @@ func cmdShutdown(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown", c.String("id")), nil)
 
 	utils.CheckError(err)
 
@@ -197,7 +197,7 @@ func cmdOverride(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override ", c.String("id")), nil)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override", c.String("id")), nil)
 
 	utils.CheckError(err)
 
