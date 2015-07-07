@@ -1,4 +1,4 @@
-package network_firewall_profiles
+package firewall_profiles
 
 import (
 	"encoding/json"

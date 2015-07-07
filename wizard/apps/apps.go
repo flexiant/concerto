@@ -1,4 +1,4 @@
-package wizard_apps
+package apps
 
 import (
 	"encoding/json"

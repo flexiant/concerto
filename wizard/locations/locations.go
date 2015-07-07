@@ -1,4 +1,4 @@
-package wizard_locations
+package locations
 
 import (
 	"encoding/json"

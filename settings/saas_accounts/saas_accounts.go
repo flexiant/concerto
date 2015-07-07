@@ -1,4 +1,4 @@
-package settings_saas_accounts
+package saas_accounts
 
 import (
 	"encoding/json"

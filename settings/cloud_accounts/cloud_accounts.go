@@ -1,4 +1,4 @@
-package settings_cloud_accounts
+package cloud_accounts
 
 import (
 	"encoding/json"

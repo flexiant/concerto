@@ -1,4 +1,4 @@
-package blueprint_templates
+package templates
 
 import (
 	"encoding/json"

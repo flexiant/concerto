@@ -1,4 +1,4 @@
-package network_load_balancers
+package load_balancers
 
 import (
 	"encoding/json"

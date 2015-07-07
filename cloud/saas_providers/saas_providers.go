@@ -1,4 +1,4 @@
-package cloud_saas_providers
+package saas_providers
 
 import (
 	"encoding/json"

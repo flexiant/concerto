@@ -1,4 +1,4 @@
-package cloud_ssh_profiles
+package ssh_profiles
 
 import (
 	"encoding/json"

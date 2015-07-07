@@ -76,21 +76,21 @@ var BlueprintCommands = []cli.Command{
 		Name:  "scripts",
 		Usage: "Allow the user to manage the scripts they want to run on the servers",
 		Subcommands: append(
-			blueprint_scripts.SubCommands(),
+			scripts.SubCommands(),
 		),
 	},
 	{
 		Name:  "services",
 		Usage: "Provides information on services",
 		Subcommands: append(
-			blueprint_services.SubCommands(),
+			services.SubCommands(),
 		),
 	},
 	{
 		Name:  "templates",
 		Usage: "Provides information on templates",
 		Subcommands: append(
-			blueprint_templates.SubCommands(),
+			templates.SubCommands(),
 		),
 	},
 }
@@ -100,49 +100,49 @@ var CloudCommands = []cli.Command{
 		Name:  "workspaces",
 		Usage: "Provides information on workspaces",
 		Subcommands: append(
-			cloud_workspaces.SubCommands(),
+			workspaces.SubCommands(),
 		),
 	},
 	{
 		Name:  "servers",
 		Usage: "Provides information on servers",
 		Subcommands: append(
-			cloud_servers.SubCommands(),
+			servers.SubCommands(),
 		),
 	},
 	{
 		Name:  "generic_images",
 		Usage: "Provides information on generic images",
 		Subcommands: append(
-			cloud_generic_images.SubCommands(),
+			generic_images.SubCommands(),
 		),
 	},
 	{
 		Name:  "ssh_profiles",
 		Usage: "Provides information on SSH profiles",
 		Subcommands: append(
-			cloud_ssh_profiles.SubCommands(),
+			ssh_profiles.SubCommands(),
 		),
 	},
 	{
 		Name:  "cloud_providers",
 		Usage: "Provides information on cloud providers",
 		Subcommands: append(
-			cloud_providers.SubCommands(),
+			providers.SubCommands(),
 		),
 	},
 	{
-		Name:  "cloud_server_plan",
+		Name:  "server_plans",
 		Usage: "Provides information on server plans",
 		Subcommands: append(
-			cloud_server_plan.SubCommands(),
+			server_plan.SubCommands(),
 		),
 	},
 	{
 		Name:  "saas_providers",
 		Usage: "Provides information about SAAS providers",
 		Subcommands: append(
-			cloud_saas_providers.SubCommands(),
+			saas_providers.SubCommands(),
 		),
 	},
 }
@@ -152,14 +152,14 @@ var NetCommands = []cli.Command{
 		Name:  "firewall_profiles",
 		Usage: "Provides information about firewall profiles",
 		Subcommands: append(
-			network_firewall_profiles.SubCommands(),
+			firewall_profiles.SubCommands(),
 		),
 	},
 	{
 		Name:  "load_balancers",
 		Usage: "Provides information about load balancers",
 		Subcommands: append(
-			network_load_balancers.SubCommands(),
+			load_balancers.SubCommands(),
 		),
 	},
 }
@@ -169,21 +169,21 @@ var SettingsCommands = []cli.Command{
 		Name:  "cloud_accounts",
 		Usage: "Provides information about cloud accounts",
 		Subcommands: append(
-			settings_cloud_accounts.SubCommands(),
+			cloud_accounts.SubCommands(),
 		),
 	},
 	{
 		Name:  "reports",
 		Usage: "Provides information about reports",
 		Subcommands: append(
-			settings_reports.SubCommands(),
+			reports.SubCommands(),
 		),
 	},
 	{
 		Name:  "saas_accounts",
 		Usage: "Provides information about SaaS accounts",
 		Subcommands: append(
-			settings_saas_accounts.SubCommands(),
+			saas_accounts.SubCommands(),
 		),
 	},
 }
@@ -193,28 +193,28 @@ var WizardCommands = []cli.Command{
 		Name:  "apps",
 		Usage: "Provides information about apps",
 		Subcommands: append(
-			wizard_apps.SubCommands(),
+			apps.SubCommands(),
 		),
 	},
 	{
 		Name:  "cloud_providers",
 		Usage: "Provides information about cloud providers",
 		Subcommands: append(
-			wizard_cloud_providers.SubCommands(),
+			cloud_providers.SubCommands(),
 		),
 	},
 	{
 		Name:  "locations",
 		Usage: "Provides information about locations",
 		Subcommands: append(
-			wizard_locations.SubCommands(),
+			locations.SubCommands(),
 		),
 	},
 	{
 		Name:  "server_plans",
 		Usage: "Provides information about server plans",
 		Subcommands: append(
-			wizard_server_plans.SubCommands(),
+			server_plans.SubCommands(),
 		),
 	},
 }

@@ -1,4 +1,4 @@
-package cloud_generic_images
+package generic_images
 
 import (
 	"encoding/json"

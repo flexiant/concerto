@@ -1,4 +1,4 @@
-package cloud_workspaces
+package workspaces
 
 import (
 	"encoding/json"

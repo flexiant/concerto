@@ -1,4 +1,4 @@
-package cloud_servers
+package servers
 
 import (
 	"encoding/json"

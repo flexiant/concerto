@@ -1,4 +1,4 @@
-package cloud_providers
+package providers
 
 import (
 	"encoding/json"

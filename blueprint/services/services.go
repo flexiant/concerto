@@ -1,4 +1,4 @@
-package blueprint_services
+package services
 
 import (
 	"encoding/json"
