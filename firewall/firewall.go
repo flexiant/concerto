@@ -14,9 +14,13 @@ import (
 
 const endpoint = "cloud/firewall_profile"
 
+type FirewallProfile stuct {
+	Profile Policy `json:"firewall_profile"`
+}
+
 type Policy struct {
 	Rules []Rule `json:"rules"`
-	Md5   string
+	Md5   string `json:"md5"`
 }
 
 type Rule struct {
@@ -116,7 +120,12 @@ func cmdAdd(c *cli.Context) {
 		webservice, err := webservice.NewWebService()
 		utils.CheckError(err)
 
-		json, err := json.Marshal(policy)
+
+		profile := &FirewallProfile{
+			policy
+		}
+		
+		json, err := json.Marshal(profile)
 		utils.CheckError(err)
 		err, res, code := webservice.Put(endpoint, json)
 		if res == nil {
