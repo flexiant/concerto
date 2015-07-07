@@ -4,6 +4,7 @@ package firewall
 
 import (
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
 )
 
@@ -33,6 +34,7 @@ func apply(policy Policy) error {
 
 	_, exitCode, _, _ = utils.RunCmd("/sbin/iptables -w -C INPUT -j CONCERTO")
 	if exitCode != 0 {
+		log.Debugln("Concerto Chain is not existant adding it to INPUT")
 		utils.RunCmd("/sbin/iptables -w -A INPUT -j CONCERTO")
 	}
 
