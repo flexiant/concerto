@@ -18,7 +18,7 @@ func CmbConverge(c *cli.Context) {
 	var firstBootJsonChef string
 
 	if runtime.GOOS == "windows" {
-		firstBootJsonChef = path.Join("/etc/chef", "first-boot.json")
+		firstBootJsonChef = path.Join("c:\\chef", "first-boot.json")
 	} else {
 		firstBootJsonChef = path.Join("/etc/chef", "first-boot.json")
 	}
