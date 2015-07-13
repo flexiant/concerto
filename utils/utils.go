@@ -54,9 +54,10 @@ func GetBaseDir() string {
 }
 
 func GetConcertoDir() string {
-	if GetUsername() == "root" {
+	userName := GetUsername()
+	if userName == "root" {
 		return "/etc/concerto/"
-	} else if GetUsername() == "Administrator" {
+	} else if userName == "Administrator" || userName[len(userName)-1:] == "$" {
 		return "c:\\concerto\\"
 	} else {
 		return filepath.Join(GetBaseDir(), ".concerto")
