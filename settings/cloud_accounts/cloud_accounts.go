@@ -16,6 +16,21 @@ type Account struct {
 	CloudProvId string `json:"cloud_provider_id"`
 }
 
+type RequiredCredentials struct {
+	AccessKeyId       string `json:"access_key_id,omitempty"`
+	SecretAccessKey   string `json:"secret_access_key,omitempty"`
+	Username          string `json:"username,omitempty"`
+	APIKey            string `json:"api_key,omitempty"`
+	Password          string `json:"password"`
+	User              string `json:"user"`
+	ClientId          string `json:"client_id,omitempty"`
+	GoogleProj        string `json:"google_project,omitempty"`
+	GoogleClientEmail string `json:"google_client_email,omitempty"`
+	CertGoogleKey     string `json:"cert_google_key,omitempty"`
+	SubscriptionID    string `json:"subscription_id,omitempty"`
+	CertManagement    string `json:"cert_management_certificate,omitempty"`
+}
+
 func cmdList(c *cli.Context) {
 	var accounts []Account
 
@@ -43,10 +58,16 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	v := make(map[string]interface{})
 
 	v["cloud_provider_id"] = c.String("cloud_provider_id")
-	v["credentials"] = c.String("credentials")
+
+	credStr := c.String("credentials")
+	recCred := &RequiredCredentials{}
+	json.Unmarshal([]byte(credStr), recCred)
+	fmt.Println(recCred.Password)
+
+	v["credentials"] = recCred
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
