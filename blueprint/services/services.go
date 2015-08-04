@@ -1,3 +1,10 @@
+/*
+
+ Services are the building blocks for configuring the servers.
+ A service can be regarded as a package of modular codified system administration, which encompasses a set of system administration recipes and attributes that allow finely-grained configuration.
+
+*/
+
 package services
 
 import (

@@ -1,3 +1,8 @@
+/*
+
+  A template bundles the operating system to be run by a cloud server and the services and scripts to be applied to it, thus defining a blueprint for cloud server configuration management.
+
+*/
 package templates
 
 import (

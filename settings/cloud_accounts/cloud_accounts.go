@@ -1,3 +1,9 @@
+/*
+
+  A cloud account stores the credentials needed to access a cloud provider.
+  A cloud account allows the platform to commission and control servers on behalf of the user.
+
+*/
 package cloud_accounts
 
 import (

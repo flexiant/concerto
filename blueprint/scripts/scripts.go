@@ -1,3 +1,8 @@
+/*
+
+  Allow the user to manage the scripts they wants to run on the servers.
+
+*/
 package scripts
 
 import (

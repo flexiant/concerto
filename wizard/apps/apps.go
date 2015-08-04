@@ -1,3 +1,8 @@
+/*
+
+  Apps are predefined software stacks ready to be deployed on cloud providers.
+
+*/
 package apps
 
 import (
@@ -10,12 +15,6 @@ import (
 	"os"
 	"text/tabwriter"
 )
-
-// type FlavourRequirement struct {
-// 	MinMem      int      `json:"min_men"`
-// 	Cpus        int      `json:"cpus"`
-// 	StorageVals []string `json:"storage_vals"`
-// }
 
 type WizardApp struct {
 	Id                   string          `json:"id"`

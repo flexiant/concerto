@@ -1,9 +1,14 @@
+/*
+
+Reports allow the user to have information about the historical uptime of their servers.
+** Admins will have visibility for all the servers of the associated tenant.
+
+*/
 package admin
 
 import (
 	"encoding/json"
 	"fmt"
-	// log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"

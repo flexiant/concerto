@@ -1,3 +1,8 @@
+/*
+
+  Server Plans describe the computational resources and the location where servers are deployed.
+
+*/
 package server_plan
 
 import (

@@ -1,3 +1,8 @@
+/*
+
+  Cloud providers are entities that provide computational cloud resources.
+
+*/
 package providers
 
 import (

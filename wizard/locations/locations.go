@@ -1,3 +1,8 @@
+/*
+
+  A location describes where Apps/Servers can be placed.
+
+*/
 package locations
 
 import (

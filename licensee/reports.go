@@ -1,3 +1,9 @@
+/*
+
+  Reports allow the user to have information about the historical uptime of their servers.
+  ** The Licensee will have visibility for all the servers in the system.
+
+*/
 package licensee
 
 import (

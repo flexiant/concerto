@@ -1,3 +1,8 @@
+/*
+
+  Software-as-a-Service (SaaS) providers whose services can be used within the platform.
+
+*/
 package saas_providers
 
 import (

@@ -1,3 +1,9 @@
+/*
+
+  Servers represent computational resources or virtual machines the user deploys on a cloud provider.
+
+*/
+
 package servers
 
 import (

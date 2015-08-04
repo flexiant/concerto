@@ -1,3 +1,8 @@
+/*
+
+Events allow the user to track their actions and the state of their servers.
+
+*/
 package audit
 
 import (

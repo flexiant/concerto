@@ -1,3 +1,9 @@
+/*
+
+  Provides information about server plans available to deploy an application on a location and a cloud provider
+
+*/
+
 package server_plans
 
 import (

@@ -1,3 +1,8 @@
+/*
+
+  SSH profiles represent a pair of SSH keys that are used to access a server deployed on the cloud on a secure way.
+
+*/
 package ssh_profiles
 
 import (
