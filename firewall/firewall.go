@@ -136,6 +136,51 @@ func cmdAdd(c *cli.Context) {
 
 }
 
+func cmdRemove(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
+
+	existingRule := &Rule{
+		c.String("ipProtocol"),
+		c.String("cidr"),
+		c.Int("minPort"),
+		c.Int("maxPort"),
+	}
+	policy := get()
+
+	exists := check(policy, *existingRule)
+
+	if exists == true {
+		fmt.Printf("%#v", existingRule)
+		fmt.Printf("We are going to remove from firewall")
+
+		for i, rule := range policy.Rules {
+			if rule == *existingRule {
+				policy.Rules = append(policy.Rules[:i], policy.Rules[1+i:]...)
+				break
+			}
+		}
+
+		fmt.Printf("\n\n%#v\n\n", policy)
+
+		webservice, err := webservice.NewWebService()
+		utils.CheckError(err)
+
+		profile := &FirewallProfile{
+			policy,
+		}
+
+		json, err := json.Marshal(profile)
+		utils.CheckError(err)
+		err, res, code := webservice.Put(endpoint, json)
+		if res == nil {
+			log.Fatal(err)
+		}
+		utils.CheckError(err)
+		utils.CheckReturnCode(code)
+	}
+
+}
+
 func SubCommands() []cli.Command {
 	return []cli.Command{
 		{
@@ -175,6 +220,29 @@ func SubCommands() []cli.Command {
 			Name:   "add",
 			Usage:  "Adds a firewall rule to host",
 			Action: cmdAdd,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "cidr",
+					Usage: "CIDR",
+				},
+				cli.IntFlag{
+					Name:  "minPort",
+					Usage: "Minimum Port",
+				},
+				cli.IntFlag{
+					Name:  "maxPort",
+					Usage: "Maximum Port",
+				},
+				cli.StringFlag{
+					Name:  "ipProtocol",
+					Usage: "Ip protocol udp or tcp",
+				},
+			},
+		},
+		{
+			Name:   "remove",
+			Usage:  "Removes a firewall rule to host",
+			Action: cmdRemove,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "cidr",
