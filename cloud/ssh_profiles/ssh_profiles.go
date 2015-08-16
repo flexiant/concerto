@@ -1,6 +1,75 @@
 /*
+	SSH Profiles
 
-  SSH profiles represent a pair of SSH keys that are used to access a server deployed on the cloud on a secure way.
+	SSH profiles represent a pair of SSH keys that are used to access a server deployed on the cloud on a secure way.
+
+	The available commands are:
+		list
+		show
+		create
+		update
+		destroy
+
+	Use "cloud ssh_profiles --help" on the commandline interface for more information about the available subcommands.
+
+	SSH Profiles list
+
+	Lists all available SSH profiles.
+
+	Usage:
+
+		ssh_profiles list
+
+	SSH Profiles show
+
+	Shows information about a specific SSH profile.
+
+	Usage:
+
+		ssh_profiles show (options)
+
+	Options:
+		--id <ssh_profile_id> 		SSH profile id
+
+
+	SSH Profiles create
+
+	This action creates an SSH profile with the given parameters.
+
+	Usage:
+
+		ssh_profiles create (options)
+
+	Options:
+		--name <name> 			Name of the SSH profile
+		--public_key <public_key> 	Public key of the SSH profile
+		--private_key <private_key> 	Private key of the SSH profile
+
+	SSH Profiles update
+
+	Updates an existing SSH profile.
+
+	Usage:
+
+		ssh_profiles update (options)
+
+	Options:
+		--id <ssh_profile_id> 		SSH profile id
+		--name <name> 			Name of the SSH profile
+		--public_key <public_key> 	Public key of the SSH profile
+		--private_key <private_key> 	Private key of the SSH profile
+
+	SSH Profiles delete
+
+	Deletes an SSH profile.
+
+	Usage:
+
+		ssh_profiles delete (options)
+
+	Options:
+		--id <ssh_profile_id> 		SSH profile id
+
 
 */
 package ssh_profiles

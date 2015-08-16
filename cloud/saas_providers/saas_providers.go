@@ -1,6 +1,20 @@
 /*
+	SaaS Providers
 
-  Software-as-a-Service (SaaS) providers whose services can be used within the platform.
+	Software-as-a-Service (SaaS) providers are those entities whose services can be used within the platform.
+
+	The available commands are:
+		list	lists all the SaaS providers
+
+	Use "cloud saas_providers --help" on the commandline interface for more information about the available subcommands
+
+	SaaS providers list
+
+	Lists the SaaS providers supported by the platform.
+
+	Usage:
+
+		saas_providers list
 
 */
 package saas_providers

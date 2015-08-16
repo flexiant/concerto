@@ -1,7 +1,29 @@
 /*
+	Settings reports
 
-  Reports allow the user to have information about the historical uptime of their servers.
+	Reports allow the user to have information about the historical uptime of their servers.
 
+	The available commands are:
+		list	reports related to the account group
+		show	details about a particular report associated to the account group of the authenticated user
+
+	Use "reports --help" on the commandline interface for more information about the available subcommands
+
+	Reports list
+
+	Returns information about the reports related to the account group.
+
+	Usage:
+
+		reports list
+
+	Reports show
+
+	Returns details about a particular report associated to the account group of the authenticated user.
+
+	Usage:
+
+		reports show --id <report_id>
 */
 package reports
 

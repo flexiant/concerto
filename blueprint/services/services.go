@@ -1,7 +1,32 @@
 /*
 
- Services are the building blocks for configuring the servers.
- A service can be regarded as a package of modular codified system administration, which encompasses a set of system administration recipes and attributes that allow finely-grained configuration.
+	Blueprint services
+
+	Services are the building blocks for configuring the servers.
+ 	A service can be regarded as a package of modular codified system administration, which encompasses a set of system administration recipes and attributes that allow finely-grained configuration.
+
+	The available commands are:
+		list	all available services
+		show	a particular service
+
+	Use "services --help" on the commandline interface for more information about the available subcommands.
+
+	Services list
+
+	Lists all available services.
+
+	Usage:
+
+		services list
+
+	Services show
+
+	Shows information about a specific service
+
+	Usage:
+
+		services show --id <id>
+
 
 */
 
@@ -72,17 +97,17 @@ func SubCommands() []cli.Command {
 	return []cli.Command{
 		{
 			Name:   "list",
-			Usage:  "Lists all available scripts",
+			Usage:  "Lists all available services",
 			Action: cmdList,
 		},
 		{
 			Name:   "show",
-			Usage:  "Shows information about a specific script",
+			Usage:  "Shows information about a specific service",
 			Action: cmdShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
-					Usage: "Script Id",
+					Usage: "Service Id",
 				},
 			},
 		},

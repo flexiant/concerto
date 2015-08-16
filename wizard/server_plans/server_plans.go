@@ -1,7 +1,25 @@
 /*
+	Wizard server plans
 
-  Provides information about server plans available to deploy an application on a location and a cloud provider
+	Provides information about server plans available to deploy an application on a location and a cloud provider.
 
+	The available commands are:
+		list	list all available server plans
+
+	Use "wizard server_plans --help" on the commandline interface for more information about the available subcommands.
+
+	Servers plans list
+
+	Lists the available server plans.
+
+	Usage:
+
+		server_plans list (options)
+
+	Options:
+		--app_id	<app_id>	App identifier
+		--location_id	<location_id>	Location identifier
+		--cloud_provider_id		<cloud_provider_id>	Cloud provider identifier
 */
 
 package server_plans

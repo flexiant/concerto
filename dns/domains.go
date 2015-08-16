@@ -1,3 +1,150 @@
+/*
+  	Dns Domains
+
+	The domains of the domain-name system (DNS) and their records are used by our name servers for name lookup.
+  	Each workspace belongs to a domain, and each server has an A or an AAAA record in the domain of its workspace.
+  	The user can add additional records - currently supported are: A, AAAA, CNAME, MX, and TXT records.
+
+	The available commands are:
+		list
+		show
+		create
+		update
+		delete
+		list_domain_records
+		show_domain_record
+		create_domain_record
+		update_domain_record
+		delete_domain_record
+
+	Use "dns_domains --help" or "dns --help" on the commandline interface for more information about the available subcommands.
+
+	Domains list
+
+	Lists the domains of the account group.
+
+	Usage:
+
+		dns_domains list
+
+	Domains show
+
+	Shows information about a specific domain.
+
+	Usage:
+
+		dns_domains show (options)
+
+	Options:
+		--id <domain_id> 		Identifier of the domain
+
+	Domain create
+
+	Creates a new domain
+
+	Usage:
+
+		dns_domains create (options)
+
+	Options:
+		--name <name> 			Fully-qualified domain name (FQDN)
+		--ttl <value> 	Time to live (TTL) of the Start of Authority (SOA) record
+		--contact <email> 			Contact e-mail
+		--minimum <value>	The minimum TTL of the SOA record
+
+	Domain update
+
+	Updates an existing domain.
+
+	Usage:
+
+		dns_domains update (options)
+
+	Options:
+		--id <domain_id> 		Identifier of the domain
+		--ttl <value> 	Time to live (TTL) of the Start of Authority (SOA) record
+		--contact <email> 			Contact e-mail
+		--minimum <value>	The minimum TTL of the SOA record
+
+	Domain delete
+
+	This action deletes a domain.
+
+	Usage:
+
+		dns_domains delete (options)
+
+	Options:
+		--id <domain_id> 		Identifier of the domain
+
+	List domain records
+
+	Lists the DNS records of a domain.
+
+	Usage:
+
+		dns_domains list_domain_records
+
+	Get domain records
+
+	Shows information about a specific DNS record.
+
+	Usage:
+
+		dns_domains get_domain_record (options)
+
+	Options:
+		--domain_id <domain_id> 		Identifier of the domain
+		--record_id <record_id> 		Identifier of the DNS record
+
+	Domain record create
+
+	Creates a new DNS record
+
+	Usage:
+
+		dns_domains create_domain_record (options)
+
+	Options:
+		--type <type> 			Type of record (A, AAAA, CNAME, MX, TXT)
+		--name <name> 	Record name
+		--content <content> 			Record content
+		--ttl <value>	Time to live (TTL)
+		--prio <value>	Priority (only MX records)
+		--server_id	<server_id>	Identifier of the associated server (only A and AAAA records)
+
+	Domain record update
+
+	Updates an existing DNS record.
+
+	Usage:
+
+		dns_domains update_domain_record (options)
+
+	Options:
+		--domain_id <domain_id> 		Identifier of the domain
+		--record_id <record_id> 		Identifier of the DNS record
+		--name <name> 	Record name
+		--content <content> 			Record content
+		--ttl <value>	Time to live (TTL)
+		--prio <value>	Priority (only MX records)
+		--server_id	<server_id>	Identifier of the associated server (only A and AAAA records)
+
+	Domain record delete
+
+	This action deletes a DNS record.
+
+	Usage:
+
+		dns_domains delete_domain_record (options)
+
+	Options:
+		--domain_id <domain_id> 		Identifier of the domain
+		--record_id <record_id> 		Identifier of the DNS record
+
+
+
+*/
 package dns
 
 import (

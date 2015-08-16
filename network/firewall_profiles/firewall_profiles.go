@@ -1,7 +1,85 @@
 /*
 
-  A firewall is a device or set of devices designed to permit or deny network transmissions based upon a set of rules and is frequently used to protect networks from unauthorized access while permitting legitimate communications to pass.
-  Firewall profiles represent these sets of rules and allow their application to a set of servers.
+  	Firewall Profiles
+
+	A firewall is a device or set of devices designed to permit or deny network transmissions based upon a set of rules and is frequently used to protect networks from unauthorized access while permitting legitimate communications to pass.
+  	Firewall profiles represent these sets of rules and allow their application to a set of servers.
+
+	The available commands are:
+		list
+		show
+		create
+		update
+		delete
+
+	Use "network firewall_profiles --help" on the commandline interface for more information about the available subcommands.
+
+	Firewall Profiles list
+
+	Lists all available firewall profiles.
+
+	Usage:
+
+		firewall_profiles list
+
+	Firewall Profiles show
+
+	Shows information about a specific firewall profile.
+
+	Usage:
+
+		firewall_profiles show (options)
+
+	Options:
+		--id <firewall_profile_id> 		firewall profile id
+
+
+	Firewall Profiles create
+
+	This action creates an firewall profile with the given parameters.
+
+	Usage:
+
+		firewall_profiles create (options)
+
+	Options:
+		--name <name> 			Logical name of the firewall profile
+		--description <description> 	Description of the firewall profile
+		--rules <rules> 	Set of rules of the firewall profile, each rule having the following fields:
+								a string protocol, specifying the protocol whose traffic is opened by the rule (TCP or UDP)
+								an integer min_port, specifying where the port interval opened by the rule starts
+								an integer max_port, specifying where the port interval opened by the rule ends and
+								a string cidr_ip, specifying with the CIDR format to which network the rule opens traffic
+
+	Firewall Profiles update
+
+	Updates an existing firewall profile.
+
+	Usage:
+
+		firewall_profiles update (options)
+
+	Options:
+		--id <firewall_profile_id> 		firewall profile id
+		--name <name> 			Logical name of the firewall profile
+		--description <description> 	Description of the firewall profile
+		--rules <rules> 	Set of rules of the firewall profile, each rule having the following fields:
+								a string protocol, specifying the protocol whose traffic is opened by the rule (TCP or UDP)
+								an integer min_port, specifying where the port interval opened by the rule starts
+								an integer max_port, specifying where the port interval opened by the rule ends and
+								a string cidr_ip, specifying with the CIDR format to which network the rule opens traffic
+
+
+	Firewall Profiles delete
+
+	Deletes an firewall profile.
+
+	Usage:
+
+		firewall_profiles delete (options)
+
+	Options:
+		--id <firewall_profile_id> 		firewall profile id
 
 */
 package firewall_profiles

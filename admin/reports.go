@@ -1,7 +1,33 @@
 /*
+	Admin reports
 
-Reports allow the user to have information about the historical uptime of their servers.
-** Admins will have visibility for all the servers of the associated tenant.
+	Reports allow the user to have information about the historical uptime of their servers.
+	** Admins will have visibility for all the servers of the associated tenant.
+
+	The available commands are:
+		list	reports related to all the account groups of the tenant (admins only)
+		show	details about a particular report associated to any account group of the tenant (admins only)
+
+	Use "reports --help" on the commandline interface for more information about the available subcommands
+
+	Reports list
+
+	The command `reports list` returns information about the reports related to all the account groups of the tenant.
+	The authenticated user must be an admin.
+
+	Usage:
+
+		reports list
+
+	Reports show
+
+	The command `reports show` returns details about a particular report associated to any account group of the tenant.
+	The authenticated user must be an admin.
+	The report is identified by a unique report_id.
+
+	Usage:
+
+		reports show --id <report_id>
 
 */
 package admin

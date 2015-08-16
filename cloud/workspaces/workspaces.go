@@ -1,6 +1,91 @@
 /*
 
-  A workspace in Concerto is an organizational unit for servers. Workspaces aggregate servers with the same firewall profile, ssh profile and DNS domain settings.
+  Workspace
+
+	A workspace in Concerto is an organizational unit for servers. Workspaces aggregate servers with the same firewall profile, ssh profile and DNS domain settings.
+
+	The available commands are:
+		list
+		show
+		create
+		update
+		delete
+		list_workspace_servers
+
+
+	Use "cloud workspaces --help" on the commandline interface for more information about the available subcommands.
+
+	Workspaces list
+
+	Lists all available workspaces.
+
+	Usage:
+
+		workspaces list
+
+	Workspaces show
+
+	Shows information about a specific workspace.
+
+	Usage:
+
+		workspaces show (options)
+
+	Options:
+		--id <workspace_id> 		Workspace Id
+
+
+	Workspaces create
+
+	Creates a new workspace to be used in the workspaces.
+
+	Usage:
+
+		workspaces create (options)
+
+	Options:
+		--id <workspace_id> 		Workspace Id
+		--name <name> 			Logical name of the workspace
+		--domain_id <domain_id> 	Identifier of the DNS domain to which the workspace ascribes its servers
+		--ssh_profile_id <ssh_profile_id> 			Identifier of the ssh profile which the workspace ascribes its servers
+		--firewall_profile_id <firewall_profile_id>	Identifier of the firewall profile to which the workspace ascribes its servers
+	Workspaces update
+
+	Updates an existing workspace.
+
+	Usage:
+
+		workspaces update (options)
+
+	Options:
+		--id <workspace_id> 		Workspace Id
+		--name <name> 			Logical name of the workspace
+		--domain_id <domain_id> 	Identifier of the DNS domain to which the workspace ascribes its servers
+		--ssh_profile_id <ssh_profile_id> 			Identifier of the ssh profile which the workspace ascribes its servers
+		--firewall_profile_id <firewall_profile_id>	Identifier of the firewall profile to which the workspace ascribes its servers
+
+	Workspaces delete
+
+	Deletes a workspace.
+
+	Usage:
+
+		workspaces delete (options)
+
+	Options:
+		--id <workspace_id> 		Workspace Id
+
+	List workspace servers
+
+	This action returns information about the servers belonging to the workspace identified by the given id.
+
+	Usage:
+
+		workspaces list_workspace_servers (options)
+
+	Options:
+		--workspace_id <workspace_id> 		Workspace Id
+
 
 */
 

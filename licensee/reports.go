@@ -1,7 +1,32 @@
 /*
 
-  Reports allow the user to have information about the historical uptime of their servers.
-  ** The Licensee will have visibility for all the servers in the system.
+
+	Licensee reports
+
+	Reports allow the user to have information about the historical uptime of their servers.
+  	** The Licensee will have visibility for all the servers in the system.
+
+	The available commands are:
+		list	list of reports for all the servers in the system (licensee only)
+		show	details about a particular report of a server (licensee only)
+
+	Use "licensee_reports --help" on the commandline interface for more information about the available subcommands
+
+	List licensee reports
+
+	Returns a list of reports for all the servers in the system. The authenticated user must be the licensee.
+
+	Usage:
+
+		licensee_reports list
+
+	Show licensee report
+
+	Returns details about a particular report associated to any account group of the tenant. The authenticated user must be the licensee.
+
+	Usage:
+
+		licensee_reports show --id <report_id>
 
 */
 package licensee

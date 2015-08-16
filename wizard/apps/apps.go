@@ -1,6 +1,37 @@
 /*
+	Wizard apps
 
-  Apps are predefined software stacks ready to be deployed on cloud providers.
+	Apps are predefined software stacks ready to be deployed on cloud providers.
+
+	The available commands are:
+		list	list all available apps
+		deploy	deploys the App with the given id as a server on the cloud
+
+	Use "wizard apps --help" on the commandline interface for more information about the available subcommands
+
+	Apps list
+
+	Lists the available Apps.
+
+	Usage:
+
+		apps list
+
+	Deploy App
+
+	Deploys the App with the given id as a server on the cloud.
+
+	Usage:
+
+		apps deploy (options)
+
+	Options:
+		--id <app_id>	App Id
+		--location_id	<location_id>	Identifier of the Location on which the App will be deployed
+		--cloud_provider_id	<cloud_provider_id>	Identifier of the Cloud Provider on which the App will be deployed
+		--server_plan_id	<server_plan_id>	Identifier of the Server Plan on which the App will be deployed (optional)
+		--hostname	<hostname>	A hostname for the cloud server to deploy
+		--domain_id	<domain_id>	Identifier of the Domain under which the App will be deployed
 
 */
 package apps

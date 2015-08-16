@@ -1,6 +1,77 @@
 /*
+	Blueprint scripts
 
-  Allow the user to manage the scripts they wants to run on the servers.
+	Allow the user to manage the scripts they wants to run on the servers.
+
+	The available commands are:
+		list
+		show
+		create
+		update
+		delete
+
+	Use "blueprint scripts --help" on the commandline interface for more information about the available subcommands.
+
+	Scripts list
+
+	Lists all available scripts.
+
+	Usage:
+
+		scripts list
+
+	Scripts show
+
+	Shows information about a specific script.
+
+	Usage:
+
+		scripts show (options)
+
+	Options:
+		--id <script_id> 		Script Id
+
+
+	Scripts create
+
+	Creates a new script to be used in the templates.
+
+	Usage:
+
+		scripts create (options)
+
+	Options:
+		--id <script_id> 		Script Id
+		--name <name> 			Name of the script
+		--description <description> 	Description of the script's purpose
+		--code <code> 			The script's code
+		--parameters <parameters>	The names of the script's parameters
+
+	Scripts update
+
+	Updates an existing script.
+
+	Usage:
+
+		scripts update (options)
+
+	Options:
+		--id <script_id> 		Script Id
+		--name <name> 			Name of the script
+		--description <description> 	Description of the script's purpose
+		--code <code> 			The script's code
+		--parameters <parameters>	The names of the script's parameters
+
+	Scripts delete
+
+	Deletes a script.
+
+	Usage:
+
+		scripts delete (options)
+
+	Options:
+		--id <script_id> 		Script Id
 
 */
 package scripts

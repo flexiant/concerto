@@ -1,7 +1,60 @@
 /*
+  	Cloud accounts
 
-  A cloud account stores the credentials needed to access a cloud provider.
-  A cloud account allows the platform to commission and control servers on behalf of the user.
+	A cloud account allows the platform to commission and control servers on behalf of the user.
+  	A cloud account stores the credentials needed to access a cloud provider.
+
+	The available commands are:
+		list
+		create
+		update
+		delete
+
+	Use "settings cloud_accounts --help" on the commandline interface for more information about the available subcommands.
+
+	Cloud accounts list
+
+	Lists the cloud accounts of the account group.
+
+	Usage:
+
+		cloud_accounts list
+
+	Cloud account create
+
+	Creates a new cloud account
+
+	Usage:
+
+		cloud_accounts create (options)
+
+	Options:
+		--cloud_provider_id <cloud_provider_id> 	Identifier of the cloud provider
+		--credentials <credentials> 	A mapping assigning a value to each of the required yes credentials of the cloud provider
+
+	Cloud account update
+
+	Updates an existing cloud account.
+
+	Usage:
+
+		cloud_accounts update (options)
+
+	Options:
+		--id <cloud_account_id> 		Identifier of the cloud account
+		--credentials <credentials> 	A mapping assigning a value to each of the required yes credentials of the cloud provider
+
+	Cloud account delete
+
+	This action deletes a cloud account.
+
+	Usage:
+
+		cloud_accounts delete (options)
+
+	Options:
+		--id <cloud_account_id> 		Identifier of the cloud account
+
 
 */
 package cloud_accounts
@@ -64,16 +117,10 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]interface{})
+	v := make(map[string]string)
 
+	v["credentials"] = c.String("credentials")
 	v["cloud_provider_id"] = c.String("cloud_provider_id")
-
-	credStr := c.String("credentials")
-	recCred := &RequiredCredentials{}
-	json.Unmarshal([]byte(credStr), recCred)
-	fmt.Println(recCred.Password)
-
-	v["credentials"] = recCred
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)

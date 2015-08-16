@@ -1,7 +1,120 @@
 /*
+	Load balancers
 
-  Load balancers allow the distribution of a service load between a set of servers.
+	Load balancers allow the distribution of a service load between a set of servers.
 
+	The available commands are:
+		list
+		show
+		create
+		update
+		delete
+		list_balancer_nodes
+		add_balancer_node
+		remove_balancer_node
+
+	Use "network load_balancers --help" on the commandline interface for more information about the available subcommands.
+
+	Load balancers list
+
+	This action provides information about the existing load balancers.
+
+	Usage:
+
+		load_balancers list
+
+	Load balancer show
+
+	This action provides information about the load balancer identified by the given id.
+
+	Usage:
+
+		load_balancers show (options)
+
+	Options:
+		--id <load_balancer_id> 		load balancer id
+
+
+	Load balancer create
+
+	This action creates an load balancer with the given parameters.
+
+	Usage:
+
+		load_balancers create (options)
+
+	Options:
+		--name <name> 			Logical name of the load balancer
+		--fqdn <fqdn> 	Fully qualified domain name of the load balancer
+		--protocol <protocol> 	Protocol of balanced traffic, either HTTP or HTTPS
+		--port	<value>	Port where the load balancer listens for traffic
+		--algorithm	<algorithm>	Algorithm used by the load balancer to balance incoming connections between servers. It can be either roundrobin, static-rr or leastconn.
+		--ssl_certificate	<ssl_certificate>	SSL certificate to use, when protocol is HTTPS (SSL termination).
+		--ssl_certificate_private_key	<ssl_certificate_private_key>	Private key of SSL certificate to use, when protocol is HTTPS (SSL termination).
+		--domain_id	<domain_id>	Identifier of the DNS domain to which the FQDN of the load balancer belongs
+		--cloud_provider_id	<cloud_provider_id>	Identifier of the cloud provider (that provides the load_balancer service) which shall deploy the load balancer
+
+	Load balancer update
+
+	Updates an existing load balancer.
+
+	Usage:
+
+		load_balancers update (options)
+
+	Options:
+		--id <load_balancer_id> 		load balancer id
+		--name <name> 			Logical name of the load balancer
+		--fqdn <fqdn> 	Fully qualified domain name of the load balancer
+		--protocol <protocol> 	Protocol of balanced traffic, either HTTP or HTTPS
+		--port	<value>	Port where the load balancer listens for traffic
+		--algorithm	<algorithm>	Algorithm used by the load balancer to balance incoming connections between servers. It can be either roundrobin, static-rr or leastconn.
+		--ssl_certificate	<ssl_certificate>	SSL certificate to use, when protocol is HTTPS (SSL termination).
+		--ssl_certificate_private_key	<ssl_certificate_private_key>	Private key of SSL certificate to use, when protocol is HTTPS (SSL termination).
+
+	Load balancer destroy
+
+	Deletes a load balancer.
+
+	Usage:
+
+		load_balancers delete (options)
+
+	Options:
+		--id <load_balancer_id> 		load balancer id
+
+	List load balancer nodes
+
+	This action provides information about the nodes of the load balancer identified by the given id.
+
+	Usage:
+
+		load_balancers list_balancer_nodes --id <load_balancer_id>
+
+	Add a node to a load balancer
+
+	This action adds a node to the load balancer identified by the given id.
+
+	Usage:
+
+		load_balancers add_balancer_node	(options)
+
+	Options:
+		--id <load_balancer_id>	Load balancer id
+		--server_id	<server_id>	Identifier of the node's server
+		--port	<value>	Port where the node listens for requests
+
+	Remove node from a load balancer
+
+	This action removes the node identified by the given id from the load balancer.
+
+	Usage:
+
+		load_balancers remove_balancer_node (options)
+
+	Options:
+		--load_balancer_id <load_balancer_id>	Load balancer id
+		--node_id <node_id>	Node id
 */
 package load_balancers
 

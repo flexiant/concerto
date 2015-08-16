@@ -1,6 +1,164 @@
 /*
+	Blueprint templates
 
-  A template bundles the operating system to be run by a cloud server and the services and scripts to be applied to it, thus defining a blueprint for cloud server configuration management.
+	A template bundles the operating system to be run by a cloud server and the services and scripts to be applied to it, thus defining a blueprint for cloud server configuration management.
+
+	The available commands are:
+		list
+		show
+		create
+		update
+		delete
+		list_template_scripts
+		show_template_script
+		create_template_script
+		update_template_script
+		reorder_template_scripts
+		delete_template_script
+		list_template_servers
+
+	Use "blueprint templates --help" on the commandline interface for more information about the available subcommands.
+
+	Templates list
+
+	Lists all available templates.
+
+	Usage:
+
+		templates list
+
+	Templates show
+
+	Shows information about a specific template.
+
+	Usage:
+
+		templates show (options)
+
+	Options:
+		--id <template_id> 		Template Id
+
+
+	Templates create
+
+	Creates a new template to be used in the templates.
+
+	Usage:
+
+		templates create (options)
+
+	Options:
+		--id <template_id> 		Template Id
+		--name <name> 			Name of the template
+		--generic_image_id <generic_image_id> 	Identifier of the OS image that the template builds on
+		--service_list <service_list> 			A list of service recipes that is run on the servers at start-up
+		--configuration_attributes <configuration_attributes>	The attributes used to configure the services in the service_list
+
+	Templates update
+
+	Updates an existing template.
+
+	Usage:
+
+		templates update (options)
+
+	Options:
+		--id <template_id> 		Template Id
+		--name <name> 			Name of the template
+		--generic_image_id <generic_image_id> 	Identifier of the OS image that the template builds on
+		--service_list <service_list> 			A list of service recipes that is run on the servers at start-up
+		--configuration_attributes <configuration_attributes>	The attributes used to configure the services in the service_list
+
+	Templates delete
+
+	Deletes a template.
+
+	Usage:
+
+		templates delete (options)
+
+	Options:
+		--id <template_id> 		Template id
+
+
+
+	List template scripts
+
+	Shows the script characterisations, i.e., the parameterised scripts, of a template that either are run automatically during either boot, migration, or shutdown, or can be run in operational state.
+
+	Usage:
+
+		templates list_template_scripts (options)
+
+	Options:
+		--template_id <template_id>	Template id
+		--type <type> Must be "operational", "boot", "migration", or "shutdown"
+
+
+	Templates scripts show
+
+	Shows information about a specific template.
+
+	Usage:
+
+		templates show_template_script (options)
+
+	Options:
+		--template_id <template_id> 		Template Id
+		--script_id	<id>	Script Id
+
+	Templates script create
+	Creates a new script characterisation for a template and appends it to the list of script characterisations of the same type.
+
+	Usage:
+
+		templates create_template_script (options)
+
+	Options:
+		--template_id <template_id> 		Template Id
+		--type <type> 			Must be "operational", "boot", "migration", or "shutdown"
+		--script_id <script_id> 	Identifier for the script that is parameterised by the script characterisation
+		--parameter_values <parameter_values> 			A map that assigns a value to each script parameter
+
+
+	Templates script update
+
+	Updates an existing script characterisation for a template.
+
+	Usage:
+
+		templates update_template_script (options)
+
+	Options:
+		--template_id <template_id> 		Template Id
+		--script_id <script_id> 	Identifier for the script that is parameterised by the script characterisation
+		--parameter_values <parameter_values> 			A map that assigns a value to each script parameter
+
+	Template scripts reorder
+
+	Reorders the scripts of the template and type specified according to the provided order, changing their execution order as corresponds.
+
+	Usage:
+
+		templates reorder_template_scripts (options)
+
+	Options:
+		--template_id <template_id> 		Template Id
+		--type <type> 			Must be "operational", "boot", "migration", or "shutdown"
+		--script_ids <[script_id1, script_id2, ...]> 	An array that must contain all the ids of scripts of the given template and type in the desired execution order
+
+
+	Templates delete
+
+	Removes a parametrized script from a template.
+
+	Usage:
+
+		templates delete (options)
+
+	Options:
+		--template_id <template_id> 		Template Id
+		--script_id <script_id> 	Identifier for the script that is parameterised by the script characterisation
 
 */
 package templates
@@ -30,6 +188,7 @@ type TemplateScript struct {
 	Template_Id      string          `json:"template_id"`
 	Script_Id        string          `json:"script_id"`
 	Parameter_Values json.RawMessage `json:"parameter_values"`
+	Execution_Order  int             `json:"execution_order"`
 }
 
 type TemplateServer struct {
@@ -180,10 +339,10 @@ func cmdListTemplateScripts(c *cli.Context) {
 	utils.CheckError(err)
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
 
 	for _, templateScript := range templateScripts {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
 	}
 
 	w.Flush()
@@ -203,8 +362,8 @@ func cmdShowTemplateScript(c *cli.Context) {
 	utils.CheckError(err)
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
 
 	w.Flush()
 }
@@ -216,7 +375,7 @@ func cmdCreateTemplateScript(c *cli.Context) {
 
 	v := make(map[string]string)
 
-	v["template_id"] = c.String("template_id")
+	v["script_id"] = c.String("script_id")
 	v["type"] = c.String("type")
 	v["parameter_values"] = c.String("parameter_values")
 
@@ -233,14 +392,14 @@ func cmdCreateTemplateScript(c *cli.Context) {
 	utils.CheckError(err)
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
 
 	w.Flush()
 }
 
 func cmdUpdateTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id", "template_id"})
+	utils.FlagsRequired(c, []string{"script_id", "template_id"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
@@ -252,7 +411,7 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("script_id")), jsonBytes)
 	utils.CheckError(err)
 	fmt.Println(res)
 
@@ -261,8 +420,8 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 	utils.CheckError(err)
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
 
 	w.Flush()
 }
@@ -280,19 +439,30 @@ func cmdDeleteTemplateScript(c *cli.Context) {
 	fmt.Println(res)
 }
 
-func cmdPlaceTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id", "template_id", "position"})
+func cmdReorderTemplateScripts(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"template_id", "type", "script_ids"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
-	v["position"] = c.String("position")
+	v := make(map[string]interface{})
+	v["type"] = c.String("type")
+	v["script_ids"] = c.GlobalStringSlice("script_ids")
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, _, res := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s/place", c.String("template_id"), c.String("id")), jsonBytes)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", c.String("template_id")), jsonBytes)
 	utils.CheckError(err)
-	fmt.Println(res)
+
+	var templateScripts []TemplateScript
+	err = json.Unmarshal(res, &templateScripts)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+	for _, templateScript := range templateScripts {
+		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+	}
+	w.Flush()
 }
 
 func cmdListTemplateServers(c *cli.Context) {
@@ -465,21 +635,21 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "place_template_script",
-			Usage:  "Changes the execution order of the scripts of a template: swaps positions of script_id with the script at \"position\"",
-			Action: cmdPlaceTemplateScript,
+			Name:   "reorder_template_scripts",
+			Usage:  "Reorders the scripts of the template and type specified according to the provided order, changing their execution order as corresponds.",
+			Action: cmdReorderTemplateScripts,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
 					Usage: "Template Id",
 				},
 				cli.StringFlag{
-					Name:  "script_id",
-					Usage: "Identifier for the script that is parameterised by the script characterisation",
+					Name:  "type",
+					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
 				},
 				cli.StringFlag{
-					Name:  "position",
-					Usage: "The target place for the script characterisation",
+					Name:  "script_ids",
+					Usage: "An array that must contain all the ids of scripts of the given template and type in the desired execution order",
 				},
 			},
 		},

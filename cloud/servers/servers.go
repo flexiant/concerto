@@ -1,7 +1,162 @@
 /*
+ 	Servers
 
-  Servers represent computational resources or virtual machines the user deploys on a cloud provider.
+	Servers represent computational resources or virtual machines the user deploys on a cloud provider.
 
+	The available commands are:
+		show
+		comission_server
+		update
+		boot
+		reboot
+		shutdown
+		override
+		decomission_server
+		list_dns_records
+		list_events
+		list_operational_Scripts
+		execute_script
+
+	Use "cloud servers --help" on the commandline interface for more information about the available subcommands.
+
+	Servers show
+
+	This action returns information about the server identified by the given id.
+
+	Usage:
+
+		servers show (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+
+	Servers commission
+
+	This action creates a new server and commissions it at the cloud provider.
+
+	Usage:
+
+		servers commission_server (options)
+
+	Options:
+		--name <name> 			Logical name of the server
+		--workspace_id <workspace_id> 	Identifier of the workspace to which the server will belong
+		--template_id <template_id> 			Identifier of the template the server will use
+		--server_plan_id <server_plan_id>	Identifier of the server plan in which the server shall be deployed
+
+	Servers update
+
+	Updates an existing server.
+
+	Usage:
+
+		servers update (options)
+
+	Options:
+		--id <server_id> 		Server Id
+		--name <name> 			Logical name of the server
+		--fqdn <fqdn> 	Fully qualified domain name (FQDN) of the server
+
+	Server boot
+
+	This action boots the server with the given id. The server must be in an inactive state.
+
+	Usage:
+
+		servers boot (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	Server reboot
+
+	This action reboots the server with the given id. The server must be in an operational state.
+
+	Usage:
+
+		servers reboot (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	Server shutdown
+
+	This action boots the server with the given id. The server must be in a bootstrapping, operational or stalled state.
+
+	Usage:
+
+		servers shutdown (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	Server override
+
+	This action takes the server with the given id from a stalled state to the operational state, at the user's own risk.
+
+	Usage:
+
+		servers override_server (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	Server decommission
+
+	This action decommissions the server with the given id. The server must be in a inactive, stalled or commission_stalled state.
+
+	Usage:
+
+		servers decommission_server (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	List DNS records of a server
+
+	This action returns information on the DNS records associated to the server with the given id.
+
+	Usage:
+
+		servers list_dns_records (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	List events of a server
+
+	This action returns information about the events related to the server with the given id.
+
+	Usage:
+
+		servers list_events (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	List operational scripts of a server
+
+	This action returns information about the operational scripts characterisations related to the server with the given id.
+
+	Usage:
+
+		servers list_operational_scripts (options)
+
+	Options:
+		--id <server_id> 		Server Id
+
+	Execute script on server
+
+	This action initiates the execution of the script characterisation with the given id on the server with the given id.
+
+	Usage:
+
+		servers execute_script (options)
+
+	Options:
+		--server_id <server_id> 		Server Id
+		--script_id	<script_id>			Script Id
 */
 
 package servers

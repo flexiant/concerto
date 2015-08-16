@@ -1,7 +1,20 @@
 /*
+	Cloud Providers
 
-  Cloud providers are entities that provide computational cloud resources.
+	Cloud providers are entities that provide computational cloud resources.
 
+	The available commands are:
+		list
+
+	Use "cloud cloud_providers --help" on the commandline interface for more information about the available subcommands.
+
+	Cloud Providers List
+
+	Lists all available cloud providers.
+
+	Usage:
+
+		cloud_providers list
 */
 package providers
 
