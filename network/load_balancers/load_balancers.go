@@ -1,6 +1,4 @@
 /*
-	Load balancers
-
 	Load balancers allow the distribution of a service load between a set of servers.
 
 	The available commands are:

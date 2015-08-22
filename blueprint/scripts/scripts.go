@@ -1,6 +1,4 @@
 /*
-	Blueprint scripts
-
 	Allow the user to manage the scripts they wants to run on the servers.
 
 	The available commands are:

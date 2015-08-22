@@ -1,12 +1,10 @@
 /*
-	Wizard locations
-
 	A location describes where Apps/Servers can be placed.
 
 	The available commands are:
 		list	list all available locations
 
-	Use "wizard locations --help" on the commandline interface for more information about the available subcommands
+	Use "wizard locations --help" on the commandline interface for more information about the available subcommands.
 
 	Locations list
 

@@ -1,6 +1,4 @@
 /*
- 	Servers
-
 	Servers represent computational resources or virtual machines the user deploys on a cloud provider.
 
 	The available commands are:
@@ -158,7 +156,6 @@
 		--server_id <server_id> 		Server Id
 		--script_id	<script_id>			Script Id
 */
-
 package servers
 
 import (

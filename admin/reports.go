@@ -1,6 +1,4 @@
 /*
-	Admin reports
-
 	Reports allow the user to have information about the historical uptime of their servers.
 	** Admins will have visibility for all the servers of the associated tenant.
 
@@ -8,7 +6,7 @@
 		list	reports related to all the account groups of the tenant (admins only)
 		show	details about a particular report associated to any account group of the tenant (admins only)
 
-	Use "reports --help" on the commandline interface for more information about the available subcommands
+	Use "admin reports --help" on the commandline interface for more information about the available subcommands.
 
 	Reports list
 

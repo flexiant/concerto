@@ -1,12 +1,10 @@
 /*
-	Wizard cloud providers
-
-	Provides information about cloud providers available to deploy an application on a location
+	Provides information about cloud providers available to deploy an application on a location.
 
 	The available commands are:
 		list	list all available cloud providers
 
-	Use "wizard cloud_providers --help" on the commandline interface for more information about the available subcommands
+	Use "wizard cloud_providers --help" on the commandline interface for more information about the available subcommands.
 
 	Cloud providers list
 
@@ -20,7 +18,6 @@
 		--app_id	<app_id>	Identifier of the App
 		--location_id	<location_id>	Identifier of the Location
 */
-
 package cloud_providers
 
 import (

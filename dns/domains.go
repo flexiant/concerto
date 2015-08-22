@@ -1,6 +1,4 @@
 /*
-  	Dns Domains
-
 	The domains of the domain-name system (DNS) and their records are used by our name servers for name lookup.
   	Each workspace belongs to a domain, and each server has an A or an AAAA record in the domain of its workspace.
   	The user can add additional records - currently supported are: A, AAAA, CNAME, MX, and TXT records.
@@ -141,9 +139,6 @@
 	Options:
 		--domain_id <domain_id> 		Identifier of the domain
 		--record_id <record_id> 		Identifier of the DNS record
-
-
-
 */
 package dns
 

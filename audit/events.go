@@ -1,13 +1,11 @@
 /*
-	Audit events
-
 	Events allow the user to track their actions and the state of their servers.
 
 	The available commands are:
 		list	events related to the account group
 		list_system_events	system-wide events
 
-	Use "events --help" on the commandline interface for more information about the available subcommands.
+	Use "audit events --help" on the commandline interface for more information about the available subcommands.
 
 	Events list
 

@@ -1,6 +1,4 @@
 /*
-	Wizard server plans
-
 	Provides information about server plans available to deploy an application on a location and a cloud provider.
 
 	The available commands are:
@@ -21,7 +19,6 @@
 		--location_id	<location_id>	Location identifier
 		--cloud_provider_id		<cloud_provider_id>	Cloud provider identifier
 */
-
 package server_plans
 
 import (

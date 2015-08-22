@@ -1,6 +1,4 @@
 /*
-  	Cloud accounts
-
 	A cloud account allows the platform to commission and control servers on behalf of the user.
   	A cloud account stores the credentials needed to access a cloud provider.
 
@@ -22,7 +20,7 @@
 
 	Cloud account create
 
-	Creates a new cloud account
+	Creates a new cloud account.
 
 	Usage:
 
@@ -54,8 +52,6 @@
 
 	Options:
 		--id <cloud_account_id> 		Identifier of the cloud account
-
-
 */
 package cloud_accounts
 
@@ -118,9 +114,8 @@ func cmdCreate(c *cli.Context) {
 	utils.CheckError(err)
 
 	v := make(map[string]string)
-
-	v["credentials"] = c.String("credentials")
 	v["cloud_provider_id"] = c.String("cloud_provider_id")
+	v["credentials"] = c.String("credentials")
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)

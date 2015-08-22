@@ -1,6 +1,4 @@
 /*
-	Generic images
-
 	A generic image is represents an abstract operating system image that can be 'used' to deploy servers across multiple and heterogeneous clouds.
 	Thus, it allows the user not to worry about which image to use depending on the provider where the server is deployed.
 

@@ -1,7 +1,4 @@
 /*
-
-  Workspace
-
 	A workspace in Concerto is an organizational unit for servers. Workspaces aggregate servers with the same firewall profile, ssh profile and DNS domain settings.
 
 	The available commands are:
@@ -85,10 +82,7 @@
 
 	Options:
 		--workspace_id <workspace_id> 		Workspace Id
-
-
 */
-
 package workspaces
 
 import (

@@ -1,6 +1,4 @@
 /*
-	Cloud Providers
-
 	Cloud providers are entities that provide computational cloud resources.
 
 	The available commands are:

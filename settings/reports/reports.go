@@ -1,5 +1,4 @@
 /*
-	Settings reports
 
 	Reports allow the user to have information about the historical uptime of their servers.
 
@@ -7,7 +6,7 @@
 		list	reports related to the account group
 		show	details about a particular report associated to the account group of the authenticated user
 
-	Use "reports --help" on the commandline interface for more information about the available subcommands
+	Use "reports --help" on the commandline interface for more information about the available subcommands.
 
 	Reports list
 

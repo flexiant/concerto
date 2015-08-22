@@ -1,13 +1,11 @@
 /*
-	Server Plans
-
 	Server Plans describe the computational resources and the location where servers are deployed.
 
 	The available commands are:
 		list	lists all the server plans belonging to a cloud provider
 		show	details about a particular server plan
 
-	Use "cloud server_plans --help" on the commandline interface for more information about the available subcommands
+	Use "cloud server_plans --help" on the commandline interface for more information about the available subcommands.
 
 	Server plans list
 
@@ -24,8 +22,6 @@
 	Usage:
 
 		server_plans show --id <server_plan_id>
-
-
 */
 package server_plan
 

@@ -1,6 +1,4 @@
 /*
-	SaaS accounts
-
 	A SaaS account stores the credentials needed to access a SaaS provider.
   	It allows the user to access the services of a SaaS provider through the platform.
 

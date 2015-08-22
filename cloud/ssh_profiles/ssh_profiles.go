@@ -1,6 +1,4 @@
 /*
-	SSH Profiles
-
 	SSH profiles represent a pair of SSH keys that are used to access a server deployed on the cloud on a secure way.
 
 	The available commands are:
@@ -69,8 +67,6 @@
 
 	Options:
 		--id <ssh_profile_id> 		SSH profile id
-
-
 */
 package ssh_profiles
 

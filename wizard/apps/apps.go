@@ -1,13 +1,11 @@
 /*
-	Wizard apps
-
 	Apps are predefined software stacks ready to be deployed on cloud providers.
 
 	The available commands are:
 		list	list all available apps
 		deploy	deploys the App with the given id as a server on the cloud
 
-	Use "wizard apps --help" on the commandline interface for more information about the available subcommands
+	Use "wizard apps --help" on the commandline interface for more information about the available subcommands.
 
 	Apps list
 

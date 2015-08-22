@@ -1,8 +1,4 @@
 /*
-
-
-	Licensee reports
-
 	Reports allow the user to have information about the historical uptime of their servers.
   	** The Licensee will have visibility for all the servers in the system.
 
@@ -10,7 +6,7 @@
 		list	list of reports for all the servers in the system (licensee only)
 		show	details about a particular report of a server (licensee only)
 
-	Use "licensee_reports --help" on the commandline interface for more information about the available subcommands
+	Use "licensee_reports --help" on the commandline interface for more information about the available subcommands.
 
 	List licensee reports
 
@@ -27,7 +23,6 @@
 	Usage:
 
 		licensee_reports show --id <report_id>
-
 */
 package licensee
 

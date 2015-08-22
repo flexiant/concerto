@@ -1,6 +1,4 @@
 /*
-	SaaS Providers
-
 	Software-as-a-Service (SaaS) providers are those entities whose services can be used within the platform.
 
 	The available commands are:
