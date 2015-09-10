@@ -67,7 +67,11 @@ func cmdList(c *cli.Context) {
 }
 
 func cmdApply(c *cli.Context) {
-	apply(get())
+	policy := get()
+	// Only apply firewall if we get a non-empty set of rules
+	if len(policy.Rules) > 0 {
+		apply(policy)
+	}
 }
 
 func cmdFlush(c *cli.Context) {
