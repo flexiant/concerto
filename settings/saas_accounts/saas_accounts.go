@@ -71,6 +71,14 @@ type Account struct {
 	SaasProvId string `json:"saas_provider_id"`
 }
 
+type SaasRequiredCredentials struct {
+	Id            string `json:"access_key_id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	LicenseKey    string `json:"license_key,omitempty"`
+	DataAccessKey string `json:"data_access_key,omitempty"`
+	APIKey        string `json:"api_key,omitempty"`
+}
+
 func cmdList(c *cli.Context) {
 	var accounts []Account
 
@@ -98,10 +106,15 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	credentialsString := []byte(c.String("account_data"))
+
+	var jsonCredentials SaasRequiredCredentials
+	err = json.Unmarshal(credentialsString, &jsonCredentials)
+
+	v := make(map[string]interface{})
 
 	v["saas_provider_id"] = c.String("saas_provider_id")
-	v["account_data"] = c.String("account_data")
+	v["account_data"] = jsonCredentials
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
@@ -118,10 +131,15 @@ func cmdUpdate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	credentialsString := []byte(c.String("account_data"))
+
+	var jsonCredentials SaasRequiredCredentials
+	err = json.Unmarshal(credentialsString, &jsonCredentials)
+
+	v := make(map[string]interface{})
 
 	if c.IsSet("account_data") {
-		v["account_data"] = c.String("account_data")
+		v["account_data"] = jsonCredentials
 	}
 
 	jsonBytes, err := json.Marshal(v)

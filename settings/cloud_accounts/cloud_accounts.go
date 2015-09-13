@@ -114,7 +114,7 @@ func cmdCreate(c *cli.Context) {
 	utils.CheckError(err)
 
 	credentialsString := []byte(c.String("credentials"))
-	print(credentialsString)
+
 	var jsonCredentials RequiredCredentials
 	err = json.Unmarshal(credentialsString, &jsonCredentials)
 
