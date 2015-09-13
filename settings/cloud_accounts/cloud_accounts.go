@@ -76,8 +76,8 @@ type RequiredCredentials struct {
 	SecretAccessKey   string `json:"secret_access_key,omitempty"`
 	Username          string `json:"username,omitempty"`
 	APIKey            string `json:"api_key,omitempty"`
-	Password          string `json:"password"`
-	User              string `json:"user"`
+	Password          string `json:"password,omitempty"`
+	User              string `json:"user,omitempty§"`
 	ClientId          string `json:"client_id,omitempty"`
 	GoogleProj        string `json:"google_project,omitempty"`
 	GoogleClientEmail string `json:"google_client_email,omitempty"`
@@ -113,9 +113,14 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	credentialsString := []byte(c.String("credentials"))
+	print(credentialsString)
+	var jsonCredentials RequiredCredentials
+	err = json.Unmarshal(credentialsString, &jsonCredentials)
+
+	v := make(map[string]interface{})
 	v["cloud_provider_id"] = c.String("cloud_provider_id")
-	v["credentials"] = c.String("credentials")
+	v["credentials"] = jsonCredentials
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
@@ -132,10 +137,13 @@ func cmdUpdate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	v := make(map[string]interface{})
 
 	if c.IsSet("credentials") {
-		v["credentials"] = c.String("credentials")
+		credentialsString := []byte(c.String("credentials"))
+		var jsonCredentials RequiredCredentials
+		err = json.Unmarshal(credentialsString, &jsonCredentials)
+		v["credentials"] = jsonCredentials
 	}
 
 	jsonBytes, err := json.Marshal(v)
