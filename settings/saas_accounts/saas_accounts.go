@@ -71,13 +71,7 @@ type Account struct {
 	SaasProvId string `json:"saas_provider_id"`
 }
 
-type SaasRequiredCredentials struct {
-	Id            string `json:"access_key_id,omitempty"`
-	Name          string `json:"name,omitempty"`
-	LicenseKey    string `json:"license_key,omitempty"`
-	DataAccessKey string `json:"data_access_key,omitempty"`
-	APIKey        string `json:"api_key,omitempty"`
-}
+type SaasRequiredCredentials interface{}
 
 func cmdList(c *cli.Context) {
 	var accounts []Account

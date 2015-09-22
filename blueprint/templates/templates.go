@@ -201,6 +201,8 @@ type TemplateServer struct {
 	Ssh_profile_id string `json:"ssh_profile_id"`
 }
 
+type TemplateScriptCredentials interface{}
+
 func cmdList(c *cli.Context) {
 	var templates []Template
 
@@ -371,11 +373,13 @@ func cmdCreateTemplateScript(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	v := make(map[string]interface{})
+	var params TemplateScriptCredentials
 
+	err = json.Unmarshal([]byte(c.String("credentials")), &params)
 	v["script_id"] = c.String("script_id")
 	v["type"] = c.String("type")
-	v["parameter_values"] = c.String("parameter_values")
+	v["parameter_values"] = params
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
@@ -397,19 +401,21 @@ func cmdCreateTemplateScript(c *cli.Context) {
 }
 
 func cmdUpdateTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"script_id", "template_id"})
+	utils.FlagsRequired(c, []string{"id", "template_id"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	v := make(map[string]interface{})
 
 	if c.IsSet("parameter_values") {
-		v["parameter_values"] = c.String("parameter_values")
+		var params TemplateScriptCredentials
+		err = json.Unmarshal([]byte(c.String("credentials")), &params)
+		v["parameter_values"] = params
 	}
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("script_id")), jsonBytes)
+	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
 	utils.CheckError(err)
 	fmt.Println(res)
 
@@ -623,7 +629,7 @@ func SubCommands() []cli.Command {
 					Usage: "Template Id",
 				},
 				cli.StringFlag{
-					Name:  "script_id",
+					Name:  "id",
 					Usage: "Identifier for the script that is parameterised by the script characterisation",
 				},
 				cli.StringFlag{

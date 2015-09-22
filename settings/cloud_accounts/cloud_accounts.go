@@ -71,20 +71,7 @@ type Account struct {
 	CloudProvId string `json:"cloud_provider_id"`
 }
 
-type RequiredCredentials struct {
-	AccessKeyId       string `json:"access_key_id,omitempty"`
-	SecretAccessKey   string `json:"secret_access_key,omitempty"`
-	Username          string `json:"username,omitempty"`
-	APIKey            string `json:"api_key,omitempty"`
-	Password          string `json:"password,omitempty"`
-	User              string `json:"user,omitempty§"`
-	ClientId          string `json:"client_id,omitempty"`
-	GoogleProj        string `json:"google_project,omitempty"`
-	GoogleClientEmail string `json:"google_client_email,omitempty"`
-	CertGoogleKey     string `json:"cert_google_key,omitempty"`
-	SubscriptionID    string `json:"subscription_id,omitempty"`
-	CertManagement    string `json:"cert_management_certificate,omitempty"`
-}
+type RequiredCredentials interface{}
 
 func cmdList(c *cli.Context) {
 	var accounts []Account
