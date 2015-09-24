@@ -42,7 +42,7 @@ func CmbHijack(c *cli.Context) {
 
 		// Validating if fleet exist
 		for _, element := range fleets {
-			if element.Name == fleetName {
+			if (element.Name == fleetName) || (element.Id == fleetName) {
 				discovered = true
 				fleet = element
 			}
@@ -53,9 +53,21 @@ func CmbHijack(c *cli.Context) {
 		//Discover where kubectl is located
 		output, err := exec.Command("whereis", "kubectl").Output()
 		utils.CheckError(err)
+
 		kubeLocation := strings.TrimSpace(string(output))
 
+
+		if !(len(kubeLocation) > 0) {
+			log.Debug("Not found kubectl with whereis going to try which")
+			//Discover where kubectl is located
+			output, err = exec.Command("which", "kubectl").Output()
+			utils.CheckError(err)
+
+			kubeLocation = strings.TrimSpace(string(output))
+		}
+
 		if len(kubeLocation) > 0 {
+			log.Debug(fmt.Sprintf("Found kubectl at %s", kubeLocation))
 			config, err := config.ConcertoServerConfiguration()
 			utils.CheckError(err)
 
@@ -64,7 +76,7 @@ func CmbHijack(c *cli.Context) {
 			clientKey := fmt.Sprintf("--client-key=%s", config.Certificate.Key)
 			clientCA := fmt.Sprintf("--certificate-authority=%s", config.Certificate.Ca)
 
-			arguments := append([]string{fleetParameters, clientCertificate, clientKey, clientCA, c.Args().First()}, c.Args().Tail()...)
+			arguments := append([]string{fleetParameters, "--api-version=v1", clientCertificate, clientKey, clientCA, c.Args().First()}, c.Args().Tail()...)
 
 			log.Debug(fmt.Sprintf("Going to execute %s %s", kubeLocation, arguments))
 
@@ -82,7 +94,7 @@ func CmbHijack(c *cli.Context) {
 			defer cmd.Wait()
 
 			go io.Copy(os.Stderr, stderr)
-
+			
 			ls := bufio.NewReader(stdout)
 
 			for {
