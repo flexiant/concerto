@@ -80,12 +80,16 @@ func RunFile(command string) (output string, exitCode int, startedAt time.Time, 
 	stderr, err := cmd.StderrPipe()
 	CheckError(err)
 
+	multi := io.MultiReader(stdout, stderr)
+
 	startedAt = time.Now()
 	err = cmd.Start()
 	CheckError(err)
 
-	go io.Copy(buffer, stderr)
-	go io.Copy(buffer, stdout)
+	io.Copy(buffer, multi)
+
+	//go io.Copy(buffer, stderr)
+	//go io.Copy(buffer, stdout)
 
 	err = cmd.Wait()
 	finishedAt = time.Now()
