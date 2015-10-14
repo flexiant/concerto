@@ -46,7 +46,7 @@ func cmdCreate(c *cli.Context) {
 	}
 	utils.CheckError(err)
 	utils.CheckReturnCode(code)
-	fmt.Println(res)
+
 }
 
 func cmdStart(c *cli.Context) {
@@ -58,7 +58,7 @@ func cmdStart(c *cli.Context) {
 	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
-	fmt.Println(res)
+
 }
 
 func cmdStop(c *cli.Context) {
@@ -70,7 +70,7 @@ func cmdStop(c *cli.Context) {
 	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
-	fmt.Println(res)
+
 }
 
 func cmdRestart(c *cli.Context) {
@@ -82,7 +82,7 @@ func cmdRestart(c *cli.Context) {
 	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")), nil)
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
-	fmt.Println(res)
+
 }
 
 func cmdDelete(c *cli.Context) {
@@ -94,7 +94,7 @@ func cmdDelete(c *cli.Context) {
 	err, _, res := webservice.Delete(fmt.Sprintf("/v1/kaas/ships/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
-	fmt.Println(res)
+
 }
 
 func cmdList(c *cli.Context) {
