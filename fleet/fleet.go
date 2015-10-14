@@ -43,7 +43,6 @@ func cmdCreate(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code)
 
-	fmt.Println(res)
 }
 
 func cmdDelete(c *cli.Context) {
@@ -56,7 +55,6 @@ func cmdDelete(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
-	fmt.Println(res)
 }
 
 func cmdStart(c *cli.Context) {
@@ -69,7 +67,6 @@ func cmdStart(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
-	fmt.Println(res)
 }
 
 func cmdStop(c *cli.Context) {
@@ -82,7 +79,6 @@ func cmdStop(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
-	fmt.Println(res)
 }
 
 func cmdEmpty(c *cli.Context) {
@@ -95,7 +91,6 @@ func cmdEmpty(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
-	fmt.Println(res)
 }
 
 func cmdAttachNet(c *cli.Context) {
@@ -108,7 +103,6 @@ func cmdAttachNet(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res)
 
-	fmt.Println(res)
 }
 
 func cmdList(c *cli.Context) {

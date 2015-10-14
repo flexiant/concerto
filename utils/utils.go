@@ -17,6 +17,8 @@ func CheckError(err error) {
 func CheckReturnCode(res int) {
 	if res >= 300 {
 		log.Fatal(fmt.Sprintf("There was an issue with your http request; error code: %d", res))
+	} else {
+		log.Info(fmt.Sprintf("The command executed successfully; http response code: %d", res))
 	}
 }
 
