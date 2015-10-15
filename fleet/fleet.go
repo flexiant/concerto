@@ -39,7 +39,7 @@ func cmdCreate(c *cli.Context) {
 	json, err := json.Marshal(v)
 	utils.CheckError(err)
 
-	err, res, code := webservice.Post("/v1/kaas/fleets", json)
+	err, _, code := webservice.Post("/v1/kaas/fleets", json)
 	utils.CheckError(err)
 	utils.CheckReturnCode(code)
 
