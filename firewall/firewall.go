@@ -135,7 +135,7 @@ func cmdAdd(c *cli.Context) {
 			log.Fatal(err)
 		}
 		utils.CheckError(err)
-		utils.CheckReturnCode(code)
+		utils.CheckReturnCode(code, res)
 	}
 
 }
@@ -180,7 +180,7 @@ func cmdRemove(c *cli.Context) {
 			log.Fatal(err)
 		}
 		utils.CheckError(err)
-		utils.CheckReturnCode(code)
+		utils.CheckReturnCode(code, res)
 	}
 
 }

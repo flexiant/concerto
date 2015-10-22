@@ -378,7 +378,7 @@ func cmdDecommission(c *cli.Context) {
 
 	err, res, code := webservice.Delete(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
 	utils.CheckError(err)
-	utils.CheckReturnCode(code)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
