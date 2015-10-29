@@ -3,6 +3,11 @@ package main
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"io/ioutil"
+	"os"
+	"path"
+	"path/filepath"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/admin"
@@ -18,7 +23,6 @@ import (
 	"github.com/flexiant/concerto/cloud/ssh_profiles"
 	"github.com/flexiant/concerto/cloud/workspaces"
 	"github.com/flexiant/concerto/cluster"
-	"github.com/flexiant/concerto/container"
 	"github.com/flexiant/concerto/converge"
 	"github.com/flexiant/concerto/dispatcher"
 	"github.com/flexiant/concerto/dns"
@@ -27,19 +31,15 @@ import (
 	"github.com/flexiant/concerto/licensee"
 	"github.com/flexiant/concerto/network/firewall_profiles"
 	"github.com/flexiant/concerto/network/load_balancers"
+	"github.com/flexiant/concerto/node"
 	"github.com/flexiant/concerto/settings/cloud_accounts"
 	"github.com/flexiant/concerto/settings/reports"
 	"github.com/flexiant/concerto/settings/saas_accounts"
-	"github.com/flexiant/concerto/ship"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/wizard/apps"
 	"github.com/flexiant/concerto/wizard/cloud_providers"
 	"github.com/flexiant/concerto/wizard/locations"
 	"github.com/flexiant/concerto/wizard/server_plans"
-	"io/ioutil"
-	"os"
-	"path"
-	"path/filepath"
 )
 
 const VERSION = "0.1.0"
@@ -221,11 +221,11 @@ var WizardCommands = []cli.Command{
 
 var ClientCommands = []cli.Command{
 	{
-		Name:      "ship",
-		ShortName: "sh",
-		Usage:     "Manages Ships",
+		Name:      "nodes",
+		ShortName: "no",
+		Usage:     "Manages Docker Nodes",
 		Subcommands: append(
-			ship.SubCommands(),
+			node.SubCommands(),
 		),
 	},
 	{
@@ -237,25 +237,13 @@ var ClientCommands = []cli.Command{
 		),
 	},
 	{
-		Name:      "container",
-		ShortName: "co",
-		Usage:     "Manages Containers in a Ship",
-		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "ship",
-				Usage: "Ship Name",
-			},
-		},
-		Action: container.CmbHijack,
-	},
-	{
 		Name:      "cluster",
 		ShortName: "clu",
-		Usage:     "Manages Cluster in a Fleet",
+		Usage:     "Manages Kubernetes Cluster",
 		Flags: []cli.Flag{
 			cli.StringFlag{
-				Name:  "fleet",
-				Usage: "Fleet Name",
+				Name:  "cluster",
+				Usage: "Cluster Name",
 			},
 		},
 		Action: cluster.CmbHijack,

@@ -1,126 +1,127 @@
 package container
 
-import (
-	"bufio"
-	"encoding/json"
-	"errors"
-	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/config"
-	"github.com/flexiant/concerto/ship"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
-	"io"
-	"os"
-	"os/exec"
-	"strings"
-	"time"
-)
+// import (
+// 	"bufio"
+// 	"encoding/json"
+// 	"errors"
+// 	"fmt"
+// 	"io"
+// 	"os"
+// 	"os/exec"
+// 	"strings"
+// 	"time"
 
-func CmbHijack(c *cli.Context) {
+// 	log "github.com/Sirupsen/logrus"
+// 	"github.com/codegangsta/cli"
+// 	"github.com/flexiant/concerto/config"
+// 	"github.com/flexiant/concerto/node"
+// 	"github.com/flexiant/concerto/utils"
+// 	"github.com/flexiant/concerto/webservice"
+// )
 
-	var ships []ship.Ship
-	var ship ship.Ship
+// func CmbHijack(c *cli.Context) {
 
-	discovered := false
+// 	var ships []node.Node
+// 	var ship node.Node
 
-	utils.FlagsRequired(c, []string{"ship"})
+// 	discovered := false
 
-	shipName := c.String("ship")
+// 	utils.FlagsRequired(c, []string{"ship"})
 
-	if len(c.Args()) == 0 {
-		discovered = true
-	} else {
-		webservice, err := webservice.NewWebService()
-		utils.CheckError(err)
+// 	shipName := c.String("ship")
 
-		data, err := webservice.Get("/v1/kaas/ships")
-		utils.CheckError(err)
+// 	if len(c.Args()) == 0 {
+// 		discovered = true
+// 	} else {
+// 		webservice, err := webservice.NewWebService()
+// 		utils.CheckError(err)
 
-		err = json.Unmarshal(data, &ships)
-		utils.CheckError(err)
+// 		data, err := webservice.Get("/v1/kaas/ships")
+// 		utils.CheckError(err)
 
-		// Validating if fleet exist
-		for _, element := range ships {
-			if element.Name == shipName {
-				discovered = true
-				ship = element
-			}
-		}
-	}
+// 		err = json.Unmarshal(data, &ships)
+// 		utils.CheckError(err)
 
-	if discovered == true {
+// 		// Validating if fleet exist
+// 		for _, element := range ships {
+// 			if element.Name == shipName {
+// 				discovered = true
+// 				ship = element
+// 			}
+// 		}
+// 	}
 
-		var dockerLocation string
+// 	if discovered == true {
 
-		if utils.Exists("/usr/local/bin/docker") {
-			dockerLocation = "/usr/local/bin/docker"
-		} else {
-			//Discover where kubectl is located
-			output, err := exec.Command("whereis", "docker").Output()
-			utils.CheckError(err)
-			dockerLocation = strings.TrimSpace(string(output))
-		}
+// 		var dockerLocation string
 
-		if len(dockerLocation) > 0 {
-			config, err := config.ConcertoServerConfiguration()
-			utils.CheckError(err)
+// 		if utils.Exists("/usr/local/bin/docker") {
+// 			dockerLocation = "/usr/local/bin/docker"
+// 		} else {
+// 			//Discover where kubectl is located
+// 			output, err := exec.Command("whereis", "docker").Output()
+// 			utils.CheckError(err)
+// 			dockerLocation = strings.TrimSpace(string(output))
+// 		}
 
-			shipParameters := fmt.Sprintf("--host=tcp://%s:2376", ship.Fqdn)
-			tls := "--tls=true"
-			clientCertificate := fmt.Sprintf("--tlscert=%s", config.Certificate.Cert)
-			clientKey := fmt.Sprintf("--tlskey=%s", config.Certificate.Key)
-			clientCA := fmt.Sprintf("--tlscacert=%s", config.Certificate.Ca)
+// 		if len(dockerLocation) > 0 {
+// 			config, err := config.ConcertoServerConfiguration()
+// 			utils.CheckError(err)
 
-			arguments := append([]string{shipParameters, tls, clientCertificate, clientKey, clientCA, c.Args().First()}, c.Args().Tail()...)
+// 			shipParameters := fmt.Sprintf("--host=tcp://%s:2376", node.Fqdn)
+// 			tls := "--tls=true"
+// 			clientCertificate := fmt.Sprintf("--tlscert=%s", config.Certificate.Cert)
+// 			clientKey := fmt.Sprintf("--tlskey=%s", config.Certificate.Key)
+// 			clientCA := fmt.Sprintf("--tlscacert=%s", config.Certificate.Ca)
 
-			log.Debug(fmt.Sprintf("Going to execute %s %s", dockerLocation, arguments))
+// 			arguments := append([]string{shipParameters, tls, clientCertificate, clientKey, clientCA, c.Args().First()}, c.Args().Tail()...)
 
-			cmd := exec.Command(dockerLocation, arguments...)
+// 			log.Debug(fmt.Sprintf("Going to execute %s %s", dockerLocation, arguments))
 
-			stdout, err := cmd.StdoutPipe()
-			utils.CheckError(err)
+// 			cmd := exec.Command(dockerLocation, arguments...)
 
-			stderr, err := cmd.StderrPipe()
-			utils.CheckError(err)
+// 			stdout, err := cmd.StdoutPipe()
+// 			utils.CheckError(err)
 
-			// Start command
-			err = cmd.Start()
-			utils.CheckError(err)
-			defer cmd.Wait()
+// 			stderr, err := cmd.StderrPipe()
+// 			utils.CheckError(err)
 
-			go io.Copy(os.Stderr, stderr)
+// 			// Start command
+// 			err = cmd.Start()
+// 			utils.CheckError(err)
+// 			defer cmd.Wait()
 
-			ls := bufio.NewReader(stdout)
+// 			go io.Copy(os.Stderr, stderr)
 
-			for {
-				line, isPrefix, err := ls.ReadLine()
-				if isPrefix {
-					log.Errorf("%s", errors.New("isPrefix: true"))
-				}
-				if err != nil {
-					if err != io.EOF {
-						log.Errorf("%s", err.Error())
-					}
-					break
-				}
-				fmt.Printf("%s\n", strings.Replace(string(line), "docker", "concerto container", -1))
-			}
+// 			ls := bufio.NewReader(stdout)
 
-			go func() {
-				time.Sleep(30 * time.Second)
-				log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", shipParameters))
-			}()
+// 			for {
+// 				line, isPrefix, err := ls.ReadLine()
+// 				if isPrefix {
+// 					log.Errorf("%s", errors.New("isPrefix: true"))
+// 				}
+// 				if err != nil {
+// 					if err != io.EOF {
+// 						log.Errorf("%s", err.Error())
+// 					}
+// 					break
+// 				}
+// 				fmt.Printf("%s\n", strings.Replace(string(line), "docker", "concerto container", -1))
+// 			}
 
-			return
-		} else {
-			log.Warn(fmt.Sprintf("We could not find docker command line in your enviroment. Please install it. Thank you."))
-			os.Exit(1)
-		}
-	} else {
-		log.Warn(fmt.Sprintf("Fleet \"%s\" is not in your account please create it. Thank you.", shipName))
-		os.Exit(1)
-	}
+// 			go func() {
+// 				time.Sleep(30 * time.Second)
+// 				log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", shipParameters))
+// 			}()
 
-}
+// 			return
+// 		} else {
+// 			log.Warn(fmt.Sprintf("We could not find docker command line in your enviroment. Please install it. Thank you."))
+// 			os.Exit(1)
+// 		}
+// 	} else {
+// 		log.Warn(fmt.Sprintf("Fleet \"%s\" is not in your account please create it. Thank you.", shipName))
+// 		os.Exit(1)
+// 	}
+
+// }
