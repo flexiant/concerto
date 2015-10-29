@@ -146,24 +146,20 @@ func cmdDockerHijack(c *cli.Context) {
 
 	nodeName := c.String("node")
 
-	if len(c.Args()) == 0 {
-		discovered = true
-	} else {
-		webservice, err := webservice.NewWebService()
-		utils.CheckError(err)
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
 
-		data, err := webservice.Get("/v1/kaas/ships")
-		utils.CheckError(err)
+	data, err := webservice.Get("/v1/kaas/ships")
+	utils.CheckError(err)
 
-		err = json.Unmarshal(data, &nodes)
-		utils.CheckError(err)
+	err = json.Unmarshal(data, &nodes)
+	utils.CheckError(err)
 
-		// Validating if fleet exist
-		for _, element := range nodes {
-			if element.Name == nodeName {
-				discovered = true
-				node = element
-			}
+	// Validating if node exist
+	for _, element := range nodes {
+		if (element.Name == nodeName) || (element.Id == nodeName) {
+			discovered = true
+			node = element
 		}
 	}
 
@@ -184,13 +180,13 @@ func cmdDockerHijack(c *cli.Context) {
 			config, err := config.ConcertoServerConfiguration()
 			utils.CheckError(err)
 
-			shipParameters := fmt.Sprintf("--host=tcp://%s:2376", node.Fqdn)
+			nodeParameters := fmt.Sprintf("--host=tcp://%s:2376", node.Fqdn)
 			tls := "--tls=true"
 			clientCertificate := fmt.Sprintf("--tlscert=%s", config.Certificate.Cert)
 			clientKey := fmt.Sprintf("--tlskey=%s", config.Certificate.Key)
 			clientCA := fmt.Sprintf("--tlscacert=%s", config.Certificate.Ca)
 
-			arguments := append([]string{shipParameters, tls, clientCertificate, clientKey, clientCA, firstArgument}, c.Args().Tail()...)
+			arguments := append([]string{nodeParameters, tls, clientCertificate, clientKey, clientCA, firstArgument}, c.Args().Tail()...)
 
 			log.Debug(fmt.Sprintf("Going to execute %s %s", dockerLocation, arguments))
 
@@ -227,7 +223,7 @@ func cmdDockerHijack(c *cli.Context) {
 
 			go func() {
 				time.Sleep(30 * time.Second)
-				log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", shipParameters))
+				log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", nodeParameters))
 			}()
 
 			return

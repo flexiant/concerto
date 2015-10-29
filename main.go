@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
+"github.com/flexiant/concerto/cluster"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/admin"
 	"github.com/flexiant/concerto/audit"
@@ -22,12 +23,10 @@ import (
 	"github.com/flexiant/concerto/cloud/servers"
 	"github.com/flexiant/concerto/cloud/ssh_profiles"
 	"github.com/flexiant/concerto/cloud/workspaces"
-	"github.com/flexiant/concerto/cluster"
 	"github.com/flexiant/concerto/converge"
 	"github.com/flexiant/concerto/dispatcher"
 	"github.com/flexiant/concerto/dns"
 	"github.com/flexiant/concerto/firewall"
-	"github.com/flexiant/concerto/fleet"
 	"github.com/flexiant/concerto/licensee"
 	"github.com/flexiant/concerto/network/firewall_profiles"
 	"github.com/flexiant/concerto/network/load_balancers"
@@ -229,25 +228,25 @@ var ClientCommands = []cli.Command{
 		),
 	},
 	{
-		Name:      "fleet",
-		ShortName: "fl",
-		Usage:     "Manages a Fleet",
-		Subcommands: append(
-			fleet.SubCommands(),
-		),
-	},
-	{
 		Name:      "cluster",
 		ShortName: "clu",
-		Usage:     "Manages Kubernetes Cluster",
-		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "cluster",
-				Usage: "Cluster Name",
-			},
-		},
-		Action: cluster.CmbHijack,
+		Usage:     "Manages a Kubernetes Cluster",
+		Subcommands: append(
+			cluster.SubCommands(),
+		),
 	},
+	// {
+	// 	Name:      "cluster",
+	// 	ShortName: "clu",
+	// 	Usage:     "Manages Kubernetes Cluster",
+	// 	Flags: []cli.Flag{
+	// 		cli.StringFlag{
+	// 			Name:  "cluster",
+	// 			Usage: "Cluster Name",
+	// 		},
+	// 	},
+	// 	Action: cluster.CmbHijack,
+	// },
 	{
 		Name:      "reports",
 		ShortName: "rep",
