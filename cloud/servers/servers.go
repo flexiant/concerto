@@ -3,13 +3,13 @@
 
 	The available commands are:
 		show
-		comission_server
+		create
 		update
 		boot
 		reboot
 		shutdown
 		override
-		decomission_server
+		delete
 		list_dns_records
 		list_events
 		list_operational_Scripts
@@ -35,7 +35,7 @@
 
 	Usage:
 
-		servers commission_server (options)
+		servers create (options)
 
 	Options:
 		--name <name> 			Logical name of the server
@@ -106,7 +106,7 @@
 
 	Usage:
 
-		servers decommission_server (options)
+		servers delete (options)
 
 	Options:
 		--id <server_id> 		Server Id
@@ -161,13 +161,14 @@ package servers
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"text/tabwriter"
+	"time"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
-	"time"
 )
 
 type Server struct {
@@ -492,7 +493,7 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "commission_server",
+			Name:   "create",
 			Usage:  "Creates a new server.",
 			Action: cmdCommission,
 			Flags: []cli.Flag{
@@ -582,7 +583,7 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "decommission_server",
+			Name:   "delete",
 			Usage:  "This action decommissions the server with the given id. The server must be in a inactive, stalled or commission_stalled state.",
 			Action: cmdDecommission,
 			Flags: []cli.Flag{
