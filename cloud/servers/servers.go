@@ -29,7 +29,7 @@
 		--id <server_id> 		Server Id
 
 
-	Servers commission
+	Servers create
 
 	This action creates a new server and commissions it at the cloud provider.
 
@@ -100,7 +100,7 @@
 	Options:
 		--id <server_id> 		Server Id
 
-	Server decommission
+	Server delete
 
 	This action decommissions the server with the given id. The server must be in a inactive, stalled or commission_stalled state.
 
