@@ -1,5 +1,5 @@
 # Concerto CLI / Go Library
-[![Build Status](https://drone.io/github.com/flexiant/concerto/status.png)](https://drone.io/github.com/flexiant/concerto/latest) [![GoDoc](https://godoc.org/github.com/flexiant/concerto?status.png)](https://godoc.org/github.com/flexiant/concerto)
+[![Build Status](https://drone.io/github.com/flexiant/concerto/status.png)][clilatest] [![GoDoc](https://godoc.org/github.com/flexiant/concerto?status.png)](https://godoc.org/github.com/flexiant/concerto)
 
 Flexiant Concerto Command Line Interface allows you to interact with Concerto features, and build your own scripts calling Concerto's API.
 
@@ -117,4 +117,4 @@ To contribute
 
 Please, use gofmt, golint, go vet, and folow [go style](https://github.com/golang/go/wiki/CodeReviewComments) advices
 
-[clilatest]: (https://drone.io/github.com/flexiant/concerto/latest)
+[clilatest]: https://drone.io/github.com/flexiant/concerto/latest
