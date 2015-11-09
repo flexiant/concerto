@@ -115,6 +115,6 @@ To contribute
  - Submit the PR to Concerto CLI
  - Let the maintainers give you the LGTM.
 
-Please, use gofmt, golint, go vet, and folow [go style](https://github.com/golang/go/wiki/CodeReviewComments) advices
+Please, use gofmt, golint, go vet, and follow [go style](https://github.com/golang/go/wiki/CodeReviewComments) advices
 
 [clilatest]: https://drone.io/github.com/flexiant/concerto/latest
