@@ -1,7 +1,9 @@
 # Concerto CLI / Go Library
 [![Build Status](https://drone.io/github.com/flexiant/concerto/status.png)](https://drone.io/github.com/flexiant/concerto/latest) [![GoDoc](https://godoc.org/github.com/flexiant/concerto?status.png)](https://godoc.org/github.com/flexiant/concerto)
 
-Master branch is used for development. Please, use stable tagged versions to use Flexiant Concerto CLI.
+Master branch is used for development. 
+
+Please, use stable tagged versions to use Flexiant Concerto CLI.
 
 You can download the latest stable version from [here](https://drone.io/github.com/flexiant/concerto/latest)
 
