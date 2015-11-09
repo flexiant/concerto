@@ -8,11 +8,11 @@ You can download the latest stable version from [here](https://drone.io/github.c
 # Setup
 See [Concerto CLI setup guide][setup]
 
-[setup]: .docs/setup.md
+[setup]: ./docs/setup.md
 # Usage
 See [Concerto CLI usage guide][usage]
 
-[usage]: .docs/usage.md
+[usage]: ./docs/usage.md
 # Contribute
 
 To contribute
