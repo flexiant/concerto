@@ -319,9 +319,9 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
+	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 	fmt.Println(res)
 }
@@ -436,9 +436,9 @@ func cmdDeleteTemplateScript(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
+	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 	fmt.Println(res)
 }

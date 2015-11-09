@@ -48,9 +48,9 @@ func cmdCreate(c *cli.Context) {
 	json, err := json.Marshal(v)
 	utils.CheckError(err)
 
-	err, _, code := webservice.Post("/v1/kaas/fleets", json)
+	err, mesg, code := webservice.Post("/v1/kaas/fleets", json)
 	utils.CheckError(err)
-	utils.CheckReturnCode(code)
+	utils.CheckReturnCode(code, mesg)
 
 }
 
@@ -60,9 +60,9 @@ func cmdDelete(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
+	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 }
 
@@ -72,9 +72,9 @@ func cmdStart(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")), nil)
+	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")), nil)
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 }
 
@@ -84,9 +84,9 @@ func cmdStop(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")), nil)
+	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")), nil)
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 }
 
@@ -96,9 +96,9 @@ func cmdEmpty(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")), nil)
+	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")), nil)
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 }
 
@@ -108,9 +108,9 @@ func cmdAttachNet(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, _, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")), nil)
+	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")), nil)
 	utils.CheckError(err)
-	utils.CheckReturnCode(res)
+	utils.CheckReturnCode(res, mesg)
 
 }
 
