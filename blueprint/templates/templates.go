@@ -238,11 +238,11 @@ func cmdShow(c *cli.Context) {
 
 	err = json.Unmarshal(data, &template)
 	utils.CheckError(err)
-
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, *template.ConfigurationAttributes)
-
+	if template.Id != "" {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, *template.ConfigurationAttributes)
+	}
 	w.Flush()
 }
 
