@@ -352,7 +352,7 @@ And finally boot it
 ```
 $ concerto cloud servers boot --id 5641e7497aa4b1a67800006c
 ID                         NAME           FQDN                                 STATE          PUBLIC IP      WORKSPACE ID               TEMPLATE ID                SERVER PLAN ID             SSH PROFILE ID
-5641e7497aa4b1a67800006c   joomla-node1   joomla1.koala-partners.concerto.io   booting        0.0.0.0        55b7326c0cbbc01fc2000008   5641d1ab7aa4b1a678000039   55b0916d10c0ecc35100040e   55b7326b0cbbc01fc2000007
+5641e7497aa4b1a67800006c   joomla-node1   joomla1.flexiant-concerto.concerto.io   booting        0.0.0.0        55b7326c0cbbc01fc2000008   5641d1ab7aa4b1a678000039   55b0916d10c0ecc35100040e   55b7326b0cbbc01fc2000007
 ```
 
 # Contribute
