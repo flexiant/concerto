@@ -3,7 +3,7 @@
 
 Flexiant Concerto Command Line Interface allows you to interact with Concerto features, and build your own scripts calling Concerto's API.
 
-If you already know Concerto CLI, and only want to obtain the latest version, download Concerto CLI for:
+If you are already using Concerto CLI, and only want to obtain the latest version, download Concerto CLI for:
 - [Linux][cli_linux]
 - [OSX][cli_darwin]
 - [Windows][cli_windows]
@@ -235,7 +235,125 @@ After a brief amount of time you will have your new Worpress server up and runni
 <img src="./docs/images/wordpress.png" alt="wordpress" width="300px" >
 
 
+## Blueprint
 
+Flexiant Concerto blueprints are the compendium of
+ - services, they map to Concerto's Web UI cookbooks. Use `concerto blueprint services list` to show all cookbooks available at your account.
+ - scripts, the provide a way to execute custom scripts after bootstraping, before a clean shutdown, or on demand.
+ - templates, an ordered combination of services and scripts.
+
+
+### Blueprint Use Case
+A template must be created with an OS target, a service list, and a list of custom attributes for those services.
+
+#### Template OS
+Blueprints are associated with an Operative System, and each cloud provider has a different way of identifying the OS that a machine is running.
+
+Flexiant Concerto takes care of the gap, and lets you select a cloud provider independent OS, and find out later which image is appropriate for the chosen cloud provider and location. Hence blueprints are bound to OS, but cloud provider and location independent.
+
+
+For our case we will be using Ubuntu 14.04. Let's find it's Concerto ID
+```
+$ concerto cloud generic_images list
+ID                         NAME
+55b0914e10c0ecc351000078   Red Hat Enterprise Linux 6 x86_64
+55b0914e10c0ecc351000079   CentOS 5 x86_64
+55b0914e10c0ecc35100007a   Ubuntu 10.04 Lucid Lynx x86_64
+55b0914e10c0ecc35100007b   Ubuntu 12.04 Precise Pangolin x86_64
+55b0914e10c0ecc35100007c   Ubuntu 14.04 Trusty Tahr x86_64
+55b0914e10c0ecc35100007d   SmartOS x86_64
+55b0914e10c0ecc35100007e   Windows 2008 R2 - SP1 x86_64
+55b0915010c0ecc3510000a0   Windows 2012 R2 x86_64
+```
+Take note of Ubuntu 14.04 ID, `55b0914e10c0ecc35100007c`.
+
+#### Service List
+We want to use Concerto's curated Joomla cookbook. Use `concerto blueprint services` to find the cookbooks to add.
+```
+$ concerto blueprint services list | awk 'NR==1 || /joomla/'
+ID                         NAME                  DESCRIPTION                                                                                                                                  PUBLIC         LICENSE                  RECIPES
+563c8f4a358021214f000001   joomla                Installs/Configures joomla environment                                                                                                       false          All rights reserved      [joomla@0.10.0 joomla::appserver@0.10.0 joomla::database@0.10.0]
+```
+
+Joomla curated cookbooks creates a local mysql database. We only have to tell our cookbook that we should override the `joomla.db.hostname` to `127.0.0.1`. Execute the following command to create the Joomla template.
+```
+$ concerto blueprint templates create --name joomla-tmplt --generic_image_id 55b0914e10c0ecc35100007c --service_list '[joomla]' --configuration_attributes '{"joomla":{"db":{"hostname":"127.0.0.1"}}}'
+ID                         NAME           GENERIC IMAGE ID           SERVICE LIST   CONFIGURATION ATTRIBUTES
+5641d1ab7aa4b1a678000039   joomla-tmplt   55b0914e10c0ecc35100007c   [joomla]       {"joomla":{"db":{"hostname":"127.0.0.1"}}}
+```
+
+#### Instantiate a server
+Now that we have our server blueprint defined, let's start one. Servers in Concerto need to know the workspace that define their runtime infrastructure environment, the domain used to refer to the node, the server plan for the cloud provider, and the template used to build the instance.
+
+
+As we did in the Wizard use case, we can find the missing data using this commands
+
+Find the workspace
+```
+$ concerto cloud workspaces list
+ID                         NAME           DEFAULT        DOMAIN ID                  SSH PROFILE ID             FIREWALL PROFILE ID
+55b7326c0cbbc01fc2000008   default        true           55b732650cbbc01fc2000004   55b7326b0cbbc01fc2000007   55b7326b0cbbc01fc2000006
+55c9eb5a23f8769d61000053   meanstack      false          55b732650cbbc01fc2000004   55b7326b0cbbc01fc2000007   55c9eb5123f8768ea9000050
+55c9eb6623f876d45e000056   magento        false          55b732650cbbc01fc2000004   55b7326b0cbbc01fc2000007   55c9eb4a23f876c7f100004d
+```
+Find available domain names
+```
+$ concerto dns_domains list
+ID                         NAME                         TTL            CONTACT          MINIMUM        ENABLED
+55b732650cbbc01fc2000004   flexiant-concerto.concerto.io   10800          ns@concerto.io   10800          true
+```
+Find cloud provider server plan
+```
+$ concerto cloud cloud_providers list
+ID                         NAME              REQUIRED CREDENTIALS                                   PROVIDED SERVICES
+55b090f810c0ecc351000001   AWS               [access_key_id secret_access_key]                      [server]
+55b090f810c0ecc351000002   Rackspace US      [username api_key]                                     [server]
+55b090f810c0ecc351000003   Rackspace UK      [username api_key]                                     [server]
+55b090f810c0ecc351000004   Mock              [nothing]                                              [load_balancer server]
+55b090f810c0ecc351000005   CloudSigma ZRH    [username password]                                    [server]
+55b090f810c0ecc351000006   Acens             [user password]                                        [server]
+55b090f810c0ecc351000007   Instant Servers   [username password]                                    [server]
+55b090f810c0ecc351000008   Joyent            [username password]                                    [server]
+55b090f810c0ecc351000009   DigitalOcean      [api_key client_id personal_token]                     [server]
+55b090f810c0ecc35100000a   Google Compute    [google_project google_client_email cert_google_key]   [server]
+55b090f810c0ecc35100000b   Microsoft Azure   [subscription_id cert_management_certificate]          [server]
+55b090f810c0ecc35100000c   Softlayer         [username api_key]                                     [server]
+
+$ concerto cloud server_plans list --cloud_provider_id 55b090f810c0ecc351000009 | awk 'NR==1 || /London/'
+ID                         NAME                                   MEMORY         CPUS           STORAGE        LOCATION ID                CLOUD PROVIDER ID
+55b0916c10c0ecc351000404   DigitalOcean 512MB - London 1          512            1              20             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc35100040e   DigitalOcean 1GB - London 1            1024           1              30             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc351000418   DigitalOcean 2GB - London 1            2048           2              40             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc351000422   DigitalOcean 4GB - London 1            4096           2              60             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc35100042c   DigitalOcean 8GB - London 1            8192           4              80             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc351000436   DigitalOcean 16GB - London 1           16384          8              160            55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc351000440   DigitalOcean 32GB - London 1           32768          12             320            55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc35100044a   DigitalOcean 48GB - London 1           49152          16             480            55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+55b0916d10c0ecc351000454   DigitalOcean 64GB - London 1           65536          20             640            55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+```
+
+We already know our template ID, but in case you want to make sure
+```
+$ concerto blueprint templates list
+ID                         NAME           GENERIC IMAGE ID
+5641c77f7260a5bdb1000150   mean           55b0914e10c0ecc35100007c
+5641c7df7260a5f078000159   magento        55b0914e10c0ecc351000079
+5641d1ab7aa4b1a678000039   joomla-tmplt   55b0914e10c0ecc35100007c
+```
+
+Create our Joomla Server
+```
+concerto cloud servers create --name joomla-node1 --fqdn joomla1.flexiant-concerto.concerto.io  --workspace_id 55b7326c0cbbc01fc2000008 --template_id 5641d1ab7aa4b1a678000039 --server_plan_id 55b0916d10c0ecc35100040e
+ID                         NAME           FQDN                                 STATE           PUBLIC IP      WORKSPACE ID               TEMPLATE ID                SERVER PLAN ID             SSH PROFILE ID
+5641e7497aa4b1a67800006c   joomla-node1   joomla1.flexiant-concerto.concerto.io   commissioning   0.0.0.0        55b7326c0cbbc01fc2000008   5641d1ab7aa4b1a678000039   55b0916d10c0ecc35100040e   55b7326b0cbbc01fc2000007
+```
+
+And finally boot it
+```
+$ concerto cloud servers boot --id 5641e7497aa4b1a67800006c
+ID                         NAME           FQDN                                 STATE          PUBLIC IP      WORKSPACE ID               TEMPLATE ID                SERVER PLAN ID             SSH PROFILE ID
+5641e7497aa4b1a67800006c   joomla-node1   joomla1.koala-partners.concerto.io   booting        0.0.0.0        55b7326c0cbbc01fc2000008   5641d1ab7aa4b1a678000039   55b0916d10c0ecc35100040e   55b7326b0cbbc01fc2000007
+```
 
 # Contribute
 
