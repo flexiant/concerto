@@ -426,9 +426,16 @@ ID                         NAME                                   MEMORY        
 55b0916d10c0ecc35100040e   DigitalOcean 1GB - London 1            1024           1              30             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
 ```
 
-
-
-
+To create a kubernetes master for this cluster, we execute this command
+```
+$ concerto nodes create --cluster k8sconcerto --plan 55b0916d10c0ecc35100040e
+```
+The kubernetes master will be commissioned and start booting. Give it some time for the cloud provider to acquire the IP, and issue this command
+```
+$ concerto nodes list
+CLUSTER           MASTER         ID                         NAME                        FQDN                                             IP               STATE
+k8sconcerto       *              56420d894579c0932e00000c   k8sconcerto-master-01       k8sconcerto-master-01.flexiant.concerto.io       178.62.111.185   bootstrapping - 10%
+```
 
 
 # Contribute
