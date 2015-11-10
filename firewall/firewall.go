@@ -4,12 +4,13 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"os"
+	"text/tabwriter"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
 )
 
 const endpoint = "cloud/firewall_profile"
@@ -19,8 +20,9 @@ type FirewallProfile struct {
 }
 
 type Policy struct {
-	Rules []Rule `json:"rules"`
-	Md5   string `json:"md5"`
+	Rules       []Rule `json:"rules"`
+	Md5         string `json:"md5"`
+	ActualRules []Rule `json:"actual_rules"`
 }
 
 type Rule struct {
@@ -34,7 +36,7 @@ func list(policy Policy) error {
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "CIDR\tPROTOCOL\tMIN\tMAX")
 
-	for _, rule := range policy.Rules {
+	for _, rule := range policy.ActualRules {
 		fmt.Fprintf(w, "%s\t%s\t%d\t%d\n", rule.Cidr, rule.Protocol, rule.MinPort, rule.MaxPort)
 	}
 	w.Flush()
