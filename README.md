@@ -355,6 +355,82 @@ ID                         NAME           FQDN                                 S
 5641e7497aa4b1a67800006c   joomla-node1   joomla1.koala-partners.concerto.io   booting        0.0.0.0        55b7326c0cbbc01fc2000008   5641d1ab7aa4b1a678000039   55b0916d10c0ecc35100040e   55b7326b0cbbc01fc2000007
 ```
 
+## Kubernetes Cluster
+
+Concerto CLI's cluster command lets you create and manage a Kubernetes cluster in any cloud and location you've configured within Concerto.
+
+
+To get an idea of what concerto cluster does using the command without additional subcommands:
+```
+$ concerto cluster
+NAME:
+concerto cluster - Manages a Kubernetes Cluster
+USAGE:
+concerto cluster command [command options] [arguments...]
+COMMANDS:
+list 		Lists all available Clusters
+start 		Starts a given Cluster
+stop 		Stops a given Cluster
+empty 		Empties a given Cluster
+attach_net 	Attaches network to a given Cluster
+create 		Creates a Cluster
+delete 		Deletes a given Cluster
+kubectl 	Kubectl command line wrapper
+help, h 	Shows a list of commands or help for one command
+OPTIONS:
+--help, -h show help
+```
+
+We need kubectl in the path to manage the cluster.
+You can download kubectl binary from this URL replacing version and architecture to fit your workstation
+
+`https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/darwin/amd64/kubectl`
+
+Drop kubetcl in a location in your path
+```
+curl -L -O https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/darwin/amd64/kubectl
+chmod +x kubectl
+mv kubectl /usr/local/bin/
+```
+
+### Kubernetes Use Case
+
+
+Before creating the cluster, we need to select the domain under which the cluster will be instantiated. You can bring your own domains using Concerto Web UI or CLI command concerto dns_domains subcommands.
+```
+$ concerto dns_domains list
+ID                         NAME                         TTL            CONTACT          MINIMUM        ENABLED
+55b732650cbbc01fc2000004   flexiant-concerto.concerto.io   10800          ns@concerto.io   10800          true
+```
+
+Use your domain ID to create the cluster.
+```
+$ concerto cluster create --cluster k8sConcerto --domain_id 55b732650cbbc01fc2000004
+```
+
+Now retrieve the cluster ID, since we will need allong all management operations
+```
+$ concerto cluster list
+CLUSTER           ID                         STATE                   MASTER COUNT   SLAVE COUNT
+k8sconcerto       5641fcb47aa4b1a67800007e   empty
+```
+
+To instantiate a node in our cluster, we will need a server plan. We hace already seen hoy to retrieve a server plan with the Blueprint Use Case
+```
+$ concerto cloud cloud_providers list | awk 'NR==1 || /DigitalOcean/'
+ID                         NAME              REQUIRED CREDENTIALS                                   PROVIDED SERVICES
+55b090f810c0ecc351000009   DigitalOcean      [api_key client_id personal_token]                     [server]
+
+$ concerto cloud server_plans list --cloud_provider_id 55b090f810c0ecc351000009 | awk 'NR==1 || /1GB/ && /London/'
+ID                         NAME                                   MEMORY         CPUS           STORAGE        LOCATION ID                CLOUD PROVIDER ID
+55b0916d10c0ecc35100040e   DigitalOcean 1GB - London 1            1024           1              30             55b0914e10c0ecc351000075   55b090f810c0ecc351000009
+```
+
+
+
+
+
+
 # Contribute
 
 To contribute
