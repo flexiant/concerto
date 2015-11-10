@@ -438,9 +438,18 @@ k8sconcerto       *              56420d894579c0932e00000c   k8sconcerto-master-0
 ```
 Our master is booting, wait untill it becomes operational and launch a new node. Concerto will instance first node as a master, and subsequent nodes as kubernetes slaves.
 ```
-$ concerto nodes list
-CLUSTER           MASTER         ID                         NAME                        FQDN                                             IP               STATE
-k8sconcerto       *              56420d894579c0932e00000c   k8sconcerto-master-01       k8sconcerto-master-01.flexiant.concerto.io       178.62.111.185   operational
+$ $ concerto nodes create --cluster k8sconcerto --plan 55b0916d10c0ecc35100040e
+```
+Now we have a kubernetes master and a slave. If you need to manage kubernetes nodes or containers use `concerto nodes` subcommands.
+If you need to manage the kubernetes cluster, use `concerto cluster` subcommands.
+```
+$ concerto cluster kubectl --cluster k8sconcerto run single-container-pod --image=nginx
+CONTROLLER             CONTAINER(S)           IMAGE(S)   SELECTOR                   REPLICAS
+single-container-pod   single-container-pod   nginx      run=single-container-pod   1
+
+concerto cluster kubectl --cluster k8sconcerto get pods
+NAME                         READY     STATUS    RESTARTS   AGE
+single-container-pod-0uhfr   0/1       Pending   0          56s
 ```
 
 # Contribute
