@@ -169,15 +169,16 @@ import (
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
+	"strings"
 	"text/tabwriter"
 )
 
 type Template struct {
-	Id                      string          `json:"id"`
-	Name                    string          `json:"name"`
-	GenericImgId            string          `json:"generic_image_id"`
-	ServiceList             []string        `json:"service_list"`
-	ConfigurationAttributes json.RawMessage `json:"configuration_attributes"`
+	Id                      string           `json:"id"`
+	Name                    string           `json:"name"`
+	GenericImgId            string           `json:"generic_image_id"`
+	ServiceList             []string         `json:"service_list"`
+	ConfigurationAttributes *json.RawMessage `json:"configuration_attributes"`
 }
 
 type TemplateScript struct {
@@ -237,11 +238,11 @@ func cmdShow(c *cli.Context) {
 
 	err = json.Unmarshal(data, &template)
 	utils.CheckError(err)
-
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, template.ConfigurationAttributes)
-
+	if template.Id != "" {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, *template.ConfigurationAttributes)
+	}
 	w.Flush()
 }
 
@@ -250,18 +251,33 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	//v := make(map[string]string)
+	//v["name"] = c.String("name")
+	//v["generic_image_id"] = c.String("generic_image_id")
 
-	v["name"] = c.String("name")
-	v["generic_image_id"] = c.String("generic_image_id")
+	template := Template{
+		Name:         c.String("name"),
+		GenericImgId: c.String("generic_image_id"),
+	}
+
 	if c.IsSet("service_list") {
-		v["service_list"] = c.String("service_list")
-	}
-	if c.IsSet("configuration_attributes") {
-		v["configuration_attributes"] = c.String("configuration_attributes")
+		rawService := strings.TrimSpace(c.String("service_list"))
+		if len(rawService) < 2 || rawService[:1] != "[" || rawService[len(rawService)-1:] != "]" {
+			log.Fatal("service_list must be a space separated list delimited by brackets")
+		}
+		rawService = rawService[1 : len(rawService)-1]
+		services := strings.Split(rawService, " ")
+		template.ServiceList = services
 	}
 
-	jsonBytes, err := json.Marshal(v)
+	if c.IsSet("configuration_attributes") {
+		attributes := []byte(c.String("configuration_attributes"))
+		attributesAddress := (*json.RawMessage)(&attributes)
+		template.ConfigurationAttributes = attributesAddress
+		utils.CheckError(err)
+	}
+
+	jsonBytes, err := json.Marshal(template)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/blueprint/templates", jsonBytes)
 	if res == nil {
@@ -269,12 +285,12 @@ func cmdCreate(c *cli.Context) {
 	}
 	utils.CheckError(err)
 
-	var template Template
-	err = json.Unmarshal(res, &template)
+	var resTemplate Template
+	err = json.Unmarshal(res, &resTemplate)
 	utils.CheckError(err)
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, template.ConfigurationAttributes)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", resTemplate.Id, resTemplate.Name, resTemplate.GenericImgId, resTemplate.ServiceList, *resTemplate.ConfigurationAttributes)
 
 	w.Flush()
 
@@ -307,7 +323,7 @@ func cmdUpdate(c *cli.Context) {
 	utils.CheckError(err)
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, template.ConfigurationAttributes)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, *template.ConfigurationAttributes)
 
 	w.Flush()
 
@@ -524,7 +540,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "service_list",
-					Usage: "A list of service recipes that is run on the servers at start-up",
+					Usage: "A list of space separated service recipes that is run on the servers at start-up",
 				},
 				cli.StringFlag{
 					Name:  "configuration_attributes",

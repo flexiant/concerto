@@ -32,14 +32,14 @@ type Node struct {
 }
 
 func cmdCreate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"node", "plan"})
+	utils.FlagsRequired(c, []string{"cluster", "plan"})
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
 	v := make(map[string]string)
 
-	v["fleet_name"] = c.String("node")
+	v["fleet_name"] = c.String("cluster")
 	v["plan"] = c.String("plan")
 
 	json, err := json.Marshal(v)
