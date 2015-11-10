@@ -436,7 +436,12 @@ $ concerto nodes list
 CLUSTER           MASTER         ID                         NAME                        FQDN                                             IP               STATE
 k8sconcerto       *              56420d894579c0932e00000c   k8sconcerto-master-01       k8sconcerto-master-01.flexiant.concerto.io       178.62.111.185   bootstrapping - 10%
 ```
-
+Our master is booting, wait untill it becomes operational and launch a new node. Concerto will instance first node as a master, and subsequent nodes as kubernetes slaves.
+```
+$ concerto nodes list
+CLUSTER           MASTER         ID                         NAME                        FQDN                                             IP               STATE
+k8sconcerto       *              56420d894579c0932e00000c   k8sconcerto-master-01       k8sconcerto-master-01.flexiant.concerto.io       178.62.111.185   operational
+```
 
 # Contribute
 
