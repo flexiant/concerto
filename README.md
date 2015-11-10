@@ -105,7 +105,7 @@ ID                         NAME                  DEFAULT        DOMAIN ID       
 If you got an error executing concerto CLI:
  - execute `which concerto` or `whereis concerto` to make sure that the binary is installed
  - execute ls -l /path/to/concerto with the output from the previous command, and check that you have execute permissions
- - execute `$PATH` and search for the path where concerto is installed. If concerto isn't in the path, move it to a $PATH location.
+ - execute `$PATH` and search for the path where concerto is installed. If concerto isn't in the path, move it to a `$PATH` location.
  - check that your internet connection can reach clients.concerto.io
  - make sure that your firewall lets you access to https://clients.concerto.io:886
  - check that  client.xml is pointing to the correct certificates location
@@ -113,7 +113,7 @@ If you got an error executing concerto CLI:
 
 
 # Usage
-We are including most common use cases here. If you can't wait for them, please, contact us at <contact@flexiant.com>.
+We are including most common use cases here. If you miss a use case here open an issue or contact us at <contact@flexiant.com>.
 
 ## Wizard
 Wizard command for Concerto CLI is the command line version of our `Quick add server` in Concerto Web UI.
@@ -210,7 +210,7 @@ $ concerto wizard apps deploy \
 ```
 
 We have a new server template and a workspace with a commissioned server in Concerto.
-<img src="./docs/images/commissioned-server.png" alt="commissioned" width="300px" >
+<img src="./docs/images/commissioned-server.png" alt="commissioned" width="500px" >
 
 From the command line, get the new workspace, and then our commissioned server ID.
 ```
@@ -228,7 +228,8 @@ Our server's ID is `563a003c97d0ad20f3000d57`. We can now use concerto cloud ser
 ```
 $ concerto cloud servers boot --id 563a003c97d0ad20f3000d57
 ```
-<img src="./docs/images/server-bootstraping.png" alt="bootstraping" width="300px" >
+<img src="./docs/images/server-bootstraping.png" alt="bootstraping" width="500px" >
+
 After a brief amount of time you will have your new Worpress server up and running, ready to be configured.
 
 <img src="./docs/images/wordpress.png" alt="wordpress" width="300px" >
