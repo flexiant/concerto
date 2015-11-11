@@ -357,7 +357,7 @@ ID                         NAME           FQDN                                 S
 
 ## Kubernetes Cluster
 
-Concerto CLI's cluster command lets you create and manage a Kubernetes cluster in any cloud and location you've configured within Concerto.
+Concerto CLI's `cluster` command lets you create and manage a Kubernetes cluster in any cloud and location you've configured within Concerto.
 
 
 To get an idea of what concerto cluster does using the command without additional subcommands:
@@ -451,6 +451,82 @@ concerto cluster kubectl --cluster k8sconcerto get pods
 NAME                         READY     STATUS    RESTARTS   AGE
 single-container-pod-0uhfr   0/1       Pending   0          56s
 ```
+
+## Firewall Management
+Concerto CLI's `network` command lets you manage a network settings at the workspace scope.
+
+
+As we have did before, execute this command with no futher commands to get usage information:
+```
+$ concerto network
+NAME:
+   concerto network - Manages network related commands for firewall profiles and load balancers
+
+USAGE:
+   concerto network command [command options] [arguments...]
+
+COMMANDS:
+   firewall_profiles	Provides information about firewall profiles
+   load_balancers	Provides information about load balancers
+   help, h		Shows a list of commands or help for one command
+
+OPTIONS:
+   --help, -h	show help
+```
+
+As you can see, you can manage firewall and load balancers from Concerto CLI.
+
+### Firewall Update Case
+Workspaces in concerto are always associated with a firewall profile. By default ports 443 and 80 are open to fit most web environments, but if you are not using those ports but some others. We would need to close HTTP and HTTPS ports and open LDAP and LDAPS instead.
+
+The first thing we will need is our workspace's related firewall identifier.
+```
+$ concerto cloud workspaces list
+ID                         NAME                                     DEFAULT        DOMAIN ID                  SSH PROFILE ID             FIREWALL PROFILE ID
+55b0911910c0ecc35100001c   default                                  true           55b0911810c0ecc351000018   55b0911810c0ecc35100001b   55b0911810c0ecc35100001a
+56336b2c27062fe402000031   12factor                                 false          55cb394ec8aeb0279e00000b   55b0911810c0ecc35100001b   55b0911810c0ecc35100001a
+56421fef4579c0932e000038   k8sconcerto cluster workspace 3vn6hsa4   false          55cb394ec8aeb0279e00000b   55b0911810c0ecc35100001b   56421ff04579c0932e00003c
+56430aede46e2359720000e8   My New Workspace                         false          55b0911810c0ecc351000018   55b0911810c0ecc35100001b   56430bb9e46e23293f0000eb
+```
+We have our LDAP servers running under `My New Workspace`. If you are unsure about in which workspace are your servers running, list the servers in the workspace
+```
+concerto cloud workspaces list_workspace_servers --workspace_id 56430aede46e2359720000e8.
+ID                         NAME                    FQDN                                        STATE          PUBLIC IP       WORKSPACE ID               TEMPLATE ID                SERVER PLAN ID             SSH PROFILE ID
+564223c74579c0932e000079   openldap-1              openldap-1.concertointernal.concerto.io     inactive       46.101.3.45     56430aede46e2359720000e8   56421ff04579c0932e00003c   55b0916d10c0ecc35100040e   55b0911810c0ecc35100001b
+564220cfe46e23ac580000b9   openldap-2              openldap-2.concertointernal.concerto.io     operational    178.62.104.59   56430aede46e2359720000e8   56421ff04579c0932e00003c   55b0916d10c0ecc35100040e   55b0911810c0ecc35100001b
+```
+
+Now that we have the firewall profile ID, list it's contents
+```
+$ concerto network firewall_profiles show --id 56430bb9e46e23293f0000eb
+ID                         NAME                      DESCRIPTION    DEFAULT
+56430bb9e46e23293f0000eb   My New Firewall Profile                  false
+RULES:
+               PROTOCOL       MIN PORT       MAX PORT       CIDR IP
+               tcp            22             22
+               tcp            5985           5985
+               tcp            3389           3389
+               tcp            443            443
+               tcp            80             80
+```
+The first three rows are ports that Concerto may use to keep the desired state of the machine, and that will always be accessed using certificates.
+
+When updating, we tell concerto a new set of rules. Execute the folowing command to open 389 and 686 to anyone.
+```
+$ concerto network firewall_profiles update --id 56430bb9e46e23293f0000eb --rules '[{"ip_protocol":"tcp", "min_port":389, "max_port":389, "source":"0.0.0.0/0"}, {"ip_protocol":"tcp", "min_port":636, "max_port":636, "source":"0.0.0.0/0"}]'
+ID                         NAME                      DESCRIPTION    DEFAULT
+56430bb9e46e23293f0000eb   My New Firewall Profile                  false
+RULES:
+               PROTOCOL       MIN PORT       MAX PORT       CIDR IP
+               tcp            3389           3389           0.0.0.0/0
+               tcp            5985           5985           0.0.0.0/0
+               tcp            22             22             0.0.0.0/0
+               tcp            389            389            0.0.0.0/0
+               tcp            636            636            0.0.0.0/0
+```
+
+Firewall update returns the complete set of rules. As you can see, now LDAP and LDAPS ports are open.
+
 
 # Contribute
 
