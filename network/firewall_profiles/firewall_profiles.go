@@ -96,7 +96,7 @@ type FirewallProfile struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Default     string `json:"default"`
+	Default     bool   `json:"default"`
 	Rules       []Rule `json:"rules"`
 }
 
@@ -123,7 +123,7 @@ func cmdList(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
 
 	for _, firewallProfile := range firewallProfiles {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	}
 
 	w.Flush()
@@ -144,7 +144,7 @@ func cmdShow(c *cli.Context) {
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	fmt.Fprintln(w, "RULES:\r")
 	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
 	for _, r := range firewallProfile.Rules {
@@ -181,7 +181,7 @@ func cmdCreate(c *cli.Context) {
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	fmt.Fprintln(w, "RULES:\r")
 	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
 	for _, r := range firewallProfile.Rules {
@@ -222,7 +222,7 @@ func cmdUpdate(c *cli.Context) {
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	fmt.Fprintln(w, "RULES:\r")
 	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
 	for _, r := range firewallProfile.Rules {
