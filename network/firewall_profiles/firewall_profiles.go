@@ -211,9 +211,7 @@ func cmdUpdate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
 	err, res, _ := webservice.Put(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")), jsonBytes)
-
 	utils.CheckError(err)
-	fmt.Println(res)
 
 	var firewallProfile FirewallProfile
 
