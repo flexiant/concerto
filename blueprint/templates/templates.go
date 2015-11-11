@@ -251,10 +251,6 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	//v := make(map[string]string)
-	//v["name"] = c.String("name")
-	//v["generic_image_id"] = c.String("generic_image_id")
-
 	template := Template{
 		Name:         c.String("name"),
 		GenericImgId: c.String("generic_image_id"),
