@@ -94,17 +94,17 @@ import (
 
 type FirewallProfile struct {
 	Id          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Default     bool   `json:"default"`
-	Rules       []Rule `json:"rules"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	Default     bool   `json:"default,omitempty"`
+	Rules       []Rule `json:"rules,omitempty"`
 }
 
 type Rule struct {
 	Protocol string `json:"ip_protocol"`
 	MinPort  int    `json:"min_port"`
 	MaxPort  int    `json:"max_port"`
-	CidrIp   string `json:"cidr_ip"`
+	CidrIp   string `json:"source"`
 }
 
 func cmdList(c *cli.Context) {
@@ -146,7 +146,7 @@ func cmdShow(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
 	fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	fmt.Fprintln(w, "RULES:\r")
-	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
+	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tSOURCE\r")
 	for _, r := range firewallProfile.Rules {
 		fmt.Fprintf(w, "\t%s\t%d\t%d\t%s\n", r.Protocol, r.MinPort, r.MaxPort, r.CidrIp)
 	}
@@ -158,15 +158,19 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
-
-	v["name"] = c.String("name")
-	v["description"] = c.String("description")
-	if c.IsSet("rules") {
-		v["rules"] = c.String("rules")
+	fp := FirewallProfile{
+		Name:        c.String("name"),
+		Description: c.String("description"),
 	}
 
-	jsonBytes, err := json.Marshal(v)
+	if c.IsSet("rules") {
+		var rules []Rule
+		err = json.Unmarshal([]byte(c.String("rules")), &rules)
+		utils.CheckError(err)
+		fp.Rules = rules
+	}
+
+	jsonBytes, err := json.Marshal(fp)
 	utils.CheckError(err)
 	err, res, _ := webservice.Post("/v1/network/firewall_profiles", jsonBytes)
 	if res == nil {
@@ -183,7 +187,7 @@ func cmdCreate(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
 	fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	fmt.Fprintln(w, "RULES:\r")
-	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
+	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tSOURCE\r")
 	for _, r := range firewallProfile.Rules {
 		fmt.Fprintf(w, "\t%s\t%d\t%d\t%s\n", r.Protocol, r.MinPort, r.MaxPort, r.CidrIp)
 	}
@@ -196,21 +200,28 @@ func cmdUpdate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	fp := FirewallProfile{
+		Id: c.String("id"),
+	}
 
 	if c.IsSet("name") {
-		v["name"] = c.String("name")
+		fp.Name = c.String("name")
 	}
 	if c.IsSet("description") {
-		v["description"] = c.String("description")
-	}
-	if c.IsSet("rules") {
-		v["rules"] = c.String("rules")
+		fp.Description = c.String("description")
 	}
 
-	jsonBytes, err := json.Marshal(v)
+	if c.IsSet("rules") {
+		var rules []Rule
+		err = json.Unmarshal([]byte(c.String("rules")), &rules)
+		utils.CheckError(err)
+		fp.Rules = rules
+	}
+
+	jsonBytes, err := json.Marshal(fp)
 	utils.CheckError(err)
 	err, res, _ := webservice.Put(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")), jsonBytes)
+
 	utils.CheckError(err)
 
 	var firewallProfile FirewallProfile
@@ -222,7 +233,7 @@ func cmdUpdate(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tDEFAULT\r")
 	fmt.Fprintf(w, "%s\t%s\t%s\t%t\n", firewallProfile.Id, firewallProfile.Name, firewallProfile.Description, firewallProfile.Default)
 	fmt.Fprintln(w, "RULES:\r")
-	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tCIDR IP\r")
+	fmt.Fprintln(w, "\tPROTOCOL\tMIN PORT\tMAX PORT\tSOURCE\r")
 	for _, r := range firewallProfile.Rules {
 		fmt.Fprintf(w, "\t%s\t%d\t%d\t%s\n", r.Protocol, r.MinPort, r.MaxPort, r.CidrIp)
 	}
