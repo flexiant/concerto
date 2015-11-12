@@ -145,11 +145,12 @@ func cmdCreate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/cloud/ssh_profiles", jsonBytes)
+	err, res, code := webservice.Post("/v1/cloud/ssh_profiles", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var sshProfile SSHProfile
 	err = json.Unmarshal(res, &sshProfile)
@@ -180,9 +181,9 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")), jsonBytes)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")), jsonBytes)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var sshProfile SSHProfile
 	err = json.Unmarshal(res, &sshProfile)

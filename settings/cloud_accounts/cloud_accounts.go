@@ -111,11 +111,12 @@ func cmdCreate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/settings/cloud_accounts", jsonBytes)
+	err, res, code := webservice.Post("/v1/settings/cloud_accounts", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 }
 
@@ -135,10 +136,10 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/settings/cloud_accounts/%s", c.String("id")), jsonBytes)
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/settings/cloud_accounts/%s", c.String("id")), jsonBytes)
 
 	utils.CheckError(err)
-	fmt.Println(res)
+	utils.CheckReturnCode(code, res)
 }
 
 func cmdDelete(c *cli.Context) {

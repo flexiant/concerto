@@ -273,11 +273,12 @@ func cmdCreate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(template)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/blueprint/templates", jsonBytes)
+	err, res, code := webservice.Post("/v1/blueprint/templates", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	err = json.Unmarshal(res, &template)
 	utils.CheckError(err)
@@ -321,7 +322,8 @@ func cmdUpdate(c *cli.Context) {
 	jsonBytes, err := json.Marshal(template)
 
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), jsonBytes)
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), jsonBytes)
+	utils.CheckReturnCode(code, res)
 
 	utils.CheckError(err)
 	err = json.Unmarshal(res, &template)
@@ -405,11 +407,12 @@ func cmdCreateTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", c.String("template_id")), jsonBytes)
+	err, res, code := webservice.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", c.String("template_id")), jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var templateScript TemplateScript
 	err = json.Unmarshal(res, &templateScript)
@@ -437,9 +440,9 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
 	utils.CheckError(err)
-	fmt.Println(res)
+	utils.CheckReturnCode(code, res)
 
 	var templateScript TemplateScript
 	err = json.Unmarshal(res, &templateScript)
@@ -476,8 +479,9 @@ func cmdReorderTemplateScripts(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", c.String("template_id")), jsonBytes)
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", c.String("template_id")), jsonBytes)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var templateScripts []TemplateScript
 	err = json.Unmarshal(res, &templateScripts)

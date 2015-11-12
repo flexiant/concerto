@@ -243,11 +243,12 @@ func cmdCommission(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/cloud/servers/", jsonBytes)
+	err, res, code := webservice.Post("/v1/cloud/servers/", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
@@ -276,9 +277,9 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")), jsonBytes)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")), jsonBytes)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
@@ -296,9 +297,9 @@ func cmdBoot(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot", c.String("id")), nil)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/boot", c.String("id")), nil)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
@@ -316,9 +317,9 @@ func cmdReboot(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot", c.String("id")), nil)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/reboot", c.String("id")), nil)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
@@ -336,9 +337,9 @@ func cmdShutdown(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown", c.String("id")), nil)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/shutdown", c.String("id")), nil)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
@@ -356,9 +357,9 @@ func cmdOverride(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override", c.String("id")), nil)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/override", c.String("id")), nil)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var server Server
 	err = json.Unmarshal(res, &server)
@@ -466,8 +467,9 @@ func cmdExecuteScript(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", c.String("server_id"), c.String("script_id")), nil)
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", c.String("server_id"), c.String("script_id")), nil)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var event Event
 	err = json.Unmarshal(res, &event)
