@@ -1,3 +1,4 @@
+
 # Concerto CLI / Go Library
 [![Build Status](https://drone.io/github.com/flexiant/concerto/status.png)][cli_build] [![GoDoc](https://godoc.org/github.com/flexiant/concerto?status.png)](https://godoc.org/github.com/flexiant/concerto)
 
@@ -9,6 +10,31 @@ If you are already using Concerto CLI, and only want to obtain the latest versio
 - [Windows][cli_windows]
 
 If you want to build the CLI using the source code, please, take into account that the master branch is used for development, it is unstable and might be broken. Download stable tagged versions to use Flexiant Concerto CLI.
+
+# Table of Contents
+
+- [Setup](#setup)
+  - [Pre-requisites](#pre-requisites)
+  - [Linux and OSX](#linux-and-osx)
+    - [Configuration](#configuration)
+    - [Binaries](#binaries)
+    - [Troubleshooting](#troubleshooting)
+- [Usage](#usage)
+  - [Wizard](#wizard)
+    - [Wizard Use Case](#wizard-use-case)
+  - [Blueprint](#blueprint)
+    - [Blueprint Use Case](#blueprint-use-case)
+      - [ Template OS](#template-os)
+      - [Service List](#service-list)
+      - [Instantiate a server](#instantiate-a-server)
+  - [Kubernetes Cluster](#kubernetes-cluster)
+    - [Kubernetes Use Case](#kubernetes-use-case)
+  - [Firewall Management](#firewall-management)
+    - [Firewall Update Case](#firewall-update-case)
+  - [Blueprint Update](#blueprint-update)
+    - [Blueprint Update Case](#blueprint-update-case)
+- [Contribute](#contribute)
+
 
 # Setup
 
@@ -528,6 +554,9 @@ RULES:
 Firewall update returns the complete set of rules. As you can see, now LDAP and LDAPS ports are open.
 
 ## Blueprint Update
+We have already used [blueprints](#blueprint) before. So you might already know that we can delete and update blueprints.
+
+### Blueprint Update Case
 Let's pretend there is an existing Joomla blueprint, and that we want to update the previous password to a safer one.
 
 This is the Joomla blueprint that we created in a previous use case.
