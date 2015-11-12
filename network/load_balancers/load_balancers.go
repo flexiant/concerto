@@ -124,6 +124,7 @@ import (
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -207,7 +208,7 @@ func cmdCreate(c *cli.Context) {
 
 	v["name"] = c.String("name")
 	v["fqdn"] = c.String("fqdn")
-	v["protocol"] = c.String("protocol")
+	v["protocol"] = strings.ToLower(c.String("protocol"))
 	v["domain_id"] = c.String("domain_id")
 	v["cloud_provider_id"] = c.String("cloud_provider_id")
 	if c.IsSet("ssl_certificate") {
@@ -258,7 +259,7 @@ func cmdUpdate(c *cli.Context) {
 
 	v["name"] = c.String("name")
 	v["fqdn"] = c.String("fqdn")
-	v["protocol"] = c.String("protocol")
+	v["protocol"] = strings.ToLower(c.String("protocol"))
 	if c.IsSet("ssl_certificate") {
 		v["ssl_certificate"] = c.String("ssl_certificate")
 	}
@@ -294,8 +295,6 @@ func cmdDelete(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-
-	fmt.Println(res)
 }
 
 func cmdListNodes(c *cli.Context) {
