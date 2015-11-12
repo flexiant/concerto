@@ -258,24 +258,6 @@ func SubCommands() []cli.Command {
 			Name:   "list",
 			Usage:  "Lists all available Nodes",
 			Action: cmdList,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "cluster",
-					Usage: "Cluster Name to Attach Node",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of Host",
-				},
-				cli.StringFlag{
-					Name:  "fqdn",
-					Usage: "Full Qualify Domain Name of Host",
-				},
-				cli.StringFlag{
-					Name:  "plan",
-					Usage: "Server Plan to Use to Create Host",
-				},
-			},
 		},
 		{
 			Name:   "start",
