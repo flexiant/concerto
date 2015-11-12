@@ -24,7 +24,7 @@ and scroll down until you find the `New API key` button.
 
 <img src="./docs/images/newAPIkey.png" alt="new API key" width="500px" >
 
-Pressing `New API Key` will download a compressed file that contains the necessary files to manage authenticate with Concerto API and manage your infrastructure. Keep it safe.
+Pressing `New API Key` will download a compressed file that contains the necessary files to authenticate with Concerto API and manage your infrastructure. Keep it safe.
 
 Extract the contents with your zip compressor of choice and continue using the setup guide for your O.S.
 
@@ -63,7 +63,7 @@ We should have in our `.concerto` folder this structure:
         └── cert.key
 ```
 ### Binaries
-Download linux binaries from for [Linux][cli_linux] or for [OSX][cli_darwin] and place it in your path.
+Download linux binaries for [Linux][cli_linux] or for [OSX][cli_darwin] and place it in your path.
 
 Linux:
 ```
@@ -277,9 +277,9 @@ ID                         NAME                  DESCRIPTION                    
 
 Joomla curated cookbooks creates a local mysql database. We only have to tell our cookbook that we should override the `joomla.db.hostname` to `127.0.0.1`. Execute the following command to create the Joomla template.
 ```
-$ concerto blueprint templates create --name joomla-tmplt --generic_image_id 55b0914e10c0ecc35100007c --service_list '[joomla]' --configuration_attributes '{"joomla":{"db":{"hostname":"127.0.0.1"}}}'
+$ concerto blueprint templates create --name joomla-tmplt --generic_image_id 55b0914e10c0ecc35100007c --service_list '["joomla"]' --configuration_attributes '{"joomla":{"db":{"hostname":"127.0.0.1"}}}'
 ID                         NAME           GENERIC IMAGE ID           SERVICE LIST   CONFIGURATION ATTRIBUTES
-5641d1ab7aa4b1a678000039   joomla-tmplt   55b0914e10c0ecc35100007c   [joomla]       {"joomla":{"db":{"hostname":"127.0.0.1"}}}
+5641d1ab7aa4b1a678000039   joomla-tmplt   55b0914e10c0ecc35100007c   ["joomla"]       {"joomla":{"db":{"hostname":"127.0.0.1"}}}
 ```
 
 #### Instantiate a server
@@ -527,6 +527,34 @@ RULES:
 
 Firewall update returns the complete set of rules. As you can see, now LDAP and LDAPS ports are open.
 
+## Blueprint Update
+Let's pretend there is an existing Joomla blueprint, and that we want to update the previous password to a safer one.
+
+This is the Joomla blueprint that we created in a previous use case.
+```
+$ concerto blueprint templates show --id 56437cf41d5c6e86d7000025
+ID                         NAME           GENERIC IMAGE ID           SERVICE LIST   CONFIGURATION ATTRIBUTES
+56437cf41d5c6e86d7000025   joomla-tmplt   55b0914e10c0ecc35100007c   [joomla]       {"joomla":{"db":{"hostname":"127.0.0.1"}}}
+```
+Beware of adding previous services or configuration attributes. Update will replace existing items with the ones provided. If we don't want to lose the `joomla.db.hostname` attribute, add it to our configuretion attributes parameter:
+```
+$ concerto blueprint templates update --id 56437cf41d5c6e86d7000025 --configuration_attributes '{"joomla":{"db":{"hostname":"127.0.0.1", "password":"$afeP4sSw0rd"}}}'
+ID                         NAME           GENERIC IMAGE ID           SERVICE LIST   CONFIGURATION ATTRIBUTES
+56437cf41d5c6e86d7000025   joomla-tmplt   55b0914e10c0ecc35100007c   [joomla]       {"joomla":{"db":{"hostname":"127.0.0.1","password":"$afeP4sSw0rd"}}}
+```
+As you can see, non specified parameters, like name and service list, remain unchanged. Let's now change the service list, adding a two cookbooks.
+```
+$ concerto blueprint templates update --id 56437cf41d5c6e86d7000025  --service_list '["joomla","python@1.4.6","polipo"]'
+ID                         NAME           GENERIC IMAGE ID           SERVICE LIST                         CONFIGURATION ATTRIBUTES
+56437cf41d5c6e86d7000025   joomla-tmplt   55b0914e10c0ecc35100007c   ["joomla","python@1.4.6","polipo"]   {"joomla":{"db":{"hostname":"127.0.0.1","password":"$afeP4sSw0rd"}}}
+```
+
+Of course, we can change service list and configuration attributes in one command.
+```
+$ concerto blueprint templates update --id 56437cf41d5c6e86d7000025 --configuration_attributes '{"joomla":{"db":{"hostname":"127.0.0.1", "password":"$afeP4sSw0rd"}}}' --service_list '["joomla","python@1.4.6","polipo"]'
+ID                         NAME           GENERIC IMAGE ID           SERVICE LIST                         CONFIGURATION ATTRIBUTES
+56437cf41d5c6e86d7000025   joomla-tmplt   55b0914e10c0ecc35100007c   ["joomla","python@1.4.6","polipo"]   {"joomla":{"db":{"hostname":"127.0.0.1","password":"$afeP4sSw0rd"}}}
+```
 
 # Contribute
 
