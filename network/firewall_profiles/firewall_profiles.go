@@ -172,11 +172,12 @@ func cmdCreate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(fp)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/network/firewall_profiles", jsonBytes)
+	err, res, code := webservice.Post("/v1/network/firewall_profiles", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var firewallProfile FirewallProfile
 
@@ -220,9 +221,9 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(fp)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")), jsonBytes)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/network/firewall_profiles/%s", c.String("id")), jsonBytes)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var firewallProfile FirewallProfile
 

@@ -151,11 +151,13 @@ func cmdCreate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/blueprint/scripts", jsonBytes)
+	err, res, code := webservice.Post("/v1/blueprint/scripts", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
+
 	var new_script Script
 	err = json.Unmarshal(res, &new_script)
 	utils.CheckError(err)
@@ -188,11 +190,13 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")), jsonBytes)
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")), jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
+
 	var new_script Script
 	err = json.Unmarshal(res, &new_script)
 	utils.CheckError(err)

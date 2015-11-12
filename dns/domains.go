@@ -234,11 +234,12 @@ func cmdCreate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post("/v1/dns/domains", jsonBytes)
+	err, res, code := webservice.Post("/v1/dns/domains", jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var d Domain
 	err = json.Unmarshal(res, &d)
@@ -271,9 +272,9 @@ func cmdUpdate(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")), jsonBytes)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")), jsonBytes)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var d Domain
 	err = json.Unmarshal(res, &d)
@@ -385,11 +386,12 @@ func cmdCreateDomainRecords(c *cli.Context) {
 
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Post(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")), jsonBytes)
+	err, res, code := webservice.Post(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")), jsonBytes)
 	if res == nil {
 		log.Fatal(err)
 	}
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var dr DomainRecord
 	err = json.Unmarshal(res, &dr)
@@ -427,9 +429,9 @@ func cmdUpdateDomainRecords(c *cli.Context) {
 	}
 	jsonBytes, err := json.Marshal(v)
 	utils.CheckError(err)
-	err, res, _ := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")), jsonBytes)
-
+	err, res, code := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")), jsonBytes)
 	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 
 	var dr DomainRecord
 	err = json.Unmarshal(res, &dr)
