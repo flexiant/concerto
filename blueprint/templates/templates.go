@@ -169,16 +169,15 @@ import (
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
-	"strings"
 	"text/tabwriter"
 )
 
 type Template struct {
-	Id                      string           `json:"id"`
-	Name                    string           `json:"name"`
-	GenericImgId            string           `json:"generic_image_id"`
-	ServiceList             []string         `json:"service_list"`
-	ConfigurationAttributes *json.RawMessage `json:"configuration_attributes"`
+	Id                      string           `json:"id,omitempty"`
+	Name                    string           `json:"name,omitempty"`
+	GenericImgId            string           `json:"generic_image_id,omitempty"`
+	ServiceList             []string         `json:"service_list,omitempty"`
+	ConfigurationAttributes *json.RawMessage `json:"configuration_attributes,omitempty"`
 }
 
 type TemplateScript struct {
@@ -241,7 +240,9 @@ func cmdShow(c *cli.Context) {
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
 	if template.Id != "" {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, *template.ConfigurationAttributes)
+		serviceList, err := json.Marshal(template.ServiceList)
+		utils.CheckError(err)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
 	}
 	w.Flush()
 }
@@ -257,12 +258,9 @@ func cmdCreate(c *cli.Context) {
 	}
 
 	if c.IsSet("service_list") {
-		rawService := strings.TrimSpace(c.String("service_list"))
-		if len(rawService) < 2 || rawService[:1] != "[" || rawService[len(rawService)-1:] != "]" {
-			log.Fatal("service_list must be a space separated list delimited by brackets")
-		}
-		rawService = rawService[1 : len(rawService)-1]
-		services := strings.Split(rawService, " ")
+		var services []string
+		err = json.Unmarshal([]byte(c.String("service_list")), &services)
+		utils.CheckError(err)
 		template.ServiceList = services
 	}
 
@@ -281,13 +279,14 @@ func cmdCreate(c *cli.Context) {
 	}
 	utils.CheckError(err)
 
-	var resTemplate Template
-	err = json.Unmarshal(res, &resTemplate)
+	err = json.Unmarshal(res, &template)
 	utils.CheckError(err)
+	serviceList, err := json.Marshal(template.ServiceList)
+	utils.CheckError(err)
+
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", resTemplate.Id, resTemplate.Name, resTemplate.GenericImgId, resTemplate.ServiceList, *resTemplate.ConfigurationAttributes)
-
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
 	w.Flush()
 
 }
@@ -297,32 +296,43 @@ func cmdUpdate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	v := make(map[string]string)
+	template := Template{
+		Id: c.String("id"),
+	}
 
 	if c.IsSet("name") {
-		v["name"] = c.String("name")
-	}
-	if c.IsSet("service_list") {
-		v["service_list"] = c.String("service_list")
-	}
-	if c.IsSet("configuration_attributes") {
-		v["configuration_attributes"] = c.String("configuration_attributes")
+		template.Name = c.String("name")
 	}
 
-	jsonBytes, err := json.Marshal(v)
+	if c.IsSet("service_list") {
+		var services []string
+		err = json.Unmarshal([]byte(c.String("service_list")), &services)
+		utils.CheckError(err)
+		template.ServiceList = services
+	}
+
+	if c.IsSet("configuration_attributes") {
+		attributes := []byte(c.String("configuration_attributes"))
+		attributesAddress := (*json.RawMessage)(&attributes)
+		template.ConfigurationAttributes = attributesAddress
+		utils.CheckError(err)
+	}
+
+	jsonBytes, err := json.Marshal(template)
+
 	utils.CheckError(err)
 	err, res, _ := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), jsonBytes)
 
 	utils.CheckError(err)
-	var template Template
 	err = json.Unmarshal(res, &template)
 	utils.CheckError(err)
+	serviceList, err := json.Marshal(template.ServiceList)
+	utils.CheckError(err)
+
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, template.ServiceList, *template.ConfigurationAttributes)
-
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
 	w.Flush()
-
 }
 
 func cmdDelete(c *cli.Context) {
