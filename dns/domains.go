@@ -297,7 +297,6 @@ func cmdDelete(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
 
-	fmt.Println(res)
 }
 
 func cmdListDomainRecords(c *cli.Context) {
@@ -454,8 +453,6 @@ func cmdDeleteDomainRecords(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-
-	fmt.Println(res)
 }
 
 func SubCommands() []cli.Command {

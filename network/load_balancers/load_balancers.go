@@ -362,8 +362,6 @@ func cmdDelNode(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", c.String("balancer_id"), c.String("node_id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-
-	fmt.Println(res)
 }
 
 func SubCommands() []cli.Command {

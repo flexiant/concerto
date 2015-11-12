@@ -204,8 +204,6 @@ func cmdDelete(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-
-	fmt.Println(res)
 }
 
 func SubCommands() []cli.Command {
