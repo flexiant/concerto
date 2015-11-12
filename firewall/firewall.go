@@ -21,8 +21,8 @@ type FirewallProfile struct {
 
 type Policy struct {
 	Rules       []Rule `json:"rules"`
-	Md5         string `json:"md5"`
-	ActualRules []Rule `json:"actual_rules"`
+	Md5         string `json:"md5,omitempty"`
+	ActualRules []Rule `json:"actual_rules,omitempty"`
 }
 
 type Rule struct {
@@ -107,6 +107,7 @@ func cmdCheck(c *cli.Context) {
 func cmdAdd(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
 
+	// API accepts only 1 rule
 	newRule := &Rule{
 		c.String("ipProtocol"),
 		c.String("cidr"),
@@ -118,28 +119,47 @@ func cmdAdd(c *cli.Context) {
 	exists := check(policy, *newRule)
 
 	if exists == false {
-		fmt.Printf("%#v", newRule)
-		fmt.Printf("We are going to insert firewall")
 		policy.Rules = append(policy.Rules, *newRule)
-		fmt.Printf("\n\n%#v\n\n", policy)
-
 		webservice, err := webservice.NewWebService()
 		utils.CheckError(err)
 
-		profile := &FirewallProfile{
-			policy,
-		}
+		nRule := make(map[string]Rule)
+		nRule["rule"] = *newRule
 
-		json, err := json.Marshal(profile)
+		json, err := json.Marshal(nRule)
 		utils.CheckError(err)
-		err, res, code := webservice.Put(endpoint, json)
+		err, res, code := webservice.Post(fmt.Sprintf("%s/rules", endpoint), json)
 		if res == nil {
 			log.Fatal(err)
 		}
 		utils.CheckError(err)
 		utils.CheckReturnCode(code, res)
 	}
+}
 
+func cmdUpdate(c *cli.Context) {
+	utils.FlagsRequired(c, []string{"rules"})
+
+	fp := &FirewallProfile{
+		Policy{},
+	}
+
+	var rules []Rule
+	err := json.Unmarshal([]byte(c.String("rules")), &rules)
+	utils.CheckError(err)
+	fp.Profile.Rules = rules
+
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	json, err := json.Marshal(fp)
+	utils.CheckError(err)
+	err, res, code := webservice.Put(endpoint, json)
+	if res == nil {
+		log.Fatal(err)
+	}
+	utils.CheckError(err)
+	utils.CheckReturnCode(code, res)
 }
 
 func cmdRemove(c *cli.Context) {
@@ -156,17 +176,12 @@ func cmdRemove(c *cli.Context) {
 	exists := check(policy, *existingRule)
 
 	if exists == true {
-		fmt.Printf("%#v", existingRule)
-		fmt.Printf("We are going to remove from firewall")
-
 		for i, rule := range policy.Rules {
 			if rule == *existingRule {
 				policy.Rules = append(policy.Rules[:i], policy.Rules[1+i:]...)
 				break
 			}
 		}
-
-		fmt.Printf("\n\n%#v\n\n", policy)
 
 		webservice, err := webservice.NewWebService()
 		utils.CheckError(err)
@@ -224,7 +239,7 @@ func SubCommands() []cli.Command {
 		},
 		{
 			Name:   "add",
-			Usage:  "Adds a firewall rule to host",
+			Usage:  "Adds a single firewall rule to host",
 			Action: cmdAdd,
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -242,6 +257,17 @@ func SubCommands() []cli.Command {
 				cli.StringFlag{
 					Name:  "ipProtocol",
 					Usage: "Ip protocol udp or tcp",
+				},
+			},
+		},
+		{
+			Name:   "update",
+			Usage:  "Updates all firewall rules",
+			Action: cmdUpdate,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "rules",
+					Usage: `JSON array in the form '[{"ip_protocol":"...", "min_port":..., "max_port":..., "cidr_ip":"..."}, ... ]'`,
 				},
 			},
 		},
