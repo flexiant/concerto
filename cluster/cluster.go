@@ -178,12 +178,13 @@ func cmdKubectlHijack(c *cli.Context) {
 
 		if err == nil {
 			kubeLocation = strings.TrimSpace(string(output))
-		}
-
-		// parse whereis
-		whereis := strings.Split(kubeLocation, " ")
-		if len(whereis) == 2 {
-			kubeLocation = whereis[1]
+			// parse whereis
+			whereis := strings.Split(kubeLocation, " ")
+			if len(whereis) == 2 {
+				kubeLocation = whereis[1]
+			} else {
+				kubeLocation = ""
+			}
 		}
 
 		if err != nil || len(kubeLocation) == 0 {
