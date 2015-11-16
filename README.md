@@ -407,12 +407,19 @@ OPTIONS:
 --help, -h show help
 ```
 
-We need kubectl in the path to manage the cluster.
-You can download kubectl binary from this URL replacing version and architecture to fit your workstation
+We need kubectl in the path to manage the cluster. You can download kubectl binary from this URL replacing OS and architecture to fit your workstation
 
-`https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/darwin/amd64/kubectl`
+`https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/<os>/<architecture>/kubectl`
 
-Drop kubetcl in a location in your path
+Drop kubetcl in a location in your path.
+
+If you are using Linux:
+```
+curl -L -O https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/linux/amd64/kubectl
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+If you are using OSX
 ```
 curl -L -O https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/darwin/amd64/kubectl
 chmod +x kubectl
