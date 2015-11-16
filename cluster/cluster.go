@@ -173,11 +173,14 @@ func cmdKubectlHijack(c *cli.Context) {
 	if discovered == true {
 		//Discover where kubectl is located
 		output, err := exec.Command("whereis", "kubectl").Output()
-		utils.CheckError(err)
+		//utils.CheckError(err)
+		kubeLocation := ""
 
-		kubeLocation := strings.TrimSpace(string(output))
+		if err == nil {
+			kubeLocation = strings.TrimSpace(string(output))
+		}
 
-		if !(len(kubeLocation) > 0) {
+		if err != nil || len(kubeLocation) == 0 {
 			log.Debug("Not found kubectl with whereis going to try which")
 			//Discover where kubectl is located
 			output, err = exec.Command("which", "kubectl").Output()
