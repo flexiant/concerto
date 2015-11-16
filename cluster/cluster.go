@@ -180,6 +180,12 @@ func cmdKubectlHijack(c *cli.Context) {
 			kubeLocation = strings.TrimSpace(string(output))
 		}
 
+		// parse whereis
+		whereis := strings.Split(kubeLocation, " ")
+		if len(whereis) == 2 {
+			kubeLocation = whereis[1]
+		}
+
 		if err != nil || len(kubeLocation) == 0 {
 			log.Debug("Not found kubectl with whereis going to try which")
 			//Discover where kubectl is located
