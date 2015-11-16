@@ -93,14 +93,14 @@ Download linux binaries for [Linux][cli_linux] or for [OSX][cli_darwin] and plac
 
 Linux:
 ```
-sudo curl -o /usr/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.linux
-sudo chmod +x /usr/bin/concerto
+sudo curl -o /usr/local/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.linux
+sudo chmod +x /usr/local/bin/concerto
 ```
 
 OSX:
 ```
-sudo curl -o /usr/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.darwin
-sudo chmod +x /usr/bin/concerto
+sudo curl -o /usr/local/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.darwin
+sudo chmod +x /usr/local/bin/concerto
 ```
 
 To test the binary execute concerto without parameters
