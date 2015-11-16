@@ -43,8 +43,6 @@ Before setting up the CLI, we will need a Flexiant Concerto account, and an API 
 
 You can create a free account in less than a minute following the steps in Flexiant Concerto [login page](https://start.concerto.io/).
 
-<img src="./docs/images/signup.png" alt="sign up" width="300px" >
-
 Once your account have been provisioned, navigate the menus to `Settings` > `User Details`
 and scroll down until you find the `New API key` button.
 
