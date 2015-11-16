@@ -172,28 +172,24 @@ func cmdKubectlHijack(c *cli.Context) {
 
 	if discovered == true {
 		//Discover where kubectl is located
-		output, err := exec.Command("whereis", "kubectl").Output()
-		//utils.CheckError(err)
 		kubeLocation := ""
-
+		output, err := exec.Command("which", "kubectl").Output()
 		if err == nil {
 			kubeLocation = strings.TrimSpace(string(output))
-			// parse whereis
-			whereis := strings.Split(kubeLocation, " ")
-			if len(whereis) == 2 {
-				kubeLocation = whereis[1]
-			} else {
-				kubeLocation = ""
-			}
 		}
 
 		if err != nil || len(kubeLocation) == 0 {
-			log.Debug("Not found kubectl with whereis going to try which")
-			//Discover where kubectl is located
-			output, err = exec.Command("which", "kubectl").Output()
+			// try whereis
+			output, err := exec.Command("whereis", "kubectl").Output()
 			utils.CheckError(err)
 
-			kubeLocation = strings.TrimSpace(string(output))
+			whereis := strings.Split(strings.TrimSpace(string(output)), " ")
+			// whereis returns
+			// filename: /location/filename /another/location/filename.related ...
+			if len(whereis) > 1 {
+				// we get the first result ...
+				kubeLocation = whereis[1]
+			}
 		}
 
 		if len(kubeLocation) > 0 {
