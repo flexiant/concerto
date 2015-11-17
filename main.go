@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -343,14 +344,39 @@ func isUserCertificate(filename string) bool {
 	return false
 }
 
-func main() {
+func prepareFlags(c *cli.Context) error {
 
-	for _, f := range os.Args {
-		if f == "-D" || f == "--debug" || f == "-debug" {
-			os.Setenv("DEBUG", "1")
-			initLogging(log.DebugLevel)
-		}
+	if c.Bool("debug") {
+		os.Setenv("DEBUG", "1")
+		initLogging(log.DebugLevel)
 	}
+
+	if c.IsSet("concerto-endpoint") {
+		os.Setenv("CONCERTO_ENDPOINT", c.String("concerto-endpoint"))
+	}
+
+	os.Setenv("CONCERTO_CA_CERT", c.String("ca-cert"))
+	os.Setenv("CONCERTO_CLIENT_CERT", c.String("client-cert"))
+	os.Setenv("CONCERTO_CLIENT_KEY", c.String("client-key"))
+	os.Setenv("CONCERTO_CONFIG", c.String("concerto-config"))
+
+	if isUserCertificate(os.Getenv("CONCERTO_CLIENT_CERT")) {
+		c.App.Commands = ClientCommands
+	} else {
+		c.App.Commands = ServerCommands
+	}
+
+	if len(os.Getenv("CONCERTO_ENDPOINT")) <= 0 {
+		log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
+		fmt.Printf("\n")
+		cli.ShowCommandHelp(c, c.Command.Name)
+		os.Exit(2)
+	}
+
+	return nil
+}
+
+func main() {
 
 	app := cli.NewApp()
 	app.Name = path.Base(os.Args[0])
@@ -361,11 +387,7 @@ func main() {
 	app.Usage = "Manages comunication between Host and Concerto Platform"
 	app.Version = utils.VERSION
 
-	if isUserCertificate(filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt")) {
-		app.Commands = ClientCommands
-	} else {
-		app.Commands = ServerCommands
-	}
+	app.Before = prepareFlags
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
