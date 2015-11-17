@@ -362,15 +362,14 @@ func prepareFlags(c *cli.Context) error {
 
 	if isUserCertificate(os.Getenv("CONCERTO_CLIENT_CERT")) {
 		c.App.Commands = ClientCommands
+		if len(os.Getenv("CONCERTO_ENDPOINT")) <= 0 {
+			log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
+			fmt.Printf("\n")
+			cli.ShowCommandHelp(c, c.Command.Name)
+			os.Exit(2)
+		}
 	} else {
 		c.App.Commands = ServerCommands
-	}
-
-	if len(os.Getenv("CONCERTO_ENDPOINT")) <= 0 {
-		log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
-		fmt.Printf("\n")
-		cli.ShowCommandHelp(c, c.Command.Name)
-		os.Exit(2)
 	}
 
 	return nil
