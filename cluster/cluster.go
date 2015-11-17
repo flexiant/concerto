@@ -141,6 +141,7 @@ func cmdKubectlHijack(c *cli.Context) {
 	var cluster Cluster
 
 	discovered := false
+	operational := false
 
 	utils.FlagsRequired(c, []string{"cluster"})
 
@@ -167,10 +168,13 @@ func cmdKubectlHijack(c *cli.Context) {
 		if (element.Name == clusterName) || (element.Id == clusterName) {
 			discovered = true
 			cluster = element
+			if cluster.State == "operational" || cluster.State == "partially_operational" {
+				operational = true
+			}
 		}
 	}
 
-	if discovered == true {
+	if (discovered && operational) || firstArgument == "help" {
 
 		kubeLocation, err := exec.LookPath("kubectl")
 		if err != nil {
@@ -178,14 +182,23 @@ func cmdKubectlHijack(c *cli.Context) {
 			os.Exit(1)
 		}
 
+		if discovered && !operational {
+			log.Warn(fmt.Sprintf("Cluster \"%s\" is not operational. Wait till it gets operational.", clusterName))
+		}
+
 		log.Debug(fmt.Sprintf("Found kubectl at %s", kubeLocation))
 		config, err := config.ConcertoServerConfiguration()
 		utils.CheckError(err)
 
-		clusterParameters := fmt.Sprintf("--server=https://%s:6443", cluster.Masters[0])
-		clientCertificate := fmt.Sprintf("--client-certificate=%s", config.Certificate.Cert)
-		clientKey := fmt.Sprintf("--client-key=%s", config.Certificate.Key)
-		clientCA := fmt.Sprintf("--certificate-authority=%s", config.Certificate.Ca)
+		var clusterParameters, clientCertificate, clientKey, clientCA string
+
+		if len(cluster.Masters) > 0 {
+			clusterParameters = fmt.Sprintf("--server=https://%s:6443", cluster.Masters[0])
+		}
+
+		clientCertificate = fmt.Sprintf("--client-certificate=%s", config.Certificate.Cert)
+		clientKey = fmt.Sprintf("--client-key=%s", config.Certificate.Key)
+		clientCA = fmt.Sprintf("--certificate-authority=%s", config.Certificate.Ca)
 
 		arguments := append([]string{clusterParameters, "--api-version=v1", clientCertificate, clientKey, clientCA, firstArgument}, c.Args().Tail()...)
 
