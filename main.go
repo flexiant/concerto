@@ -360,7 +360,9 @@ func prepareFlags(c *cli.Context) error {
 	os.Setenv("CONCERTO_CLIENT_KEY", c.String("client-key"))
 	os.Setenv("CONCERTO_CONFIG", c.String("concerto-config"))
 
-	if isUserCertificate(os.Getenv("CONCERTO_CLIENT_CERT")) {
+	if !isUserCertificate(os.Getenv("CONCERTO_CLIENT_CERT")) {
+		c.App.Commands = ServerCommands
+	} else {
 		c.App.Commands = ClientCommands
 		if len(os.Getenv("CONCERTO_ENDPOINT")) <= 0 {
 			log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
@@ -368,10 +370,7 @@ func prepareFlags(c *cli.Context) error {
 			cli.ShowCommandHelp(c, c.Command.Name)
 			os.Exit(2)
 		}
-	} else {
-		c.App.Commands = ServerCommands
 	}
-
 	return nil
 }
 
