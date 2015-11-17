@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"crypto/x509"
 	"encoding/pem"
