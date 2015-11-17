@@ -41,8 +41,6 @@ import (
 	"github.com/flexiant/concerto/wizard/server_plans"
 )
 
-const VERSION = "0.1.0"
-
 func initLogging(lvl log.Level) {
 	log.SetOutput(os.Stderr)
 	log.SetLevel(lvl)
@@ -361,7 +359,7 @@ func main() {
 
 	app.CommandNotFound = cmdNotFound
 	app.Usage = "Manages comunication between Host and Concerto Platform"
-	app.Version = VERSION
+	app.Version = utils.VERSION
 
 	if isUserCertificate(filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt")) {
 		app.Commands = ClientCommands
