@@ -165,72 +165,64 @@ func cmdDockerHijack(c *cli.Context) {
 
 	if discovered == true {
 
-		var dockerLocation string
-
-		if utils.Exists("/usr/local/bin/docker") {
-			dockerLocation = "/usr/local/bin/docker"
-		} else {
-			//Discover where kubectl is located
-			output, err := exec.Command("whereis", "docker").Output()
-			utils.CheckError(err)
-			dockerLocation = strings.TrimSpace(string(output))
-		}
-
-		if len(dockerLocation) > 0 {
-			config, err := config.ConcertoServerConfiguration()
-			utils.CheckError(err)
-
-			nodeParameters := fmt.Sprintf("--host=tcp://%s:2376", node.Fqdn)
-			tls := "--tls=true"
-			clientCertificate := fmt.Sprintf("--tlscert=%s", config.Certificate.Cert)
-			clientKey := fmt.Sprintf("--tlskey=%s", config.Certificate.Key)
-			clientCA := fmt.Sprintf("--tlscacert=%s", config.Certificate.Ca)
-
-			arguments := append([]string{nodeParameters, tls, clientCertificate, clientKey, clientCA, firstArgument}, c.Args().Tail()...)
-
-			log.Debug(fmt.Sprintf("Going to execute %s %s", dockerLocation, arguments))
-
-			cmd := exec.Command(dockerLocation, arguments...)
-
-			stdout, err := cmd.StdoutPipe()
-			utils.CheckError(err)
-
-			stderr, err := cmd.StderrPipe()
-			utils.CheckError(err)
-
-			// Start command
-			err = cmd.Start()
-			utils.CheckError(err)
-			defer cmd.Wait()
-
-			go io.Copy(os.Stderr, stderr)
-
-			ls := bufio.NewReader(stdout)
-
-			for {
-				line, isPrefix, err := ls.ReadLine()
-				if isPrefix {
-					log.Errorf("%s", errors.New("isPrefix: true"))
-				}
-				if err != nil {
-					if err != io.EOF {
-						log.Errorf("%s", err.Error())
-					}
-					break
-				}
-				fmt.Printf("%s\n", strings.Replace(string(line), "docker", fmt.Sprintf("concerto node docker --node %s", nodeName), -1))
-			}
-
-			go func() {
-				time.Sleep(30 * time.Second)
-				log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", nodeParameters))
-			}()
-
-			return
-		} else {
-			log.Warn(fmt.Sprintf("We could not find docker command line in your enviroment. Please install it. Thank you."))
+		dockerLocation, err := exec.LookPath("docker")
+		if err != nil {
+			log.Warn(fmt.Sprintf("We could not find docker in your enviroment. Please install it."))
 			os.Exit(1)
 		}
+
+		log.Debug(fmt.Sprintf("Found docker at %s", dockerLocation))
+		config, err := config.ConcertoServerConfiguration()
+		utils.CheckError(err)
+
+		nodeParameters := fmt.Sprintf("--host=tcp://%s:2376", node.Fqdn)
+		tls := "--tls=true"
+		clientCertificate := fmt.Sprintf("--tlscert=%s", config.Certificate.Cert)
+		clientKey := fmt.Sprintf("--tlskey=%s", config.Certificate.Key)
+		clientCA := fmt.Sprintf("--tlscacert=%s", config.Certificate.Ca)
+
+		arguments := append([]string{nodeParameters, tls, clientCertificate, clientKey, clientCA, firstArgument}, c.Args().Tail()...)
+
+		log.Debug(fmt.Sprintf("Going to execute %s %s", dockerLocation, arguments))
+
+		cmd := exec.Command(dockerLocation, arguments...)
+
+		stdout, err := cmd.StdoutPipe()
+		utils.CheckError(err)
+
+		stderr, err := cmd.StderrPipe()
+		utils.CheckError(err)
+
+		// Start command
+		err = cmd.Start()
+		utils.CheckError(err)
+		defer cmd.Wait()
+
+		go io.Copy(os.Stderr, stderr)
+
+		ls := bufio.NewReader(stdout)
+
+		for {
+			line, isPrefix, err := ls.ReadLine()
+			if isPrefix {
+				log.Errorf("%s", errors.New("isPrefix: true"))
+			}
+			if err != nil {
+				if err != io.EOF {
+					log.Errorf("%s", err.Error())
+				}
+				break
+			}
+			fmt.Printf("%s\n", strings.Replace(string(line), "docker", fmt.Sprintf("concerto node docker --node %s", nodeName), -1))
+		}
+
+		go func() {
+			time.Sleep(30 * time.Second)
+			log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", nodeParameters))
+		}()
+
+		return
+
 	} else {
 		log.Warn(fmt.Sprintf("Node \"%s\" is not in your account please create it. Thank you.", nodeName))
 		os.Exit(1)

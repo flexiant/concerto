@@ -127,7 +127,7 @@ ID                         NAME                  DEFAULT        DOMAIN ID       
 
 ###Troubleshooting
 If you got an error executing concerto CLI:
- - execute `which concerto` or `whereis concerto` to make sure that the binary is installed
+ - execute `which concerto` to make sure that the binary is installed
  - execute ls -l /path/to/concerto with the output from the previous command, and check that you have execute permissions
  - execute `$PATH` and search for the path where concerto is installed. If concerto isn't in the path, move it to a `$PATH` location.
  - check that your internet connection can reach clients.concerto.io
