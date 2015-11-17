@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
@@ -371,13 +370,14 @@ func prepareFlags(c *cli.Context) error {
 			os.Exit(2)
 		}
 	}
+
 	return nil
 }
 
 func main() {
 
 	app := cli.NewApp()
-	app.Name = path.Base(os.Args[0])
+	app.Name = "concerto"
 	app.Author = "Concerto Contributors"
 	app.Email = "https://github.com/flexiant/concerto"
 
