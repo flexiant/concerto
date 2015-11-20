@@ -137,10 +137,10 @@ If you got an error executing concerto CLI:
 
 
 # Usage
-We are including most common use cases here. If you miss a use case here open an issue or contact us at <contact@flexiant.com>.
+We include the most common use cases here. If you feel there is a missing a use case here, open an issue or contact us at <contact@flexiant.com>.
 
 ## Wizard
-Wizard command for Concerto CLI is the command line version of our `Quick add server` in Concerto Web UI.
+The Wizard command for Concerto CLI is the command line version of our `Quick add server` in the Concerto Web UI.
 
 <img src="./docs/images/webwizard.png" alt="web wizard" width="500px" >
 
@@ -405,7 +405,7 @@ OPTIONS:
 --help, -h show help
 ```
 
-We need kubectl in the path to manage the cluster. You can download kubectl binary from this URL replacing OS and architecture to fit your workstation
+We need kubectl in the path to manage the cluster. You can download kubectl binary from this URL replacing OS and architecture to fit your workstation.
 
 `https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/<os>/<architecture>/kubectl`
 
