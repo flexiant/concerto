@@ -3,9 +3,9 @@ package main
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
@@ -40,8 +40,6 @@ import (
 	"github.com/flexiant/concerto/wizard/locations"
 	"github.com/flexiant/concerto/wizard/server_plans"
 )
-
-const VERSION = "0.1.0"
 
 func initLogging(lvl log.Level) {
 	log.SetOutput(os.Stderr)
@@ -345,29 +343,49 @@ func isUserCertificate(filename string) bool {
 	return false
 }
 
-func main() {
+func prepareFlags(c *cli.Context) error {
 
-	for _, f := range os.Args {
-		if f == "-D" || f == "--debug" || f == "-debug" {
-			os.Setenv("DEBUG", "1")
-			initLogging(log.DebugLevel)
+	if c.Bool("debug") {
+		os.Setenv("DEBUG", "1")
+		initLogging(log.DebugLevel)
+	}
+
+	if c.IsSet("concerto-endpoint") {
+		os.Setenv("CONCERTO_ENDPOINT", c.String("concerto-endpoint"))
+	}
+
+	os.Setenv("CONCERTO_CA_CERT", c.String("ca-cert"))
+	os.Setenv("CONCERTO_CLIENT_CERT", c.String("client-cert"))
+	os.Setenv("CONCERTO_CLIENT_KEY", c.String("client-key"))
+	os.Setenv("CONCERTO_CONFIG", c.String("concerto-config"))
+
+	if !isUserCertificate(os.Getenv("CONCERTO_CLIENT_CERT")) {
+		c.App.Commands = ServerCommands
+	} else {
+		c.App.Commands = ClientCommands
+		if len(os.Getenv("CONCERTO_ENDPOINT")) <= 0 {
+			log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
+			fmt.Printf("\n")
+			cli.ShowCommandHelp(c, c.Command.Name)
+			os.Exit(2)
 		}
 	}
 
+	return nil
+}
+
+func main() {
+
 	app := cli.NewApp()
-	app.Name = path.Base(os.Args[0])
+	app.Name = "concerto"
 	app.Author = "Concerto Contributors"
 	app.Email = "https://github.com/flexiant/concerto"
 
 	app.CommandNotFound = cmdNotFound
 	app.Usage = "Manages comunication between Host and Concerto Platform"
-	app.Version = VERSION
+	app.Version = utils.VERSION
 
-	if isUserCertificate(filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt")) {
-		app.Commands = ClientCommands
-	} else {
-		app.Commands = ServerCommands
-	}
+	app.Before = prepareFlags
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{

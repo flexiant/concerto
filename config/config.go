@@ -4,11 +4,11 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/flexiant/concerto/utils"
 	"io/ioutil"
 	"os"
-	"path/filepath"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/flexiant/concerto/utils"
 )
 
 type Config struct {
@@ -28,7 +28,7 @@ type Cert struct {
 // Returns Concerto Server Configuration
 func ConcertoServerConfiguration() (*Config, error) {
 
-	fileLocation := filepath.Join(utils.GetConcertoDir(), "client.xml")
+	fileLocation := os.Getenv("CONCERTO_CONFIG")
 
 	if utils.Exists(fileLocation) {
 		var config *Config
@@ -46,12 +46,12 @@ func ConcertoServerConfiguration() (*Config, error) {
 			return nil, errors.New(fmt.Sprintf("Configuration File %s does not have valid format.", fileLocation))
 		}
 
-	} else if utils.Exists(filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt")) {
+	} else if utils.Exists(os.Getenv("CONCERTO_CLIENT_CERT")) {
 
 		certificate := Cert{
-			filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt"),
-			filepath.Join(utils.GetConcertoDir(), "ssl", "/private/cert.key"),
-			filepath.Join(utils.GetConcertoDir(), "ssl", "ca_cert.pem"),
+			os.Getenv("CONCERTO_CLIENT_CERT"),
+			os.Getenv("CONCERTO_CLIENT_KEY"),
+			os.Getenv("CONCERTO_CA_CERT"),
 		}
 		config := Config{}
 		config.ApiEndpoint = os.Getenv("CONCERTO_ENDPOINT")

@@ -43,8 +43,6 @@ Before setting up the CLI, we will need a Flexiant Concerto account, and an API 
 
 You can create a free account in less than a minute following the steps in Flexiant Concerto [login page](https://start.concerto.io/).
 
-<img src="./docs/images/signup.png" alt="sign up" width="300px" >
-
 Once your account have been provisioned, navigate the menus to `Settings` > `User Details`
 and scroll down until you find the `New API key` button.
 
@@ -93,14 +91,14 @@ Download linux binaries for [Linux][cli_linux] or for [OSX][cli_darwin] and plac
 
 Linux:
 ```
-sudo curl -o /usr/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.linux
-sudo chmod +x /usr/bin/concerto
+sudo curl -o /usr/local/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.linux
+sudo chmod +x /usr/local/bin/concerto
 ```
 
 OSX:
 ```
-sudo curl -o /usr/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.darwin
-sudo chmod +x /usr/bin/concerto
+sudo curl -o /usr/local/bin/concerto https://drone.io/github.com/flexiant/concerto/files/concerto.x64.darwin
+sudo chmod +x /usr/local/bin/concerto
 ```
 
 To test the binary execute concerto without parameters
@@ -129,7 +127,7 @@ ID                         NAME                  DEFAULT        DOMAIN ID       
 
 ###Troubleshooting
 If you got an error executing concerto CLI:
- - execute `which concerto` or `whereis concerto` to make sure that the binary is installed
+ - execute `which concerto` to make sure that the binary is installed
  - execute ls -l /path/to/concerto with the output from the previous command, and check that you have execute permissions
  - execute `$PATH` and search for the path where concerto is installed. If concerto isn't in the path, move it to a `$PATH` location.
  - check that your internet connection can reach clients.concerto.io
@@ -139,10 +137,10 @@ If you got an error executing concerto CLI:
 
 
 # Usage
-We are including most common use cases here. If you miss a use case here open an issue or contact us at <contact@flexiant.com>.
+We include the most common use cases here. If you feel there is a missing a use case here, open an issue or contact us at <contact@flexiant.com>.
 
 ## Wizard
-Wizard command for Concerto CLI is the command line version of our `Quick add server` in Concerto Web UI.
+The Wizard command for Concerto CLI is the command line version of our `Quick add server` in the Concerto Web UI.
 
 <img src="./docs/images/webwizard.png" alt="web wizard" width="500px" >
 
@@ -407,12 +405,19 @@ OPTIONS:
 --help, -h show help
 ```
 
-We need kubectl in the path to manage the cluster.
-You can download kubectl binary from this URL replacing version and architecture to fit your workstation
+We need kubectl in the path to manage the cluster. You can download kubectl binary from this URL replacing OS and architecture to fit your workstation.
 
-`https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/darwin/amd64/kubectl`
+`https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/<os>/<architecture>/kubectl`
 
-Drop kubetcl in a location in your path
+Drop kubetcl in a location in your path.
+
+If you are using Linux:
+```
+curl -L -O https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/linux/amd64/kubectl
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+If you are using OSX
 ```
 curl -L -O https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/darwin/amd64/kubectl
 chmod +x kubectl
