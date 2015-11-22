@@ -17,16 +17,6 @@ func CheckError(err error) {
 func CheckReturnCode(res int, mesg []byte) {
 	if res >= 300 {
 		log.Fatal(fmt.Sprintf("There was an issue with your http request: %d ; error message is: %s", res, mesg))
-	} else {
-		log.Info(fmt.Sprintf("The command executed successfully; http response code: %d", res))
-	}
-}
-
-func CheckReturnCode_old(res int) {
-	if res >= 300 {
-		log.Fatal(fmt.Sprintf("There was an issue with your http request: %d ", res))
-	} else {
-		log.Info(fmt.Sprintf("The command executed successfully; http response code: %d", res))
 	}
 }
 
