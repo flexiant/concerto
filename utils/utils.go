@@ -5,7 +5,9 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
+	"strings"
 )
 
 func CheckError(err error) {
@@ -16,7 +18,27 @@ func CheckError(err error) {
 
 func CheckReturnCode(res int, mesg []byte) {
 	if res >= 300 {
-		log.Fatal(fmt.Sprintf("There was an issue with your http request: %d ; error message is: %s", res, mesg))
+		// check if response is a web page.
+		message := string(mesg[:])
+		log.Debugf("Concerto API response: %s", message)
+
+		webpageIdentified := "<html>"
+		scrapResponse := "<title>(.*?)</title>"
+		if strings.Contains(message, webpageIdentified) {
+
+			re, err := regexp.Compile(scrapResponse)
+			scrapped := re.FindStringSubmatch(message)
+
+			if scrapped == nil || err != nil || len(scrapped) < 2 {
+				// couldn't scrape, return generic error
+				message = "Error executing operation"
+			} else {
+				// return scrapped response
+				message = scrapped[1]
+			}
+		}
+		// if it's not a web page, return raw message
+		log.Fatal(fmt.Sprintf("There was an issue with your http request: status[%d] message [%s]", res, message))
 	}
 }
 
