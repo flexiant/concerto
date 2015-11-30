@@ -16,29 +16,55 @@ func CheckError(err error) {
 	}
 }
 
+func ScrapeErrorMessage(message string, regExpression string) string {
+
+	re, err := regexp.Compile(regExpression)
+	scrapped := re.FindStringSubmatch(message)
+
+	if scrapped == nil || err != nil || len(scrapped) < 2 {
+		// couldn't scrape, return generic error
+		message = "Error executing operation"
+	} else {
+		// return scrapped response
+		message = scrapped[1]
+	}
+
+	return message
+}
+
 func CheckReturnCode(res int, mesg []byte) {
 	if res >= 300 {
-		// check if response is a web page.
+
 		message := string(mesg[:])
 		log.Debugf("Concerto API response: %s", message)
 
-		webpageIdentified := "<html>"
-		scrapResponse := "<title>(.*?)</title>"
-		if strings.Contains(message, webpageIdentified) {
-
-			re, err := regexp.Compile(scrapResponse)
-			scrapped := re.FindStringSubmatch(message)
-
-			if scrapped == nil || err != nil || len(scrapped) < 2 {
-				// couldn't scrape, return generic error
-				message = "Error executing operation"
-			} else {
-				// return scrapped response
-				message = scrapped[1]
-			}
+		f := func(c rune) bool {
+			return c == ',' || c == ':' || c == '{' || c == '}' || c == '"' || c == ']' || c == '['
 		}
-		// if it's not a web page, return raw message
-		log.Fatal(fmt.Sprintf("There was an issue with your http request: status[%d] message [%s]", res, message))
+
+		// check if response is a web page.
+		if strings.Contains(message, "<html>") {
+			scrapResponse := "<title>(.*?)</title>"
+			message = ScrapeErrorMessage(message, scrapResponse)
+		} else if strings.Contains(message, "{\"errors\":{") {
+			scrapResponse := "{\"errors\":(.*?)}"
+
+			message = ScrapeErrorMessage(message, scrapResponse)
+			result := strings.Split(message, ",")
+			if result != nil {
+				message = result[0]
+			}
+			// Separate into fields with func.
+			fields := strings.FieldsFunc(message, f)
+			message = strings.Join(fields[:], " ")
+
+		} else if strings.Contains(message, "{\"error\":") {
+			scrapResponse := "{\"error\":\"(.*?)\"}"
+			message = ScrapeErrorMessage(message, scrapResponse)
+		}
+
+		// if it's not a web page or json-formatted message, return the raw message
+		log.Fatal(fmt.Sprintf("There was an issue with your http request: status [%d] message [%s]", res, message))
 	}
 }
 
