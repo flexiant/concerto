@@ -106,7 +106,7 @@ func IsClientCertificate(filename string) bool {
 }
 
 func GetConcertoCACert() string {
-	enviromentVariable, enviromentVariableExists := os.LookupEnv("CONCERTO_CA_CERT")
+	enviromentVariable, enviromentVariableExists := LookupEnv("CONCERTO_CA_CERT")
 	directoryPath, server := GetConcertoDir()
 	if enviromentVariableExists {
 		return enviromentVariable
@@ -127,7 +127,7 @@ func GetConcertoCACert() string {
 }
 
 func GetConcertoClientCert() string {
-	enviromentVariable, enviromentVariableExists := os.LookupEnv("CONCERTO_CLIENT_CERT")
+	enviromentVariable, enviromentVariableExists := LookupEnv("CONCERTO_CLIENT_CERT")
 	directoryPath, server := GetConcertoDir()
 	if enviromentVariableExists {
 		return enviromentVariable
@@ -148,7 +148,7 @@ func GetConcertoClientCert() string {
 }
 
 func GetConcertoClientKey() string {
-	enviromentVariable, enviromentVariableExists := os.LookupEnv("CONCERTO_CLIENT_KEY")
+	enviromentVariable, enviromentVariableExists := LookupEnv("CONCERTO_CLIENT_KEY")
 	directoryPath, server := GetConcertoDir()
 	if enviromentVariableExists {
 		return enviromentVariable
@@ -169,7 +169,7 @@ func GetConcertoClientKey() string {
 }
 
 func GetConcertoConfig() string {
-	enviromentVariable, enviromentVariableExists := os.LookupEnv("CONCERTO_CONFIG")
+	enviromentVariable, enviromentVariableExists := LookupEnv("CONCERTO_CONFIG")
 	directoryPath, _ := GetConcertoDir()
 	if enviromentVariableExists {
 		return enviromentVariable
@@ -178,8 +178,15 @@ func GetConcertoConfig() string {
 	}
 }
 
+func LookupEnv(key string) (string, bool) {
+	if len(os.Getenv(key)) > 0 {
+		return os.Getenv(key), true
+	}
+	return "", false
+}
+
 func GetConcertoEndpoint() string {
-	enviromentVariable, enviromentVariableExists := os.LookupEnv("CONCERTO_ENDPOINT")
+	enviromentVariable, enviromentVariableExists := LookupEnv("CONCERTO_ENDPOINT")
 	directoryPath, _ := GetConcertoDir()
 	if enviromentVariableExists {
 		return enviromentVariable
