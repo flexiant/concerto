@@ -50,7 +50,7 @@ func CheckReturnCode(res int, mesg []byte) {
 
 			message = ScrapeErrorMessage(message, scrapResponse)
 			result := strings.Split(message, ",")
-			if result != nil {
+			if result != nil && len(result) >= 1 {
 				message = result[0]
 			}
 			// Separate into fields with func.
@@ -63,7 +63,7 @@ func CheckReturnCode(res int, mesg []byte) {
 		}
 
 		// if it's not a web page or json-formatted message, return the raw message
-		log.Fatal(fmt.Sprintf("There was an issue with your http request: status [%d] message [%s]", res, message))
+		log.Fatal(fmt.Sprintf("HTTP request failed: [%s]", message))
 	}
 }
 
