@@ -1,12 +1,8 @@
 package main
 
 import (
-	"crypto/x509"
-	"encoding/pem"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
@@ -40,11 +36,6 @@ import (
 	"github.com/flexiant/concerto/wizard/locations"
 	"github.com/flexiant/concerto/wizard/server_plans"
 )
-
-func initLogging(lvl log.Level) {
-	log.SetOutput(os.Stderr)
-	log.SetLevel(lvl)
-}
 
 var ServerCommands = []cli.Command{
 	{
@@ -318,36 +309,12 @@ func cmdNotFound(c *cli.Context, command string) {
 	)
 }
 
-func checkError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func isUserCertificate(filename string) bool {
-	if utils.Exists(filename) {
-		data, err := ioutil.ReadFile(filename)
-		checkError(err)
-		block, _ := pem.Decode(data)
-
-		cert, err := x509.ParseCertificate(block.Bytes)
-		checkError(err)
-
-		if len(cert.Subject.OrganizationalUnit) > 0 {
-			if cert.Subject.OrganizationalUnit[0] == "Users" {
-				return true
-
-			}
-		}
-	}
-	return false
-}
-
 func prepareFlags(c *cli.Context) error {
 
 	if c.Bool("debug") {
 		os.Setenv("DEBUG", "1")
-		initLogging(log.DebugLevel)
+		log.SetOutput(os.Stderr)
+		log.SetLevel(log.DebugLevel)
 	}
 
 	if c.IsSet("concerto-endpoint") {
@@ -359,7 +326,7 @@ func prepareFlags(c *cli.Context) error {
 	os.Setenv("CONCERTO_CLIENT_KEY", c.String("client-key"))
 	os.Setenv("CONCERTO_CONFIG", c.String("concerto-config"))
 
-	if !isUserCertificate(os.Getenv("CONCERTO_CLIENT_CERT")) {
+	if utils.IsClientCertificate(utils.GetConcertoClientCert()) {
 		c.App.Commands = ServerCommands
 	} else {
 		c.App.Commands = ClientCommands
@@ -396,31 +363,31 @@ func main() {
 			EnvVar: "CONCERTO_CA_CERT",
 			Name:   "ca-cert",
 			Usage:  "CA to verify remotes against",
-			Value:  filepath.Join(utils.GetConcertoDir(), "ssl", "ca_cert.pem"),
+			Value:  utils.GetConcertoCACert(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CLIENT_CERT",
 			Name:   "client-cert",
 			Usage:  "Client cert to use for Concerto",
-			Value:  filepath.Join(utils.GetConcertoDir(), "ssl", "cert.crt"),
+			Value:  utils.GetConcertoClientCert(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CLIENT_KEY",
 			Name:   "client-key",
 			Usage:  "Private key used in client Concerto auth",
-			Value:  filepath.Join(utils.GetConcertoDir(), "ssl", "/private/cert.key"),
+			Value:  utils.GetConcertoClientKey(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CONFIG",
 			Name:   "concerto-config",
 			Usage:  "Concerto Config File",
-			Value:  filepath.Join(utils.GetConcertoDir(), "client.xml"),
+			Value:  utils.GetConcertoConfig(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_ENDPOINT",
 			Name:   "concerto-endpoint",
 			Usage:  "Concerto Endpoint",
-			Value:  os.Getenv("CONCERTO_ENDPOINT"),
+			Value:  utils.GetConcertoEndpoint(),
 		},
 	}
 
