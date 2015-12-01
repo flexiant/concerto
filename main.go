@@ -330,7 +330,7 @@ func prepareFlags(c *cli.Context) error {
 		c.App.Commands = ServerCommands
 	} else {
 		c.App.Commands = ClientCommands
-		if len(os.Getenv("CONCERTO_ENDPOINT")) <= 0 {
+		if len(utils.GetConcertoEndpoint()) <= 0 {
 			log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
 			fmt.Printf("\n")
 			cli.ShowCommandHelp(c, c.Command.Name)
