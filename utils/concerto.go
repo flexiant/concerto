@@ -163,7 +163,7 @@ func GetConcertoClientKey() string {
 			}
 
 		} else {
-			return filepath.Join(directoryPath, "ssl", "cert.key")
+			return filepath.Join(directoryPath, "ssl", "private", "cert.key")
 		}
 	}
 }

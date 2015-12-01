@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
 )
 
@@ -28,10 +27,11 @@ type Cert struct {
 // Returns Concerto Server Configuration
 func ConcertoServerConfiguration() (*Config, error) {
 
-	fileLocation := os.Getenv("CONCERTO_CONFIG")
+	fileLocation := utils.GetConcertoConfig()
 
 	if utils.Exists(fileLocation) {
 		var config *Config
+
 		xmlFile, err := os.Open(fileLocation)
 		if err != nil {
 			return nil, err
@@ -40,27 +40,33 @@ func ConcertoServerConfiguration() (*Config, error) {
 		b, _ := ioutil.ReadAll(xmlFile)
 		xml.Unmarshal(b, &config)
 
+		config.ApiEndpoint = utils.GetConcertoEndpoint()
+		config.Certificate.Ca = utils.GetConcertoCACert()
+		config.Certificate.Cert = utils.GetConcertoClientCert()
+		config.Certificate.Key = utils.GetConcertoClientKey()
+
 		if config.ApiEndpoint != "" && config.Certificate.Cert != "" {
 			return config, nil
 		} else {
 			return nil, errors.New(fmt.Sprintf("Configuration File %s does not have valid format.", fileLocation))
 		}
 
-	} else if utils.Exists(os.Getenv("CONCERTO_CLIENT_CERT")) {
+	} else if utils.Exists(utils.GetConcertoClientCert()) {
 
 		certificate := Cert{
-			os.Getenv("CONCERTO_CLIENT_CERT"),
-			os.Getenv("CONCERTO_CLIENT_KEY"),
-			os.Getenv("CONCERTO_CA_CERT"),
+			utils.GetConcertoClientCert(),
+			utils.GetConcertoClientKey(),
+			utils.GetConcertoCACert(),
 		}
 		config := Config{}
-		config.ApiEndpoint = os.Getenv("CONCERTO_ENDPOINT")
+		config.ApiEndpoint = utils.GetConcertoEndpoint()
 		config.Certificate = certificate
-		log.Debugf("%#v", config)
+		fmt.Printf("%#v", config)
 
 		return &config, nil
 
 	} else {
 		return nil, errors.New(fmt.Sprintf("Configuration File %s does not exist.", fileLocation))
 	}
+	return nil, errors.New("Can not load configuration")
 }
