@@ -62,6 +62,16 @@ func CheckReturnCode(res int, mesg []byte) {
 			message = ScrapeErrorMessage(message, scrapResponse)
 		}
 
+		// temporary fix to replace any mention of fleet or ship with the appropriate counterparts (CARM-296)
+		re := regexp.MustCompile("\\bfleet\\b")
+		message = re.ReplaceAllString(message, "cluster")
+		re = regexp.MustCompile("\\bFleet\\b")
+		message = re.ReplaceAllString(message, "Cluster")
+		re = regexp.MustCompile("\\bship\\b")
+		message = re.ReplaceAllString(message, "node")
+		re = regexp.MustCompile("\\bShip\\b")
+		message = re.ReplaceAllString(message, "Node")
+
 		// if it's not a web page or json-formatted message, return the raw message
 		log.Fatal(fmt.Sprintf("HTTP request failed: [%s]", message))
 	}
