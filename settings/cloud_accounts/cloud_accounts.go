@@ -60,6 +60,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/cloud/providers"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
@@ -85,11 +86,26 @@ func cmdList(c *cli.Context) {
 	err = json.Unmarshal(data, &accounts)
 	utils.CheckError(err)
 
+	data, err = webservice.Get("/v1/cloud/cloud_providers")
+	utils.CheckError(err)
+
+	var cloudProviders []providers.CloudProvider
+	err = json.Unmarshal(data, &cloudProviders)
+	utils.CheckError(err)
+
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tCLOUD PROVIDER ID\r")
+	fmt.Fprintln(w, "ID\tCLOUD PROVIDER ID\tNAME\r")
 
 	for _, ac := range accounts {
-		fmt.Fprintf(w, "%s\t%s\n", ac.Id, ac.CloudProvId)
+		acName := ""
+		for _, cp := range cloudProviders {
+			if ac.CloudProvId == cp.Id {
+				acName = cp.Name
+				break
+			}
+		}
+
+		fmt.Fprintf(w, "%s\t%s\t%s\n", ac.Id, ac.CloudProvId, acName)
 	}
 
 	w.Flush()
