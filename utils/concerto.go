@@ -96,7 +96,9 @@ func IsClientCertificate(filename string) bool {
 		cert, err := x509.ParseCertificate(block.Bytes)
 		CheckError(err)
 
-		fmt.Printf("%#v")
+		fmt.Printf("\n..........\n%#v\n..........\n", cert.Issuer)
+		fmt.Printf("\n..........\n%#v\n..........\n", cert.Subject)
+
 		if len(cert.Subject.OrganizationalUnit) > 0 {
 			if cert.Subject.OrganizationalUnit[0] == "Hosts" {
 				return true
