@@ -84,6 +84,11 @@ The guestbook is now available at a random generated subdomain. You can customiz
 
  <img src="./docs/images/dns-cname.png" alt="alias creation" width="500px" >
 
+## Access the Guestbook
+
+Access the guestbook using the default generated domain or your own alias.
+
+ <img src="./docs/images/guestbook.png" alt="guestbook" width="500px" >
 
 # Contact
 If you want to have further information about Flexiant Concerto, you can contact us at <contact@flexiant.com>.
