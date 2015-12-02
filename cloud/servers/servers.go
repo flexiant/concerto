@@ -208,6 +208,28 @@ type ScriptChar struct {
 	Script_id        string   `json:"script_id"`
 }
 
+func cmdList(c *cli.Context) {
+	var servers []Server
+
+	webservice, err := webservice.NewWebService()
+	utils.CheckError(err)
+
+	data, err := webservice.Get("/v1/cloud/servers")
+	utils.CheckError(err)
+
+	err = json.Unmarshal(data, &servers)
+	utils.CheckError(err)
+
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+
+	for _, server := range servers {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", server.Id, server.Name, server.Fqdn, server.State, server.Public_ip, server.Workspace_id, server.Template_id, server.Server_plan_id, server.Ssh_profile_id)
+	}
+	w.Flush()
+
+}
+
 func cmdShow(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id"})
 	var server Server
@@ -483,6 +505,11 @@ func cmdExecuteScript(c *cli.Context) {
 }
 func SubCommands() []cli.Command {
 	return []cli.Command{
+		{
+			Name:   "list",
+			Usage:  "Lists information about all the servers on this account.",
+			Action: cmdList,
+		},
 		{
 			Name:   "show",
 			Usage:  "Shows information about the server identified by the given id.",
