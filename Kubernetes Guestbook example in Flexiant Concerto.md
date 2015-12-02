@@ -10,11 +10,12 @@ This guide concerns how to run the Kubernetes Guestbook example using Flexiant C
 
 - [Setup](#setup)
   - [Pre-requisites](#pre-requisites)
-  - [Creating a Kubernetes cluster](#creating-a-kubernetes-cluster)
-  - [Adding nodes to a cluster](#adding-nodes-to-a-cluster)
-  - [Uploading config files](#uploading-config-files)
+  - [Creating the Kubernetes cluster](#creating-the-kubernetes-cluster)
+  - [Deploying the Guestbook example](#deploying-the-guestbook-example)
+  - [Creating a friendly URL](#creating-a-friendly-url)
+  - [Access the Guestbook](#access-the-guestbook)
 - [Contact](#contact)
-- [Contribute](#contribute)
+
 
 # Setup
 
@@ -72,7 +73,7 @@ spec:
 
    <img src="./docs/images/upload-kubectl.png" alt="Upload yaml files" width="500px" >
 
-## Creating a friendly URL (Optional)
+## Creating a friendly URL
 
 The guestbook is now available at a random generated subdomain. You can customize the DNS subdomain using Flexiant Concerto DNS management.
 
