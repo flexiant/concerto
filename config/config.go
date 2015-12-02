@@ -61,7 +61,6 @@ func ConcertoServerConfiguration() (*Config, error) {
 		config := Config{}
 		config.ApiEndpoint = utils.GetConcertoEndpoint()
 		config.Certificate = certificate
-		fmt.Printf("%#v", config)
 
 		return &config, nil
 
