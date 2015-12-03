@@ -28,7 +28,6 @@
 	Options:
 		--id <server_id> 		Server Id
 
-
 	Servers create
 
 	This action creates a new server and commissions it at the cloud provider.
