@@ -1,0 +1,14 @@
+#!/bin/bash
+git fetch --tags
+pwd=`git rev-parse --show-toplevel`
+release=`git describe --abbrev=0 --tags`
+version=`echo $release | awk -F \. '{ print $1 }'`
+mayor=`echo $release | awk -F \. '{ print $2 }'`
+minor=`echo $release | awk -F \. '{ print $3 }'`
+new_minor=$(( $minor + 1 ))
+new_release="$version.$mayor.$new_minor"
+echo "package utils" > $PWD/utils/version.go
+echo "" >> $PWD/utils/version.go
+echo "const VERSION = \"$new_release\"" >> $PWD/utils/version.go
+git add $PWD/utils/version.go
+git tag $new_release
