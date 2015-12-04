@@ -21,12 +21,12 @@ This guide concerns how to run the Kubernetes Guestbook example using Flexiant C
 
 ## Pre-requisites
 
-Before setting up the Kubernetes Guestbook exmple, we will need:
+Before setting up the Kubernetes Guestbook example, we will need:
 
  - A Flexiant Concerto account.
  - Cloud credentials for those providers you'd like to deploy the example on.
  - Enable Beta features for your Flexiant Concerto account.
- - (Optinal) A domain to customize the example's URL.
+ - (Optional) A domain to customize the example's URL.
 
 Please, refer to [Getting Started with Kubernetes](Getting started with Kubernetes.md).
 
