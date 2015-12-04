@@ -87,7 +87,7 @@ func GetConcertoDir() (path string, server bool) {
 	}
 }
 
-func IsClientCertificate(filename string) bool {
+func IsHostCertificate(filename string) bool {
 	if Exists(filename) {
 		data, err := ioutil.ReadFile(filename)
 		CheckError(err)
@@ -98,6 +98,10 @@ func IsClientCertificate(filename string) bool {
 
 		if len(cert.Subject.OrganizationalUnit) > 0 {
 			if cert.Subject.OrganizationalUnit[0] == "Hosts" {
+				return true
+			}
+		} else if len(cert.Issuer.Organization) > 0 {
+			if cert.Issuer.Organization[0] == "Tapp" {
 				return true
 			}
 		}

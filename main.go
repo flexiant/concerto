@@ -326,7 +326,7 @@ func prepareFlags(c *cli.Context) error {
 	os.Setenv("CONCERTO_CLIENT_KEY", c.String("client-key"))
 	os.Setenv("CONCERTO_CONFIG", c.String("concerto-config"))
 
-	if utils.IsClientCertificate(utils.GetConcertoClientCert()) {
+	if utils.IsHostCertificate(utils.GetConcertoClientCert()) {
 		c.App.Commands = ServerCommands
 	} else {
 		c.App.Commands = ClientCommands
