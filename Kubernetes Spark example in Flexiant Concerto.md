@@ -14,8 +14,7 @@ It is also recommended to follow [Kubernetes Guestbook example](Kubernetes Guest
   - [Pre-requisites](#pre-requisites)
   - [Creating the Kubernetes cluster](#creating-the-kubernetes-cluster)
   - [Deploying the Spark example](#deploying-the-spark-example)
-  - [Creating a friendly URL](#creating-a-friendly-url)
-  - [Use Spark](#use-spark)
+  - [Launch Spark works](#launch-spark-works)
 - [Contact](#contact)
 
 # Setup
