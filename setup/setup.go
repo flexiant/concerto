@@ -146,6 +146,7 @@ func (w *WebClient) GetApiKeys() error {
 			io.Copy(file, response.Body)
 
 			err = utils.Unzip(file.Name(), concertoFolderSSL)
+			defer os.Remove(file.Name())
 			if err != nil {
 				return err
 			} else {
