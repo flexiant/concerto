@@ -87,7 +87,7 @@ func (w *WebClient) checkErrorMessage(b io.Reader) error {
 	return errorMessage
 }
 
-func (w *WebClient) Login(email string, password string) error {
+func (w *WebClient) login(email string, password string) error {
 	response, err := w.client.Get(fmt.Sprintf("%s/accounts/login", w.endpoint))
 	if err != nil {
 		log.Fatalf("%#v", err)
@@ -124,7 +124,7 @@ func (w *WebClient) Login(email string, password string) error {
 	return err
 }
 
-func (w *WebClient) GetApiKeys() error {
+func (w *WebClient) getApiKeys() error {
 
 	response, err := w.client.Get(fmt.Sprintf("%s/settings/api_key.zip", w.endpoint))
 	defer response.Body.Close()
@@ -180,11 +180,11 @@ func cmdSetupApiKeys(c *cli.Context) {
 			log.Fatal(err)
 		}
 
-		err = client.Login(email, password)
+		err = client.login(email, password)
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.GetApiKeys()
+		err = client.getApiKeys()
 		if err != nil {
 			log.Fatal(err)
 		}
