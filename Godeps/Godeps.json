@@ -1,0 +1,33 @@
+{
+	"ImportPath": "github.com/flexiant/concerto",
+	"GoVersion": "go1.5",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.8.2-23-gc79ccaf",
+			"Rev": "c79ccaf8c2b6e7361c430b45aae6891fca8ff729"
+		},
+		{
+			"ImportPath": "github.com/asaskevich/govalidator",
+			"Comment": "v2-45-g1295808",
+			"Rev": "129580890d97de923d9d9aec06cb1aa771812aff"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-135-gf998261",
+			"Rev": "f9982619ccace7df963bb7f6d1de3a6f014ff709"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "0c93e1ff9f91f0c63bf17b123de503d023434fdd"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "01256db42e5106196a3473ec1620727a383500e8"
+		},
+		{
+			"ImportPath": "golang.org/x/net/publicsuffix",
+			"Rev": "01256db42e5106196a3473ec1620727a383500e8"
+		}
+	]
+}
