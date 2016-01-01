@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 type Config struct {
@@ -200,6 +202,31 @@ func GetConcertoEndpoint() string {
 			CheckError(err)
 			return config.ApiEndpoint
 		}
+	}
+	return ""
+}
+
+func GetConcertoUrl() string {
+	enviromentVariable, enviromentVariableExists := LookupEnv("CONCERTO_URL")
+	if enviromentVariableExists {
+		return enviromentVariable
+	} else {
+
+		apiEndpoint := GetConcertoEndpoint()
+
+		u, err := url.Parse(apiEndpoint)
+		CheckError(err)
+
+		tokenHost := strings.Split(u.Host, ":")
+		tokenFqdn := strings.Split(tokenHost[0], ".")
+
+		if strings.Contains(u.Host, "staging") {
+			return fmt.Sprintf("%s://%s/", u.Scheme, tokenHost[0])
+		}
+
+		tokenFqdn[0] = "start"
+
+		return fmt.Sprintf("%s://%s/", u.Scheme, strings.Join(tokenFqdn, "."))
 	}
 	return ""
 }

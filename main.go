@@ -30,6 +30,7 @@ import (
 	"github.com/flexiant/concerto/settings/cloud_accounts"
 	"github.com/flexiant/concerto/settings/reports"
 	"github.com/flexiant/concerto/settings/saas_accounts"
+	"github.com/flexiant/concerto/setup"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/wizard/apps"
 	"github.com/flexiant/concerto/wizard/cloud_providers"
@@ -208,6 +209,14 @@ var WizardCommands = []cli.Command{
 }
 
 var ClientCommands = []cli.Command{
+	{
+		Name:      "setup",
+		ShortName: "se",
+		Usage:     "Configures and setups concerto cli enviroment",
+		Subcommands: append(
+			setup.SubCommands(),
+		),
+	},
 	{
 		Name:      "nodes",
 		ShortName: "no",
@@ -388,6 +397,12 @@ func main() {
 			Name:   "concerto-endpoint",
 			Usage:  "Concerto Endpoint",
 			Value:  utils.GetConcertoEndpoint(),
+		},
+		cli.StringFlag{
+			EnvVar: "CONCERTO_URL",
+			Name:   "concerto-url",
+			Usage:  "Concerto Web URL",
+			Value:  utils.GetConcertoUrl(),
 		},
 	}
 
