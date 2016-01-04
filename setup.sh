@@ -53,6 +53,7 @@ concertoInitialize(){
 }
 
 writeDefaultConfig(){
+	mkdir $conf_path
 	cat <<EOF > $cli_conf
 <concerto version="1.0" server="https://clients.concerto.io:886/" log_file="/var/log/concerto-client.log" log_level="info">
 	<ssl cert="$cli_conf/ssl/cert.crt" key="$cli_conf/ssl/private/cert.key" server_ca="$cli_conf/ssl/ca_cert.pem" />

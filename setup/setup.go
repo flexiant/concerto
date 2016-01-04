@@ -164,32 +164,41 @@ func (w *WebClient) getApiKeys() error {
 
 func cmdSetupApiKeys(c *cli.Context) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("We are going to log into Concerto %s \nEmail: ", utils.GetConcertoUrl())
-	emailUnClean, _ := reader.ReadString('\n')
+	fmt.Printf("We are going to log into Concerto %s ", utils.GetConcertoUrl())
+
+	var email string
+	tries := 0
+	for {
+		fmt.Printf("\nEmail: ")
+		emailUnClean, _ := reader.ReadString('\n')
+		email = strings.TrimSpace(string(emailUnClean))
+		if govalidator.IsEmail(email) {
+			break
+		}
+		log.Errorf("Email address %s is not a valid email", email)
+		if tries == 2 {
+			os.Exit(1)
+		}
+		tries++
+	}
 
 	fmt.Printf("Password: ")
 	passwordUnClean, _ := terminal.ReadPassword(int(syscall.Stdin))
-
-	email := strings.TrimSpace(string(emailUnClean))
 	password := strings.TrimSpace(string(passwordUnClean))
 	fmt.Printf("\n")
 
-	if govalidator.IsEmail(email) {
-		client, err := NewWebClient(utils.GetConcertoUrl())
-		if err != nil {
-			log.Fatal(err)
-		}
+	client, err := NewWebClient(utils.GetConcertoUrl())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		err = client.login(email, password)
-		if err != nil {
-			log.Fatal(err)
-		}
-		err = client.getApiKeys()
-		if err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		log.Fatalf("Email address %s is not a valid email", email)
+	err = client.login(email, password)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.getApiKeys()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
