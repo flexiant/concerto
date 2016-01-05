@@ -2,7 +2,7 @@
 set -e
 set -E
 
-cli_url=https://drone.io/github.com/flexiant/concerto/files/concerto.x64
+cli_url=http://get.concerto.io/concerto.x64
 cli_command=concerto
 cli_fullpath=/usr/local/bin/$cli_command
 conf_path=$HOME/.concerto
