@@ -44,12 +44,15 @@ concertoInitialize(){
 			;;
 	esac
 
+	getInstallationState
+}
+
+getInstallationState(){
 	[ -f $cli_conf ] && cli_conf_exists=true || cli_conf_exists=false
 	[ -f $cli_fullpath ] && cli_fullpath_exists=true || cli_fullpath_exists=false
 	[ -f $conf_path/ssl/ca_cert.pem ] && cacert_exists=true || cacert_exists=false
 	[ -f $conf_path/ssl/cert.crt ] && cert_exists=true || cert_exists=false
 	[ -f $conf_path/ssl/private/cert.key ] && key_exists=true || key_exists=false
-
 }
 
 writeDefaultConfig(){
@@ -72,7 +75,10 @@ installConcertoCLI(){
 	echo "Binary has been installed."
 }
 
+installAPIKeys(){
+	concerto setup api_keys
 
+}
 
 certsInstructions(){
 cat <<EOF
@@ -149,5 +155,7 @@ echo "Configuration written to '$cli_conf'"
 }
 
 # if certs not there
- ! $cacert_exists || ! $cert_exists || ! $cert_exists ] && certsInstructions || echo "Concerto API Keys found at '$conf_path/ssl'."
+ ! $cacert_exists || ! $cert_exists || ! $cert_exists ] && ! $cert_exists && installAPIKeys
+ getInstallationState
+ ! $cacert_exists || ! $cert_exists || ! $cert_exists ] && ! $cert_exists && certsInstructions || echo "Concerto installed. Type 'concerto' to access CLI help"
 echo
