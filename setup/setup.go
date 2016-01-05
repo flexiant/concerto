@@ -17,6 +17,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
 
+	"bytes"
 	"github.com/asaskevich/govalidator"
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/ssh/terminal"
@@ -124,6 +125,29 @@ func (w *WebClient) login(email string, password string) error {
 	return err
 }
 
+func (w *WebClient) generateAPIKeys() error {
+
+	// values := url.Values{}
+	// values.Set("X-CSRF-TOKEN", w.csrf)
+	var jsonStr = []byte("{}")
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/settings/api_key", w.endpoint), bytes.NewBuffer(jsonStr))
+	req.Header.Set("X-CSRF-TOKEN", w.csrf)
+	req.Header.Set("Content-Type", "application/json")
+	response, err := w.client.Do(req)
+	//response, err := w.client.Post(fmt.Sprintf("%s/settings/api_key", w.endpoint), "application/json", nil)
+	//response, err := w.client.PostForm(fmt.Sprintf("%s/settings/api_key", w.endpoint), values)
+	defer response.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode >= 300 {
+		return fmt.Errorf(fmt.Sprintf("We couldn't check for the existence of api keys at your account. Please try by loging to %s and generating manually through settings > accounts", w.endpoint))
+	}
+	return nil
+}
+
 func (w *WebClient) getApiKeys() error {
 
 	response, err := w.client.Get(fmt.Sprintf("%s/settings/api_key.zip", w.endpoint))
@@ -150,55 +174,55 @@ func (w *WebClient) getApiKeys() error {
 			if err != nil {
 				return err
 			} else {
-				log.Infof("Unziped Api Keys in %s. Please enjoy of concerto cli.\n", concertoFolderSSL)
+				log.Infof("Unziped Api Keys in %s.\n", concertoFolderSSL)
 				return nil
 			}
 		} else {
 			return errors.New("You are trying to overwrite server configuration. Please contact your administrator")
 		}
 	} else {
-		return errors.New(fmt.Sprintf("We are not able to download you api keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.endpoint))
+		return errors.New(fmt.Sprintf("We are not able to download your API keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.endpoint))
 	}
 	return nil
 }
 
 func cmdSetupApiKeys(c *cli.Context) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("We are going to log into Concerto %s ", utils.GetConcertoUrl())
-
-	var email string
-	tries := 0
-	for {
-		fmt.Printf("\nEmail: ")
-		emailUnClean, _ := reader.ReadString('\n')
-		email = strings.TrimSpace(string(emailUnClean))
-		if govalidator.IsEmail(email) {
-			break
-		}
-		log.Errorf("Email address %s is not a valid email", email)
-		if tries == 2 {
-			os.Exit(1)
-		}
-		tries++
-	}
+	fmt.Printf("We are going to log into Concerto %s \nEmail: ", utils.GetConcertoUrl())
+	emailUnClean, _ := reader.ReadString('\n')
 
 	fmt.Printf("Password: ")
 	passwordUnClean, _ := terminal.ReadPassword(int(syscall.Stdin))
+
+	email := strings.TrimSpace(string(emailUnClean))
 	password := strings.TrimSpace(string(passwordUnClean))
 	fmt.Printf("\n")
 
-	client, err := NewWebClient(utils.GetConcertoUrl())
-	if err != nil {
-		log.Fatal(err)
-	}
+	if govalidator.IsEmail(email) {
+		client, err := NewWebClient(utils.GetConcertoUrl())
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	err = client.login(email, password)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = client.getApiKeys()
-	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Logging into Concerto ...\n")
+		err = client.login(email, password)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Check/Generate API keys ...\n")
+		err = client.generateAPIKeys()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Downloading API keys ...\n")
+		err = client.getApiKeys()
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatalf("Email address %s is not a valid email", email)
 	}
 }
 
