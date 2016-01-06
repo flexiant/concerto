@@ -220,13 +220,9 @@ func GetConcertoUrl() string {
 		tokenHost := strings.Split(u.Host, ":")
 		tokenFqdn := strings.Split(tokenHost[0], ".")
 
-		if strings.Contains(u.Host, "staging") {
-			// remove api preffix
-			tokenFqdn = tokenFqdn[1:]
-			return fmt.Sprintf("%s://%s/", u.Scheme, strings.Join(tokenFqdn, "."))
+		if !strings.Contains(u.Host, "staging") {
+			tokenFqdn[0] = "start"
 		}
-
-		tokenFqdn[0] = "start"
 
 		return fmt.Sprintf("%s://%s/", u.Scheme, strings.Join(tokenFqdn, "."))
 	}

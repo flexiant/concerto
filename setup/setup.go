@@ -2,6 +2,7 @@ package setup
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -17,7 +18,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
 
-	"bytes"
 	"github.com/asaskevich/govalidator"
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/ssh/terminal"
@@ -26,9 +26,10 @@ import (
 )
 
 type WebClient struct {
-	client   *http.Client
-	endpoint string
-	csrf     string
+	client *http.Client
+	url    *url.URL
+	csrf   string
+	cookie *http.Cookie
 }
 
 func NewWebClient(endpoint string) (*WebClient, error) {
@@ -40,9 +41,15 @@ func NewWebClient(endpoint string) (*WebClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	client := &http.Client{Transport: transport, Jar: jar}
 
-	return &WebClient{client, endpoint, ""}, nil
+	endpointUrl, err := url.ParseRequestURI(endpoint)
+	if err != nil {
+		return nil, err
+	}
+
+	return &WebClient{client, endpointUrl, "", nil}, nil
 }
 
 func (w *WebClient) obtainCsrf(b io.Reader) {
@@ -89,19 +96,21 @@ func (w *WebClient) checkErrorMessage(b io.Reader) error {
 }
 
 func (w *WebClient) login(email string, password string) error {
-	response, err := w.client.Get(fmt.Sprintf("%s/accounts/login", w.endpoint))
+	w.url.Path = "/accounts/login"
+
+	response, err := w.client.Get(w.url.String())
+	defer response.Body.Close()
+	w.obtainCsrf(response.Body)
+
+	w.cookie = response.Cookies()[0]
+
 	if err != nil {
 		log.Fatalf("%#v", err)
 	}
 
-	b := response.Body
-	defer b.Close()
-
-	w.obtainCsrf(b)
-
 	if w.csrf == "" {
-		log.Debugf("Can not log into %s as %s", w.endpoint, email)
-		return errors.New(fmt.Sprintf("Can not log into %s as %s", w.endpoint, email))
+		log.Debugf("Can not log into %s as %s", w.url.String(), email)
+		return errors.New(fmt.Sprintf("Can not log into %s as %s", w.url.String(), email))
 	}
 
 	account := url.Values{}
@@ -109,33 +118,41 @@ func (w *WebClient) login(email string, password string) error {
 	account.Set("account[email]", email)
 	account.Set("account[password]", password)
 
-	response, err = w.client.PostForm(fmt.Sprintf("%s/accounts/login", w.endpoint), account)
-	b = response.Body
-	defer b.Close()
+	response, err = w.client.PostForm(w.url.String(), account)
+	defer response.Body.Close()
+	w.obtainCsrf(response.Body)
+
 	if err != nil {
 		return err
 	}
 
-	err = w.checkErrorMessage(b)
+	err = w.checkErrorMessage(response.Body)
 
 	if err == nil {
-		log.Debugf("Logged in %s as %s", w.endpoint, email)
+		log.Debugf("Logged in %s as %s", w.url.String(), email)
 	}
 
 	return err
 }
 
+func debug(data []byte, err error) {
+	if err == nil {
+		fmt.Printf("%s\n\n", data)
+	} else {
+		log.Fatalf("%s\n\n", err)
+	}
+}
 func (w *WebClient) generateAPIKeys() error {
+	w.url.Path = "/settings/api_key"
 
-	// values := url.Values{}
-	// values.Set("X-CSRF-TOKEN", w.csrf)
-	var jsonStr = []byte("{}")
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/settings/api_key", w.endpoint), bytes.NewBuffer(jsonStr))
-	req.Header.Set("X-CSRF-TOKEN", w.csrf)
-	req.Header.Set("Content-Type", "application/json")
-	response, err := w.client.Do(req)
-	//response, err := w.client.Post(fmt.Sprintf("%s/settings/api_key", w.endpoint), "application/json", nil)
-	//response, err := w.client.PostForm(fmt.Sprintf("%s/settings/api_key", w.endpoint), values)
+	emptyValue := []byte("{}")
+	request, err := http.NewRequest("POST", w.url.String(), bytes.NewBuffer(emptyValue))
+	request.Header.Add("Accept", "application/json")
+	request.Header.Add("X-Requested-With", "XMLHttpRequest")
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("X-CSRF-TOKEN", w.csrf)
+
+	response, err := w.client.Do(request)
 	defer response.Body.Close()
 
 	if err != nil {
@@ -143,14 +160,15 @@ func (w *WebClient) generateAPIKeys() error {
 	}
 
 	if response.StatusCode >= 300 {
-		return fmt.Errorf(fmt.Sprintf("We couldn't check for the existence of api keys at your account. Please try by loging to %s and generating manually through settings > accounts", w.endpoint))
+		return fmt.Errorf(fmt.Sprintf("We couldn't check for the existence of api keys at your account. Please try by loging to %s and generating manually through settings > accounts", w.url.String()))
 	}
 	return nil
 }
 
 func (w *WebClient) getApiKeys() error {
+	w.url.Path = "/settings/api_key.zip"
 
-	response, err := w.client.Get(fmt.Sprintf("%s/settings/api_key.zip", w.endpoint))
+	response, err := w.client.Get(w.url.String())
 	defer response.Body.Close()
 
 	if err != nil {
@@ -181,18 +199,30 @@ func (w *WebClient) getApiKeys() error {
 			return errors.New("You are trying to overwrite server configuration. Please contact your administrator")
 		}
 	} else {
-		return errors.New(fmt.Sprintf("We are not able to download your API keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.endpoint))
+		return errors.New(fmt.Sprintf("We are not able to download your API keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.url.String()))
 	}
 	return nil
 }
 
 func cmdSetupApiKeys(c *cli.Context) {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("We are going to log into Concerto %s \nEmail: ", utils.GetConcertoUrl())
-	emailUnClean, _ := reader.ReadString('\n')
+	var emailUnClean string
+	var passwordUnClean []byte
 
-	fmt.Printf("Password: ")
-	passwordUnClean, _ := terminal.ReadPassword(int(syscall.Stdin))
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("We are going to log into Concerto %s \n", utils.GetConcertoUrl())
+	if c.IsSet("email") {
+		emailUnClean = c.String("email")
+	} else {
+		fmt.Printf("Email: ")
+		emailUnClean, _ = reader.ReadString('\n')
+	}
+
+	if c.IsSet("password") {
+		passwordUnClean = []byte(c.String("password"))
+	} else {
+		fmt.Printf("Password: ")
+		passwordUnClean, _ = terminal.ReadPassword(int(syscall.Stdin))
+	}
 
 	email := strings.TrimSpace(string(emailUnClean))
 	password := strings.TrimSpace(string(passwordUnClean))
@@ -232,6 +262,16 @@ func SubCommands() []cli.Command {
 			Name:   "api_keys",
 			Usage:  "Install Concerto Api Keys",
 			Action: cmdSetupApiKeys,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "email",
+					Usage: "Email used to log into concerto",
+				},
+				cli.StringFlag{
+					Name:  "password",
+					Usage: "Password used to log into concerto",
+				},
+			},
 		},
 	}
 }
