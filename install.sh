@@ -2,6 +2,7 @@
 
 
 cli_url=http://get.concerto.io/concerto.x64
+api_url=${CONCERTO_ENDPOINT:=https://clients.concerto.io:886/}
 cli_command=concerto
 cli_fullpath=/usr/local/bin/$cli_command
 conf_path=$HOME/.concerto
@@ -51,6 +52,7 @@ concertoInitialize(){
 			;;
 	esac
 
+	[ ]
 	printf " OK\n"
 
 	getInstallationState
@@ -76,7 +78,7 @@ writeDefaultConfig(){
 
 	mkdir -p "${conf_path}"
 	cat <<EOF > $cli_conf
-<concerto version="1.0" server="https://clients.concerto.io:886/" log_file="/var/log/concerto-client.log" log_level="info">
+<concerto version="1.0" server="$api_url" log_file="/var/log/concerto-client.log" log_level="info">
 	<ssl cert="$cli_conf/ssl/cert.crt" key="$cli_conf/ssl/private/cert.key" server_ca="$cli_conf/ssl/ca_cert.pem" />
 </concerto>
 EOF
