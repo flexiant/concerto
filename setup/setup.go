@@ -52,13 +52,15 @@ func NewWebClient(endpoint string) (*WebClient, error) {
 	return &WebClient{client, endpointUrl, "", nil}, nil
 }
 
-func (w *WebClient) obtainCsrf(b io.Reader) {
+func (w *WebClient) obtainCsrf(b io.Reader) error {
+	var errorMessage error = nil
 	z := html.NewTokenizer(b)
+
 	for {
 		tt := z.Next()
 		switch {
 		case tt == html.ErrorToken:
-			return
+			return errorMessage
 		case tt == html.SelfClosingTagToken:
 			t := z.Token()
 			isMeta := t.Data == "meta"
@@ -70,29 +72,16 @@ func (w *WebClient) obtainCsrf(b io.Reader) {
 					w.csrf = t.Attr[1].Val
 					log.Debugf("Csrf Token: %s", w.csrf)
 				}
-
 			}
-		}
-	}
-}
-
-func (w *WebClient) checkErrorMessage(b io.Reader) error {
-	var errorMessage error
-	z := html.NewTokenizer(b)
-	for {
-		tt := z.Next()
-		switch {
-		case tt == html.ErrorToken:
-			return errorMessage
 		case tt == html.StartTagToken:
 			t := z.Token()
 			if (t.Data == "div") && len(t.Attr) > 0 && (t.Attr[0].Key == "id") && (t.Attr[0].Val == "flash_alert") {
 				z.Next()
-				errorMessage = errors.New(z.Token().Data)
+				errorMessage = errors.New(z.Token().String())
 			}
 		}
 	}
-	return errorMessage
+
 }
 
 func (w *WebClient) login(email string, password string) error {
@@ -100,9 +89,7 @@ func (w *WebClient) login(email string, password string) error {
 
 	response, err := w.client.Get(w.url.String())
 	defer response.Body.Close()
-	w.obtainCsrf(response.Body)
-
-	w.cookie = response.Cookies()[0]
+	err = w.obtainCsrf(response.Body)
 
 	if err != nil {
 		log.Fatalf("%#v", err)
@@ -113,6 +100,8 @@ func (w *WebClient) login(email string, password string) error {
 		return errors.New(fmt.Sprintf("Can not log into %s as %s", w.url.String(), email))
 	}
 
+	w.cookie = response.Cookies()[0]
+
 	account := url.Values{}
 	account.Set("authenticity_token", w.csrf)
 	account.Set("account[email]", email)
@@ -120,13 +109,12 @@ func (w *WebClient) login(email string, password string) error {
 
 	response, err = w.client.PostForm(w.url.String(), account)
 	defer response.Body.Close()
-	w.obtainCsrf(response.Body)
 
 	if err != nil {
 		return err
 	}
 
-	err = w.checkErrorMessage(response.Body)
+	err = w.obtainCsrf(response.Body)
 
 	if err == nil {
 		log.Debugf("Logged in %s as %s", w.url.String(), email)
@@ -191,17 +179,14 @@ func (w *WebClient) getApiKeys() error {
 			defer os.Remove(file.Name())
 			if err != nil {
 				return err
-			} else {
-				log.Infof("Unziped Api Keys in %s.\n", concertoFolderSSL)
-				return nil
 			}
-		} else {
-			return errors.New("You are trying to overwrite server configuration. Please contact your administrator")
+			log.Debugf("Unziped Api Keys in %s.\n", concertoFolderSSL)
+			return nil
+
 		}
-	} else {
-		return errors.New(fmt.Sprintf("We are not able to download your API keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.url.String()))
+		return errors.New("You are trying to overwrite server configuration. Please contact your administrator")
 	}
-	return nil
+	return errors.New(fmt.Sprintf("We are not able to download your API keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.url.String()))
 }
 
 func cmdSetupApiKeys(c *cli.Context) {
@@ -241,14 +226,14 @@ func cmdSetupApiKeys(c *cli.Context) {
 		}
 		fmt.Printf(" OK\n")
 
-		fmt.Printf("Checking/Generating API keys ...\n")
+		fmt.Printf("Checking/Generating API keys ...")
 		err = client.generateAPIKeys()
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf(" OK\n")
 
-		fmt.Printf("Downloading API keys ...\n")
+		fmt.Printf("Downloading API keys ...")
 		err = client.getApiKeys()
 		if err != nil {
 			log.Fatal(err)
