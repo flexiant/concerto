@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -E
+
 
 cli_url=http://get.concerto.io/concerto.x64
 cli_command=concerto
@@ -13,16 +12,23 @@ cacert_exists=false
 cert_exists=false
 key_exists=false
 update=false
+verbose=false
 LOGO_H_SIZE=127
 
 parseArgs(){
+
+
+	printf "Parse arguments ..."
 	for arg in "$@"
 	do
     [ "$arg" = "-u" ] && update=true
+		[ "$arg" = "-v" ] && verbose=true
 	done
+	printf " OK\n"
 }
 
 concertoInitialize(){
+	printf "Initializing ..."
 	case "$(uname -m)" in
 		*64)
 			;;
@@ -40,10 +46,12 @@ concertoInitialize(){
 			cli_url="$cli_url.linux"
 			;;
 		*)
-			echo "OS could not be detected. Assuming linux."
+			$verbose && printf " (OS could not be detected. Assuming linux) "
 			cli_url="$cli_url.linux"
 			;;
 	esac
+
+	printf " OK\n"
 
 	getInstallationState
 }
@@ -57,27 +65,77 @@ getInstallationState(){
 }
 
 writeDefaultConfig(){
+
+	printf "Writing concerto configuration ..."
+	if $cli_conf_exists;
+	then
+		$verbose && printf " (configuration found at '$cli_conf')."
+		printf " Skipped\n"
+		return
+	fi
+
 	mkdir -p "${conf_path}"
 	cat <<EOF > $cli_conf
 <concerto version="1.0" server="https://clients.concerto.io:886/" log_file="/var/log/concerto-client.log" log_level="info">
 	<ssl cert="$cli_conf/ssl/cert.crt" key="$cli_conf/ssl/private/cert.key" server_ca="$cli_conf/ssl/ca_cert.pem" />
 </concerto>
 EOF
+
+	printf " OK\n"
 }
 
 installConcertoCLI(){
+	printf "Installing Concerto CLI ..."
+	if ! $update && $cli_fullpath_exists;
+	then
+		$verbose && printf " (concerto CLI exists. Use '-u' to force update)"
+		printf " Skipped\n"
+		return
+	fi
+
 	command -v curl > /dev/null &&  dwld="curl -sSL -o" || \
 	{	command -v wget > /dev/null && dwld="wget -qO"; } || \
-	{ echo 'curl or wget are needed to install Concerto CLI.'; exit 1; }
-	echo "Downloading Flexiant Concerto CLI ..."
-	echo "(you might be asked for your password to sudo now)"
-	sudo $dwld  $cli_fullpath $cli_url
-	sudo chmod +x $cli_fullpath
-	echo "Binary has been installed."
+	{ echo ' (curl or wget are needed to install Concerto CLI.) Failed'; exit 1; }
+	printf " (you might be asked for your password to sudo now)\n"
+	if ! sudo $dwld  $cli_fullpath $cli_url;
+	then
+		echo "(Concerto CLI Binary download failed). Failed"
+		exit 1
+	fi
+
+	if ! sudo chmod +x $cli_fullpath;
+	then
+		echo "(Concerto CLI Binary execution flag assigment failed). Failed"
+		exit 1
+	fi
+
+	echo "Binary has been installed. OK"
+
+	current_concerto=$(command -v $cli_fullpath)
+	[ $current_concerto != $cli_fullpath ] && echo "WARNING: concerto is being run from '$current_concerto'. Please, update your path to execute from $cli_fullpath"
+
 }
 
 installAPIKeys(){
-	concerto setup api_keys
+	printf "Installing API keys ..."
+
+	if $cacert_exists && $cert_exists && $key_exists;
+	then
+	 	$verbose && printf " (Concerto keys already exists)."
+		printf " Skipped\n"
+	else
+		if ! concerto setup api_keys;
+		then
+			printf " (error downloading Concerto keys. Try downloading manually). Failed\n"
+			certsInstructions
+			exit 1
+		fi
+	fi
+
+	# # if certs not there
+	#  ! $cacert_exists || ! $cert_exists || ! $key_exists ] && ! $cert_exists && concerto setup api_keys
+	#  getInstallationState
+	#  ! $cacert_exists || ! $cert_exists || ! $cert_exists ] && ! $cert_exists && certsInstructions || echo "Concerto installed. Type 'concerto' to access CLI help"
 
 }
 
@@ -94,12 +152,17 @@ $cli_conf
 EOF
 }
 
+installedMessage(){
+	printf "\n Concerto CLI is installed.\n Type 'concerto' to access Concerto commands\n\n"
+}
 showLogo(){
 	[ $LOGO_H_SIZE -lt $(tput cols) ] && logoFull || logoSimple
+	echo "Executing Flexiant Concerto CLI install"
 }
 
 logoSimple(){
 cat <<EOF
+
             ╔                       
             ╠▒╕                     
             ╠╢╢▒                    
@@ -124,6 +187,7 @@ EOF
 
 logoFull(){
 cat <<EOF
+
             ╔                        88888888888 88                        88 
             ╠▒╕                      88          88                        ""                         ,d
             ╠╢╢▒                     88          88                                                   88
@@ -142,39 +206,19 @@ cat <<EOF
             ╠╢╢▒                       Y8a.    .a8P "8a,   ,a8" 88       88 "8a,   ,aa "8b,   ,aa 88           88,  "8a,   ,a8"
             ╠╢▀                         '"Y8888Y"'   '"YbbdP"'  88       88  '"Ybbd8"'  '"Ybbd8"' 88           "Y888 '"YbbdP"'
             ╠                         
-                          
-
 
 EOF
 }
 
 
+
+
+
+
 showLogo
-echo "Executing Flexiant Concerto CLI install"
-echo "Parse arguments ..."
 parseArgs $@
-
-echo "Initialize installer ..."
 concertoInitialize
-
-$update || ! $cli_fullpath_exists && {
-	 	echo "Installing Concerto CLI ..."
-	 	installConcertoCLI
-  	echo "Concerto CLI Binary installed"
-	 } || echo "Concerto CLI already exists. Use '-u' to force update"
-
-
-current_concerto=$(command -v $cli_fullpath)
-[ $current_concerto != $cli_fullpath ] && echo "WARNING: concerto is being run from '$current_concerto'. Please, update your path to execute from $cli_fullpath"
-
-$cli_conf_exists && echo "Concerto configuration found at '$cli_conf'" ||  {
-echo "Writing concerto configuration ..."
+installConcertoCLI
 writeDefaultConfig
-echo "Configuration written to '$cli_conf'"
-}
-
-# if certs not there
- ! $cacert_exists || ! $cert_exists || ! $cert_exists ] && ! $cert_exists && installAPIKeys
- getInstallationState
- ! $cacert_exists || ! $cert_exists || ! $cert_exists ] && ! $cert_exists && certsInstructions || echo "Concerto installed. Type 'concerto' to access CLI help"
-echo
+installAPIKeys
+installedMessage
