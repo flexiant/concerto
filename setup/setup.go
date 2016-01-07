@@ -209,7 +209,7 @@ func cmdSetupApiKeys(c *cli.Context) {
 	var passwordUnClean []byte
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("We are going to log into Concerto %s \n", utils.GetConcertoUrl())
+	fmt.Printf("Using Concerto endpoint %s \n", utils.GetConcertoUrl())
 	if c.IsSet("email") {
 		emailUnClean = c.String("email")
 	} else {
@@ -234,23 +234,27 @@ func cmdSetupApiKeys(c *cli.Context) {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Logging into Concerto ...\n")
+		fmt.Printf("Logging into Concerto ...")
 		err = client.login(email, password)
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Printf(" OK\n")
 
-		fmt.Printf("Check/Generate API keys ...\n")
+		fmt.Printf("Checking/Generating API keys ...\n")
 		err = client.generateAPIKeys()
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Printf(" OK\n")
 
 		fmt.Printf("Downloading API keys ...\n")
 		err = client.getApiKeys()
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Printf(" OK\n")
+
 	} else {
 		log.Fatalf("Email address %s is not a valid email", email)
 	}

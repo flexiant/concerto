@@ -124,6 +124,7 @@ installAPIKeys(){
 	 	$verbose && printf " (Concerto keys already exists)."
 		printf " Skipped\n"
 	else
+		echo
 		if ! concerto setup api_keys;
 		then
 			printf " (error downloading Concerto keys. Try downloading manually). Failed\n"
