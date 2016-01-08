@@ -23,7 +23,7 @@ Before setting up Kubernetes, we will need a Flexiant Concerto account.
 
 You can create a free account in less than a minute following the steps in Flexiant Concerto [login page](https://start.concerto.io/).
 
-Once your account have been provisioned, add a cloud provider. After doing this, enable beta features by doing the following:
+Once your account have been provisioned, add a cloud provider. After doing this, ensure that beta features are activated and listed as one of the top menu tabs options. If that is not the case, enable beta features by doing the following:
 
 1. Navigate the menus to **Settings** > **User Details**.
 2. Select the **Enable beta features** check box.
@@ -66,8 +66,8 @@ To add nodes to a cluster:
 	2. Select the server plan you want to use for the node.
 	3. Click the **Add Node** button.
 	4. Repeat these steps until you have the required number of nodes in your cluster.
-	
-## Uploading config files	
+
+## Uploading config files
 
 Kubernetes allows the configuration of pods and replication controllers to be defined in a .json or .yaml file. Once your Kubernetes cluster is operational, these files can be uploaded to your cluster using the Flexiant Concerto UI.
 
@@ -77,13 +77,13 @@ To upload configuration files:
 2. Click on the **Kubernetes** sub-tab.
 3. Click on the name of the cluster you want to upload configuration files to.
 4. Click on the **Kubectl** menu at the top of the page.
-	
+
 	<img src="./docs/images/kubectl-menu.png" alt="Kubectl menu" width="500px" >
-	
+
 5. Click the **+** button on the right hand side of the page.
 
 	<img src="./docs/images/add-kube-file.png" alt="+ button" width="500px" >
-	
+
 6. Click the **Upload Kube file** button.
 7. Select the file to upload and click the **Open** button.
 
