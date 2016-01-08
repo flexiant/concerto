@@ -127,7 +127,7 @@ installAPIKeys(){
 		printf " Skipped\n"
 	else
 		echo
-		concerto setup api_keys
+		concerto setup api_keys < /dev/tty
 
 		if [ $? -ne 0 ];
 		then
