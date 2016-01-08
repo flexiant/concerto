@@ -12,7 +12,9 @@ cli_fullpath_exists=false
 cacert_exists=false
 cert_exists=false
 key_exists=false
-update=false
+force_bin=false
+force_keys=false
+force_conf=false
 verbose=false
 LOGO_H_SIZE=127
 
@@ -22,7 +24,10 @@ parseArgs(){
 	printf "Parse arguments ..."
 	for arg in "$@"
 	do
-    [ "$arg" = "-u" ] && update=true
+    [ "$arg" = "-fb" ] && force_bin=true
+		[ "$arg" = "-fk" ] && force_keys=true
+		[ "$arg" = "-fc" ] && force_conf=true
+		[ "$arg" = "-f" ] && force_bin=true; force_keys=true; force_conf=true
 		[ "$arg" = "-v" ] && verbose=true
 	done
 	printf " OK\n"
@@ -69,9 +74,9 @@ getInstallationState(){
 writeDefaultConfig(){
 
 	printf "Writing concerto configuration ..."
-	if $cli_conf_exists;
+	if ! $force_conf && $cli_conf_exists;
 	then
-		$verbose && printf " (configuration found at '$cli_conf')."
+		$verbose && printf " (configuration found at '$cli_conf'. Use '-fc' to force update concerto binary)"
 		printf " Skipped\n"
 		return
 	fi
@@ -88,9 +93,9 @@ EOF
 
 installConcertoCLI(){
 	printf "Installing Concerto CLI ..."
-	if ! $update && $cli_fullpath_exists;
+	if ! $force_bin && $cli_fullpath_exists;
 	then
-		$verbose && printf " (concerto CLI exists. Use '-u' to force update)"
+		$verbose && printf " (concerto CLI exists. Use '-fb' to force update concerto binary)"
 		printf " Skipped\n"
 		return
 	fi
@@ -121,9 +126,9 @@ installConcertoCLI(){
 installAPIKeys(){
 	printf "Installing API keys ..."
 
-	if $cacert_exists && $cert_exists && $key_exists;
+	if ! $force_keys && $cacert_exists && $cert_exists && $key_exists;
 	then
-	 	$verbose && printf " (Concerto keys already exists)."
+	 	$verbose && printf " (Concerto keys already exists. Use '-fk' to force update API keys)"
 		printf " Skipped\n"
 	else
 		echo
