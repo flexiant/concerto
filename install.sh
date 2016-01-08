@@ -127,7 +127,9 @@ installAPIKeys(){
 		printf " Skipped\n"
 	else
 		echo
-		if ! concerto setup api_keys;
+		concerto setup api_keys
+
+		if [ $? -ne 0 ];
 		then
 			printf " (error downloading Concerto keys. Try downloading manually). Failed\n"
 			certsInstructions
