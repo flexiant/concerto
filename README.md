@@ -15,6 +15,8 @@ If you want to build the CLI using the source code, please, take into account th
 
 - [Setup](#setup)
   - [Pre-requisites](#pre-requisites)
+  - [Setup script](#setup-script)
+  - [Manual Setup](#manual-setup)
   - [Linux and OSX](#linux-and-osx)
     - [Configuration](#configuration)
     - [Binaries](#binaries)
@@ -43,7 +45,35 @@ Before setting up the CLI, we will need a Flexiant Concerto account, and an API 
 
 You can create a free account in less than a minute following the steps in Flexiant Concerto [login page](https://start.concerto.io/).
 
-Once your account have been provisioned, navigate the menus to `Settings` > `User Details`
+
+Once your account have been provisioned, if you are a linux or OS X, we recommend you to execute the automated setup script. Otherwise, follow the [manual process](#manual-setup)
+
+## Setup script
+
+Open a terminal window and execute
+
+`curl -sSL get.concerto.io | sh`
+
+The script will drive you through
+ - Concerto CLI Binary download
+ - Configuration
+ - API keys creation
+
+The setup script can take these arguments:
+ - `fb` forces the binary to be overwriten
+ - `fc` forces the configuration file to be overwriten
+ - `fk` forces the API keys to be overwriten
+ - `f` forces binary, configuration and API keys to be overwriten
+ - `v` verbose mode
+
+Example
+
+`curl -sSL get.concerto.io | sh -s f`
+
+
+## Manual Setup
+
+Use Concerto Web UI to navigate the menus to `Settings` > `User Details`
 and scroll down until you find the `New API key` button.
 
 <img src="./docs/images/newAPIkey.png" alt="new API key" width="500px" >
