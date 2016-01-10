@@ -213,7 +213,7 @@ func cmdDockerHijack(c *cli.Context) {
 				}
 				break
 			}
-			fmt.Printf("%s\n", strings.Replace(string(line), "docker", fmt.Sprintf("concerto node docker --node %s", nodeName), -1))
+			fmt.Printf("%s\n", strings.Replace(string(line), "docker", fmt.Sprintf("concerto nodes docker --node %s", nodeName), -1))
 		}
 
 		go func() {
