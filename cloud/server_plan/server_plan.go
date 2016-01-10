@@ -52,8 +52,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/cloud_providers/%s/server_plans", c.String("cloud_provider_id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/cloud_providers/%s/server_plans", c.String("cloud_provider_id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &serverPlans)
 	utils.CheckError(err)
@@ -75,8 +76,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/server_plans/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/server_plans/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &sp)
 	utils.CheckError(err)

@@ -209,8 +209,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/blueprint/templates")
+	err, data, res := webservice.Get("/v1/blueprint/templates")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &templates)
 	utils.CheckError(err)
@@ -232,8 +233,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &template)
 	utils.CheckError(err)
@@ -354,8 +356,9 @@ func cmdListTemplateScripts(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", c.String("template_id"), c.String("type")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", c.String("template_id"), c.String("type")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &templateScripts)
 	utils.CheckError(err)
@@ -377,8 +380,9 @@ func cmdShowTemplateScript(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &templateScript)
 	utils.CheckError(err)
@@ -497,8 +501,9 @@ func cmdListTemplateServers(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", c.String("template_id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", c.String("template_id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &templateServers)
 	utils.CheckError(err)

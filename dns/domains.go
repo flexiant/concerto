@@ -179,8 +179,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/dns/domains")
+	err, data, res := webservice.Get("/v1/dns/domains")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &domains)
 	utils.CheckError(err)
@@ -202,8 +203,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &d)
 	utils.CheckError(err)
@@ -305,8 +307,9 @@ func cmdListDomainRecords(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &domainRecords)
 	utils.CheckError(err)
@@ -327,8 +330,9 @@ func cmdShowDomainRecords(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &dr)
 	utils.CheckError(err)

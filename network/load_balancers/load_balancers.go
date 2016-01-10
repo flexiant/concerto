@@ -158,8 +158,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/network/load_balancers")
+	err, data, res := webservice.Get("/v1/network/load_balancers")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &loadBalancers)
 	utils.CheckError(err)
@@ -181,8 +182,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &lb)
 	utils.CheckError(err)
@@ -303,8 +305,9 @@ func cmdListNodes(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &nodes)
 	utils.CheckError(err)

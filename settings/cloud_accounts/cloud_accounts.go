@@ -80,14 +80,16 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/settings/cloud_accounts")
+	err, data, res := webservice.Get("/v1/settings/cloud_accounts")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &accounts)
 	utils.CheckError(err)
 
-	data, err = webservice.Get("/v1/cloud/cloud_providers")
+	err, data, res = webservice.Get("/v1/cloud/cloud_providers")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	var cloudProviders []providers.CloudProvider
 	err = json.Unmarshal(data, &cloudProviders)

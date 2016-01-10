@@ -51,7 +51,7 @@ func get() Policy {
 	}
 
 	log.Debugf("Current firewall driver %s", driverName())
-	data, err := webservice.Get(endpoint)
+	err, data, _ := webservice.Get(endpoint)
 	if err != nil {
 		log.Fatal(err)
 	}

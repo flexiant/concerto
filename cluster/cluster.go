@@ -120,8 +120,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/kaas/fleets")
+	err, data, res := webservice.Get("/v1/kaas/fleets")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &clusters)
 	utils.CheckError(err)
@@ -157,8 +158,9 @@ func cmdKubectlHijack(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/kaas/fleets")
+	err, data, res := webservice.Get("/v1/kaas/fleets")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &clusters)
 	utils.CheckError(err)

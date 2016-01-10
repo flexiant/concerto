@@ -94,8 +94,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/cloud/ssh_profiles")
+	err, data, res := webservice.Get("/v1/cloud/ssh_profiles")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &sshProfiles)
 	utils.CheckError(err)
@@ -117,8 +118,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &sshProfile)
 	utils.CheckError(err)

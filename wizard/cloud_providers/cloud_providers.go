@@ -44,8 +44,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/wizard/cloud_providers?app_id=%s&location_id=%s", c.String("app_id"), c.String("location_id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/wizard/cloud_providers?app_id=%s&location_id=%s", c.String("app_id"), c.String("location_id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &cps)
 	utils.CheckError(err)

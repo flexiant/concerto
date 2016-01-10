@@ -213,8 +213,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/cloud/servers")
+	err, data, res := webservice.Get("/v1/cloud/servers")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &servers)
 	utils.CheckError(err)
@@ -236,8 +237,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &server)
 	utils.CheckError(err)
@@ -421,8 +423,9 @@ func cmdListDNS(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/records", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/records", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &dnsList)
 	utils.CheckError(err)
@@ -444,8 +447,9 @@ func cmdListEvents(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/events", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/events", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &events)
 	utils.CheckError(err)
@@ -467,8 +471,9 @@ func cmdListScripts(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &scripts)
 	utils.CheckError(err)

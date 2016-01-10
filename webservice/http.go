@@ -114,23 +114,23 @@ func (w *Webservice) Delete(endpoint string) (error, []byte, int) {
 	return nil, body, response.StatusCode
 }
 
-func (w *Webservice) Get(endpoint string) ([]byte, error) {
+func (w *Webservice) Get(endpoint string) (error, []byte, int) {
 
 	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
 	response, err := w.client.Get(w.config.ApiEndpoint + endpoint)
 	if err != nil {
-		return nil, err
+		return err, nil, -1
 	}
 	defer response.Body.Close()
 
 	log.Debugf("Status code: %s", response.Status)
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return err, nil, -1
 	}
 
 	log.Debugf("Response: %s", string(body))
-	return body, nil
+	return nil, body, response.StatusCode
 }
 
 func (w *Webservice) GetFile(endpoint string, directoryPath string) (string, error) {

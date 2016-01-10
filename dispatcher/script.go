@@ -80,7 +80,7 @@ func execute(phase string) {
 		log.Fatal(err)
 	}
 	log.Debugf("Current Script Characterization %s", phase)
-	data, err := webservice.Get(fmt.Sprintf(characterizationsEndpoint, phase))
+	err, data, _ := webservice.Get(fmt.Sprintf(characterizationsEndpoint, phase))
 
 	json.Unmarshal(data, &scriptChars)
 

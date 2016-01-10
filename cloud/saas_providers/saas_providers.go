@@ -39,8 +39,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/cloud/saas_providers")
+	err, data, res := webservice.Get("/v1/cloud/saas_providers")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &saasProviders)
 	utils.CheckError(err)

@@ -107,8 +107,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/kaas/ships")
+	err, data, res := webservice.Get("/v1/kaas/ships")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &nodes)
 	utils.CheckError(err)
@@ -149,8 +150,9 @@ func cmdDockerHijack(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/kaas/ships")
+	err, data, res := webservice.Get("/v1/kaas/ships")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &nodes)
 	utils.CheckError(err)

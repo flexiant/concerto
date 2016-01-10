@@ -51,8 +51,9 @@ func cmdListEvents(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/audit/events")
+	err, data, res := webservice.Get("/v1/audit/events")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &events)
 	utils.CheckError(err)
@@ -73,8 +74,9 @@ func cmdListSysEvents(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/audit/system_events")
+	err, data, res := webservice.Get("/v1/audit/system_events")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &events)
 	utils.CheckError(err)

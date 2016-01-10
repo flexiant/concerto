@@ -51,8 +51,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/blueprint/services")
+	err, data, res := webservice.Get("/v1/blueprint/services")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &services)
 	utils.CheckError(err)
@@ -74,8 +75,9 @@ func cmdShow(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get(fmt.Sprintf("/v1/blueprint/services/%s", c.String("id")))
+	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/services/%s", c.String("id")))
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &service)
 	utils.CheckError(err)

@@ -40,8 +40,9 @@ func cmdList(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	data, err := webservice.Get("/v1/cloud/generic_images")
+	err, data, res := webservice.Get("/v1/cloud/generic_images")
 	utils.CheckError(err)
+	utils.CheckReturnCode(res, data)
 
 	err = json.Unmarshal(data, &images)
 	utils.CheckError(err)
