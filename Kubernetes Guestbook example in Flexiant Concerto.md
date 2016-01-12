@@ -50,7 +50,7 @@ Once your cluster is running, create the replication controllers and services th
 
 1. Download and customize Guestbook files
 
-Access the [Kubernetes Guestbook Example](https://github.com/kubernetes/kubernetes/blob/master/examples/guestbook/php-redis/guestbook.php) and download all yaml files.
+Access the [Kubernetes Guestbook Example](https://github.com/kubernetes/kubernetes/tree/master/examples/guestbook) and download all yaml files.
 
 2. Modify frontend service type to use Flexiant Concerto load balancer. Edit `frontend-service.yaml` Uncomment the line that allows load balancing.
 
