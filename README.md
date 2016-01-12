@@ -167,7 +167,7 @@ If you got an error executing concerto CLI:
 
 
 # Usage
-We include the most common use cases here. If you feel there is a missing a use case here, open an issue or contact us at <contact@flexiant.com>.
+We include the most common use cases here. If you feel there is a missing a use case here, open an issue or contact us at <enquiries@concerto.io>.
 
 ## Wizard
 The Wizard command for Concerto CLI is the command line version of our `Quick add server` in the Concerto Web UI.
