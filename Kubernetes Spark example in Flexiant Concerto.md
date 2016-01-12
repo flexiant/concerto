@@ -46,7 +46,7 @@ Once your cluster is running, create the replication controllers and services th
 
 1. Download Spark example files.
 
-Access the [Kubernetes Spark Example](https://github.com/kubernetes/kubernetes/tree/v1.0.7/examples/spark) and download all yaml files.
+Access the [Kubernetes Spark Example](https://github.com/kubernetes/kubernetes/tree/v1.0.7/examples/spark) and download all json files.
 
 (Please, note that we are refering to a fixed example version, and not to the master branch's version.)
 
@@ -54,7 +54,7 @@ Access the [Kubernetes Spark Example](https://github.com/kubernetes/kubernetes/t
   1. Upload the spark master pod.
   2. Upload the spark master service.
   3. Upload the spark workers controller and wait for the pods to be running.
-  4. Upload the spark driver pod.
+
 
    <img src="./docs/images/spark-pods.png" alt="Spark pods" width="500px" >
 
