@@ -36,11 +36,11 @@ Please, refer to [Getting Started with Kubernetes](Getting started with Kubernet
 
   <img src="./docs/images/add-cluster2.png" alt="Create cluster button" width="500px" >
 
-2. Add a master node, of at least 1GB RAM
+2. Add a master node of at least 1GB RAM
 
    <img src="./docs/images/add-master.png" alt="Add master" width="500px" >
 
-3. Add one or several slave nodes
+3. Add one or several slave nodes of at least 1GB RAM
 
    <img src="./docs/images/cluster-nodes.png" alt="Add slaves" width="500px" >
 
