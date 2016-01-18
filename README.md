@@ -121,13 +121,13 @@ Download linux binaries for [Linux][cli_linux] or for [OSX][cli_darwin] and plac
 
 Linux:
 ```
-sudo curl -o /usr/local/bin/concerto https://s3.amazonaws.com/get.concerto.io/concerto.x64.linux 
+sudo curl -o /usr/local/bin/concerto http://get.concerto.io/concerto.x64.linux 
 sudo chmod +x /usr/local/bin/concerto
 ```
 
 OSX:
 ```
-sudo curl -o /usr/local/bin/concerto https://s3.amazonaws.com/get.concerto.io/concerto.x64.darwin
+sudo curl -o /usr/local/bin/concerto http://get.concerto.io/concerto.x64.darwin
 sudo chmod +x /usr/local/bin/concerto
 ```
 
@@ -634,6 +634,6 @@ To contribute
 Please, use gofmt, golint, go vet, and follow [go style](https://github.com/golang/go/wiki/CodeReviewComments) advices
 
 [cli_build]: https://drone.io/github.com/flexiant/concerto/latest
-[cli_linux]: https://s3.amazonaws.com/get.concerto.io/concerto.x64.linux 
-[cli_darwin]: https://s3.amazonaws.com/get.concerto.io/concerto.x64.darwin
-[cli_windows]: https://s3.amazonaws.com/get.concerto.io/concerto.x64.windows.exe
+[cli_linux]: http://get.concerto.io/concerto.x64.linux 
+[cli_darwin]: http://get.concerto.io/concerto.x64.darwin
+[cli_windows]: http://get.concerto.io/concerto.x64.windows.exe
