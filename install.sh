@@ -18,20 +18,17 @@ force_conf=false
 verbose=false
 LOGO_H_SIZE=127
 
-echo "ARG DEBUG $@"
-echo $@
 parseArgs(){
 
 
 	printf "Parse arguments ..."
 	for arg in "$@"
 	do
-		echo "ARG DEBUG $arg"
-    [ "$arg" = "fb" ] && force_bin=true
-		[ "$arg" = "fk" ] && force_keys=true
-		[ "$arg" = "fc" ] && force_conf=true
-		[ "$arg" = "f" ] && force_bin=true; force_keys=true; force_conf=true
-		[ "$arg" = "v" ] && verbose=true
+    if [ "$arg" == "fb" ]; then force_bin=true; fi
+		if [ "$arg" == "fk" ]; then force_keys=true; fi
+		if [ "$arg" == "fc" ]; then force_conf=true; fi
+		if [ "$arg" == "f" ]; then force_bin=true; force_keys=true; force_conf=true; fi
+		if [ "$arg" == "v" ]; then verbose=true; fi
 	done
 	printf " OK\n"
 }
