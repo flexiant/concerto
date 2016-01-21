@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"github.com/flexiant/concerto/utils"
 )
 
+// Config stores Concerto CLI configuration items
 type Config struct {
 	XMLName     xml.Name `xml:"concerto"`
 	ApiEndpoint string   `xml:"server,attr"`
@@ -18,14 +18,22 @@ type Config struct {
 	Certificate Cert     `xml:"ssl"`
 }
 
+// Cert stores certificates to use against Concerto API
 type Cert struct {
 	Cert string `xml:"cert,attr"`
 	Key  string `xml:"key,attr"`
 	Ca   string `xml:"server_ca,attr"`
 }
 
-// Returns Concerto Server Configuration
+// cachedConf makes sure we read configuratino only once
+var cachedConf *Config
+
+// ConcertoServerConfiguration returns Concerto Server Configuration
 func ConcertoServerConfiguration() (*Config, error) {
+
+	if cachedConf != nil {
+		return cachedConf, nil
+	}
 
 	fileLocation := utils.GetConcertoConfig()
 
@@ -47,9 +55,8 @@ func ConcertoServerConfiguration() (*Config, error) {
 
 		if config.ApiEndpoint != "" && config.Certificate.Cert != "" {
 			return config, nil
-		} else {
-			return nil, errors.New(fmt.Sprintf("Configuration File %s does not have valid format.", fileLocation))
 		}
+		return nil, fmt.Errorf("Configuration File %s does not have valid format.", fileLocation)
 
 	} else if utils.Exists(utils.GetConcertoClientCert()) {
 
@@ -64,8 +71,7 @@ func ConcertoServerConfiguration() (*Config, error) {
 
 		return &config, nil
 
-	} else {
-		return nil, errors.New(fmt.Sprintf("Configuration File %s does not exist.", fileLocation))
 	}
-	return nil, errors.New("Can not load configuration")
+
+	return nil, fmt.Errorf("Configuration File %s does not exist.", fileLocation)
 }
