@@ -20,7 +20,8 @@ If you want to build the CLI using the source code, please, take into account th
   - [Linux and OSX](#linux-and-osx)
     - [Configuration](#configuration)
     - [Binaries](#binaries)
-    - [Troubleshooting](#troubleshooting)
+  - [Environment variables](#environment-variables)
+  - [Troubleshooting](#troubleshooting)
 - [Usage](#usage)
   - [Wizard](#wizard)
     - [Wizard Use Case](#wizard-use-case)
@@ -121,7 +122,7 @@ Download linux binaries for [Linux][cli_linux] or for [OSX][cli_darwin] and plac
 
 Linux:
 ```
-sudo curl -o /usr/local/bin/concerto http://get.concerto.io/concerto.x64.linux 
+sudo curl -o /usr/local/bin/concerto http://get.concerto.io/concerto.x64.linux
 sudo chmod +x /usr/local/bin/concerto
 ```
 
@@ -155,7 +156,18 @@ ID                         NAME                  DEFAULT        DOMAIN ID       
 56388361cfda105f6e000502   Wordpress_workspace   false          5601726ffef51ac134000028   56017273fef51ac13400002b   56388360cfda105f6e000501
 ```
 
-###Troubleshooting
+## Environment variables
+
+When using Concerto CLI you can override configuration parameters using the following environment variables:
+
+- `CONCERTO_ENDPOINT`: Concerto API endpoint.
+- `CONCERTO_CA_CERT`: CA certificate used with the API endpoint.
+- `CONCERTO_CLIENT_CERT`: client certificate used with the API endpoint.
+- `CONCERTO_CLIENT_KEY`: client key used with the API endpoint.
+- `CONCERTO_CONFIG`: config file to be read by Concerto CLI.
+- `CONCERTO_URL`: Concerto web site URL.
+
+## Troubleshooting
 If you got an error executing concerto CLI:
  - execute `which concerto` to make sure that the binary is installed
  - execute ls -l /path/to/concerto with the output from the previous command, and check that you have execute permissions
@@ -634,6 +646,6 @@ To contribute
 Please, use gofmt, golint, go vet, and follow [go style](https://github.com/golang/go/wiki/CodeReviewComments) advices
 
 [cli_build]: https://drone.io/github.com/flexiant/concerto/latest
-[cli_linux]: http://get.concerto.io/concerto.x64.linux 
+[cli_linux]: http://get.concerto.io/concerto.x64.linux
 [cli_darwin]: http://get.concerto.io/concerto.x64.darwin
 [cli_windows]: http://get.concerto.io/concerto.x64.windows.exe
