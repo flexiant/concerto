@@ -2,15 +2,17 @@ package webservice
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/flexiant/concerto/config"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/flexiant/concerto/config"
 )
 
 const contentDispositionRegex = "filename=\\\"([^\\\"]*){1}\\\""
@@ -42,10 +44,22 @@ func httpClient(config *config.Config) (*http.Client, error) {
 		return nil, err
 	}
 
-	// Creates a client with specific transport configurations
-	transport := &http.Transport{
-		TLSClientConfig: &tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true},
+	// Load CA file used to verify server
+	ca_pool := x509.NewCertPool()
+	ca_cert, err := ioutil.ReadFile(config.Certificate.Ca)
+	if err != nil {
+		return nil, fmt.Errorf("could not load CA file: %v", err)
 	}
+	ca_pool.AppendCertsFromPEM(ca_cert)
+
+	// Create a client with specific transport configurations
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			RootCAs:      ca_pool,
+			Certificates: []tls.Certificate{cert},
+		},
+	}
+
 	client := &http.Client{Transport: transport}
 
 	return client, nil
