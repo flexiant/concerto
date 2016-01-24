@@ -438,7 +438,6 @@ list 		Lists all available Clusters
 start 		Starts a given Cluster
 stop 		Stops a given Cluster
 empty 		Empties a given Cluster
-attach_net 	Attaches network to a given Cluster
 create 		Creates a Cluster
 delete 		Deletes a given Cluster
 kubectl 	Kubectl command line wrapper
