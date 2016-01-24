@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/admin"
@@ -36,6 +33,7 @@ import (
 	"github.com/flexiant/concerto/wizard/cloud_providers"
 	"github.com/flexiant/concerto/wizard/locations"
 	"github.com/flexiant/concerto/wizard/server_plans"
+	"os"
 )
 
 var ServerCommands = []cli.Command{
@@ -326,25 +324,17 @@ func prepareFlags(c *cli.Context) error {
 		log.SetLevel(log.DebugLevel)
 	}
 
-	if c.IsSet("concerto-endpoint") {
-		os.Setenv("CONCERTO_ENDPOINT", c.String("concerto-endpoint"))
+	// try to read configuration
+	config, err := utils.InitializeConcertoConfig(c)
+	if err != nil {
+		log.Errorf("Error reading Concerto configuration: %s", err)
+		return err
 	}
 
-	os.Setenv("CONCERTO_CA_CERT", c.String("ca-cert"))
-	os.Setenv("CONCERTO_CLIENT_CERT", c.String("client-cert"))
-	os.Setenv("CONCERTO_CLIENT_KEY", c.String("client-key"))
-	os.Setenv("CONCERTO_CONFIG", c.String("concerto-config"))
-
-	if utils.IsHostCertificate(utils.GetConcertoClientCert()) {
+	if config.IsHost {
 		c.App.Commands = ServerCommands
 	} else {
 		c.App.Commands = ClientCommands
-		if len(utils.GetConcertoEndpoint()) <= 0 {
-			log.Warn("Please use parameter --concerto-endpoint or setup ENVIROMENT variable CONCERTO_ENDPOINT")
-			fmt.Printf("\n")
-			cli.ShowCommandHelp(c, c.Command.Name)
-			os.Exit(2)
-		}
 	}
 
 	return nil
@@ -371,38 +361,32 @@ func main() {
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CA_CERT",
 			Name:   "ca-cert",
-			Usage:  "CA to verify remotes against",
-			Value:  utils.GetConcertoCACert(),
+			Usage:  "CA to verify remote connections",
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CLIENT_CERT",
 			Name:   "client-cert",
 			Usage:  "Client cert to use for Concerto",
-			Value:  utils.GetConcertoClientCert(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CLIENT_KEY",
 			Name:   "client-key",
 			Usage:  "Private key used in client Concerto auth",
-			Value:  utils.GetConcertoClientKey(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_CONFIG",
 			Name:   "concerto-config",
 			Usage:  "Concerto Config File",
-			Value:  utils.GetConcertoConfig(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_ENDPOINT",
 			Name:   "concerto-endpoint",
 			Usage:  "Concerto Endpoint",
-			Value:  utils.GetConcertoEndpoint(),
 		},
 		cli.StringFlag{
 			EnvVar: "CONCERTO_URL",
 			Name:   "concerto-url",
 			Usage:  "Concerto Web URL",
-			Value:  utils.GetConcertoUrl(),
 		},
 	}
 

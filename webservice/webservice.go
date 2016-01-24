@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
-	"github.com/flexiant/concerto/config"
+	"github.com/flexiant/concerto/utils"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -13,17 +13,21 @@ import (
 	"strings"
 )
 
-const contentDispositionRegex = "filename=\\\"([^\\\"]*){1}\\\""
-
 type Webservice struct {
-	config *config.Config
+	config *utils.Config
 	client *http.Client
 }
 
+const contentDispositionRegex = "filename=\\\"([^\\\"]*){1}\\\""
+
 func NewWebService() (*Webservice, error) {
-	config, err := config.ConcertoServerConfiguration()
+	config, err := utils.GetConcertoConfig()
 	if err != nil {
 		return nil, err
+	}
+
+	if !config.IsConfigReady() {
+		return nil, fmt.Errorf("Configuration is incomplete.")
 	}
 
 	client, err := httpClient(config)
@@ -34,7 +38,7 @@ func NewWebService() (*Webservice, error) {
 	return &Webservice{config, client}, nil
 }
 
-func httpClient(config *config.Config) (*http.Client, error) {
+func httpClient(config *utils.Config) (*http.Client, error) {
 
 	// Loads Clients Certificates and creates and 509KeyPair
 	cert, err := tls.LoadX509KeyPair(config.Certificate.Cert, config.Certificate.Key)
@@ -52,9 +56,9 @@ func httpClient(config *config.Config) (*http.Client, error) {
 }
 
 func (w *Webservice) Post(endpoint string, json []byte) (error, []byte, int) {
-	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+	log.Debugf("Connecting: %s%s", w.config.APIEndpoint, endpoint)
 	output := strings.NewReader(string(json))
-	response, err := w.client.Post(w.config.ApiEndpoint+endpoint, "application/json", output)
+	response, err := w.client.Post(w.config.APIEndpoint+endpoint, "application/json", output)
 
 	log.Debugf("Posting: %s", output)
 	if err != nil {
@@ -71,10 +75,10 @@ func (w *Webservice) Post(endpoint string, json []byte) (error, []byte, int) {
 }
 
 func (w *Webservice) Put(endpoint string, json []byte) (error, []byte, int) {
-	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+	log.Debugf("Connecting: %s%s", w.config.APIEndpoint, endpoint)
 	output := strings.NewReader(string(json))
 
-	request, err := http.NewRequest("PUT", w.config.ApiEndpoint+endpoint, output)
+	request, err := http.NewRequest("PUT", w.config.APIEndpoint+endpoint, output)
 	if err != nil {
 		return err, nil, -1
 	}
@@ -96,9 +100,9 @@ func (w *Webservice) Put(endpoint string, json []byte) (error, []byte, int) {
 }
 
 func (w *Webservice) Delete(endpoint string) (error, []byte, int) {
-	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
+	log.Debugf("Connecting: %s%s", w.config.APIEndpoint, endpoint)
 
-	request, err := http.NewRequest("DELETE", w.config.ApiEndpoint+endpoint, nil)
+	request, err := http.NewRequest("DELETE", w.config.APIEndpoint+endpoint, nil)
 	response, err := w.client.Do(request)
 
 	log.Debugf("Deleting: %s", endpoint)
@@ -116,8 +120,8 @@ func (w *Webservice) Delete(endpoint string) (error, []byte, int) {
 
 func (w *Webservice) Get(endpoint string) (error, []byte, int) {
 
-	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
-	response, err := w.client.Get(w.config.ApiEndpoint + endpoint)
+	log.Debugf("Connecting: %s%s", w.config.APIEndpoint, endpoint)
+	response, err := w.client.Get(w.config.APIEndpoint + endpoint)
 	if err != nil {
 		return err, nil, -1
 	}
@@ -135,8 +139,8 @@ func (w *Webservice) Get(endpoint string) (error, []byte, int) {
 
 func (w *Webservice) GetFile(endpoint string, directoryPath string) (string, error) {
 
-	log.Debugf("Connecting: %s%s", w.config.ApiEndpoint, endpoint)
-	response, err := w.client.Get(w.config.ApiEndpoint + endpoint)
+	log.Debugf("Connecting: %s%s", w.config.APIEndpoint, endpoint)
+	response, err := w.client.Get(w.config.APIEndpoint + endpoint)
 	if err != nil {
 		return "", err
 	}

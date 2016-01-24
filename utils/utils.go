@@ -117,7 +117,53 @@ func CheckReturnCode(res int, mesg []byte) {
 	}
 }
 
-func Exists(name string) bool {
+// CheckStandardStatus return error if status is not OK
+func CheckStandardStatus(status int, mesg []byte) error {
+
+	if status < 300 {
+		return nil
+	}
+
+	message := string(mesg[:])
+
+	f := func(c rune) bool {
+		return c == ',' || c == ':' || c == '{' || c == '}' || c == '"' || c == ']' || c == '['
+	}
+
+	if strings.Contains(message, "{\"errors\":{") {
+		scrapResponse := "{\"errors\":(.*?)}"
+
+		message = ScrapeErrorMessage(message, scrapResponse)
+		result := strings.Split(message, ",")
+		if result != nil && len(result) >= 1 {
+			message = result[0]
+		}
+		// Separate into fields with func.
+		fields := strings.FieldsFunc(message, f)
+		message = strings.Join(fields[:], " ")
+
+	} else if strings.Contains(message, "{\"error\":") {
+		scrapResponse := "{\"error\":\"(.*?)\"}"
+		message = ScrapeErrorMessage(message, scrapResponse)
+	}
+
+	// temporary fix to replace any mention of fleet or ship with the appropriate counterparts (CARM-296)
+	re := regexp.MustCompile("\\bfleet\\b")
+	message = re.ReplaceAllString(message, "cluster")
+	re = regexp.MustCompile("\\bFleet\\b")
+	message = re.ReplaceAllString(message, "Cluster")
+	re = regexp.MustCompile("\\bship\\b")
+	message = re.ReplaceAllString(message, "node")
+	re = regexp.MustCompile("\\bShip\\b")
+	message = re.ReplaceAllString(message, "Node")
+
+	// if it's not a web page or json-formatted message, return the raw message
+	return fmt.Errorf("HTTP request failed: [%s]", message)
+
+}
+
+// FileExists checks file existence
+func FileExists(name string) bool {
 	_, err := os.Stat(name)
 	return !os.IsNotExist(err)
 }

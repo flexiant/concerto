@@ -23,7 +23,7 @@ func CmbConverge(c *cli.Context) {
 		firstBootJsonChef = path.Join("/etc/chef", "first-boot.json")
 	}
 
-	if utils.Exists(firstBootJsonChef) {
+	if utils.FileExists(firstBootJsonChef) {
 		garbageOutput, _ := regexp.Compile("[\\[][^\\[|^\\]]*[\\]]\\s[A-Z]*:\\s")
 		output, _ := regexp.Compile("Chef Run")
 		cmd := exec.Command("chef-client", "-j", firstBootJsonChef)

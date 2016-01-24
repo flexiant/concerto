@@ -173,7 +173,17 @@ type DomainRecord struct {
 	Domain_id string `json:"domain_id"`
 }
 
+// type APIRequester struct {
+// 	ws        Webservice
+// 	params    *cli.Context
+// 	formatter OutputFormatter
+// }
+
 func cmdList(c *cli.Context) {
+	printDomainList(getDomainList())
+}
+
+func getDomainList() []Domain {
 	var domains []Domain
 
 	webservice, err := webservice.NewWebService()
@@ -186,6 +196,10 @@ func cmdList(c *cli.Context) {
 	err = json.Unmarshal(data, &domains)
 	utils.CheckError(err)
 
+	return domains
+}
+
+func printDomainList(domains []Domain) {
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
 
@@ -218,6 +232,18 @@ func cmdShow(c *cli.Context) {
 }
 
 func cmdCreate(c *cli.Context) {
+
+	d := createDomain(c)
+	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+
+	w.Flush()
+
+}
+
+func createDomain(c *cli.Context) *Domain {
+
 	utils.FlagsRequired(c, []string{"name", "contact"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -247,12 +273,7 @@ func cmdCreate(c *cli.Context) {
 	err = json.Unmarshal(res, &d)
 	utils.CheckError(err)
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
-
-	w.Flush()
-
+	return &d
 }
 
 func cmdUpdate(c *cli.Context) {
@@ -457,193 +478,4 @@ func cmdDeleteDomainRecords(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists the domains of the account group.",
-			Action: cmdList,
-		},
-		{
-			Name:   "show",
-			Usage:  "Shows information about a specific domain.",
-			Action: cmdShow,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Domain Id",
-				},
-			},
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a new domain.",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Fully-qualified domain name (FQDN)",
-				},
-				cli.StringFlag{
-					Name:  "ttl",
-					Usage: "Time to live (TTL) of the Start of Authority (SOA) record",
-				},
-				cli.StringFlag{
-					Name:  "contact",
-					Usage: "Contact e-mail",
-				},
-				cli.StringFlag{
-					Name:  "minimum",
-					Usage: "The minimum TTL of the SOA record",
-				},
-			},
-		},
-		{
-			Name:   "update",
-			Usage:  "Updates an existing domain",
-			Action: cmdUpdate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Domain Id",
-				},
-				cli.StringFlag{
-					Name:  "ttl",
-					Usage: "Time to live (TTL) of the Start of Authority (SOA) record",
-				},
-				cli.StringFlag{
-					Name:  "contact",
-					Usage: "Contact e-mail",
-				},
-				cli.StringFlag{
-					Name:  "minimum",
-					Usage: "The minimum TTL of the SOA record",
-				},
-			},
-		},
-		{
-			Name:   "delete",
-			Usage:  "Deletes a domain",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Domain Id",
-				},
-			},
-		},
-		{
-			Name:   "list_domain_records",
-			Usage:  "Lists the DNS records of a domain.",
-			Action: cmdListDomainRecords,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Domain Id",
-				},
-			},
-		},
-		{
-			Name:   "get_domain_record",
-			Usage:  "Shows information about a specific DNS record.",
-			Action: cmdShowDomainRecords,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Domain Id",
-				},
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Record Id",
-				},
-			},
-		},
-		{
-			Name:   "create_domain_record",
-			Usage:  "Creates a new DNS record.",
-			Action: cmdCreateDomainRecords,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Domain Id",
-				},
-				cli.StringFlag{
-					Name:  "type",
-					Usage: "Type of record (A, AAAA, CNAME, MX, TXT)",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Record name",
-				},
-				cli.StringFlag{
-					Name:  "content",
-					Usage: "Record content",
-				},
-				cli.StringFlag{
-					Name:  "ttl",
-					Usage: "Time to live (TTL)",
-				},
-				cli.StringFlag{
-					Name:  "prio",
-					Usage: "Priority (only MX records)",
-				},
-				cli.StringFlag{
-					Name:  "server_id",
-					Usage: "Identifier of the associated server (only A and AAAA records)",
-				},
-			},
-		},
-		{
-			Name:   "update_domain_record",
-			Usage:  "Updates an existing DNS record.",
-			Action: cmdUpdateDomainRecords,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Domain Id",
-				},
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Record Id",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Record name",
-				},
-				cli.StringFlag{
-					Name:  "content",
-					Usage: "Record content",
-				},
-				cli.StringFlag{
-					Name:  "ttl",
-					Usage: "Time to live (TTL)",
-				},
-				cli.StringFlag{
-					Name:  "prio",
-					Usage: "Priority (only MX records)",
-				},
-				cli.StringFlag{
-					Name:  "server_id",
-					Usage: "Identifier of the associated server (only A and AAAA records)",
-				},
-			},
-		},
-		{
-			Name:   "delete_domain_record",
-			Usage:  "Deletes a DNS record",
-			Action: cmdDeleteDomainRecords,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Record Id",
-				},
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Record Id",
-				},
-			},
-		},
-	}
 }

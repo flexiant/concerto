@@ -14,7 +14,6 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/config"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 )
@@ -174,7 +173,7 @@ func cmdDockerHijack(c *cli.Context) {
 		}
 
 		log.Debug(fmt.Sprintf("Found docker at %s", dockerLocation))
-		config, err := config.ConcertoServerConfiguration()
+		config, err := utils.GetConcertoConfig()
 		utils.CheckError(err)
 
 		nodeParameters := fmt.Sprintf("--host=tcp://%s:2376", node.Fqdn)

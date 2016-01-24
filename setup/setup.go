@@ -164,9 +164,15 @@ func (w *WebClient) getApiKeys() error {
 	}
 
 	if response.StatusCode < 300 && response.Header.Get("Content-Type") == "application/zip" {
-		concertoFolder, server := utils.GetConcertoDir()
-		concertoFolderSSL := path.Join(concertoFolder, "ssl")
-		if !server {
+
+		config, err := utils.GetConcertoConfig()
+		if err != nil {
+			log.Debug(err.Error)
+			return err
+		}
+
+		concertoFolderSSL := path.Join(config.ConfLocation, "ssl")
+		if !config.IsHost {
 			os.MkdirAll(path.Join(concertoFolderSSL, "private"), 0755)
 			file, err := ioutil.TempFile(os.TempDir(), "api-key.zip")
 			if err != nil {
@@ -194,7 +200,17 @@ func cmdSetupApiKeys(c *cli.Context) {
 	var passwordUnClean []byte
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Using Concerto endpoint %s \n", utils.GetConcertoUrl())
+	config, err := utils.GetConcertoConfig()
+	if err != nil {
+		log.Fatalf("Error getting current configuration: %s", err.Error)
+	}
+
+	loginURL := config.ConcertoURL
+	if err != nil {
+		log.Fatalf("Error getting Concerto URL: %s", err.Error)
+	}
+
+	fmt.Printf("Using Concerto endpoint %s \n", loginURL)
 	if c.IsSet("email") {
 		emailUnClean = c.String("email")
 	} else {
@@ -214,7 +230,7 @@ func cmdSetupApiKeys(c *cli.Context) {
 	fmt.Printf("\n")
 
 	if govalidator.IsEmail(email) {
-		client, err := NewWebClient(utils.GetConcertoUrl())
+		client, err := NewWebClient(loginURL)
 		if err != nil {
 			log.Fatal(err)
 		}

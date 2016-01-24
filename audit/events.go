@@ -37,6 +37,7 @@ import (
 	"time"
 )
 
+// Event stores an Concerto event item
 type Event struct {
 	Id          string    `json:"id"`
 	Timestamp   time.Time `json:"timestamp"`
