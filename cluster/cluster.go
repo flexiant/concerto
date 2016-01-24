@@ -5,18 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/utils"
+	"github.com/flexiant/concerto/webservice"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
 	"text/tabwriter"
 	"time"
-
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/config"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
 )
 
 type Cluster struct {
@@ -102,18 +100,6 @@ func cmdEmpty(c *cli.Context) {
 
 }
 
-func cmdAttachNet(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/attach_network", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-
-}
-
 func cmdList(c *cli.Context) {
 	var clusters []Cluster
 
@@ -189,7 +175,7 @@ func cmdKubectlHijack(c *cli.Context) {
 		}
 
 		log.Debug(fmt.Sprintf("Found kubectl at %s", kubeLocation))
-		config, err := config.ConcertoServerConfiguration()
+		config, err := utils.GetConcertoConfig()
 		utils.CheckError(err)
 
 		var clusterParameters, clientCertificate, clientKey, clientCA string
@@ -283,17 +269,6 @@ func SubCommands() []cli.Command {
 			Name:   "empty",
 			Usage:  "Empties a given Cluster",
 			Action: cmdEmpty,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Cluster Id",
-				},
-			},
-		},
-		{
-			Name:   "attach_net",
-			Usage:  "Attaches network to a given Cluster",
-			Action: cmdAttachNet,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
