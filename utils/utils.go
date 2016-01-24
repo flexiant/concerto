@@ -3,6 +3,7 @@ package utils
 import (
 	"archive/zip"
 	"fmt"
+	"github.com/codegangsta/cli"
 	"io"
 	"os"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+// TODO remove after migration
 func CheckError(err error) {
 	if err != nil {
 		log.Fatal(err)
@@ -166,4 +168,20 @@ func CheckStandardStatus(status int, mesg []byte) error {
 func FileExists(name string) bool {
 	_, err := os.Stat(name)
 	return !os.IsNotExist(err)
+}
+
+// CheckRequiredFlags checks for required flags, and show usage if requirements not met
+func CheckRequiredFlags(c *cli.Context, flags []string) {
+	missing := ""
+	for _, flag := range flags {
+		if !c.IsSet(flag) {
+			missing = fmt.Sprintf("%s\t--%s\n", missing, flag)
+		}
+	}
+
+	if missing != "" {
+		fmt.Printf("Incorrect usage. Please use parameters:\n%s\n", missing)
+		cli.ShowCommandHelp(c, c.Command.Name)
+		os.Exit(2)
+	}
 }

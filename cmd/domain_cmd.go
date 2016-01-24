@@ -10,41 +10,56 @@ import (
 )
 
 // WireUpDomain prepares common resources to send request to Concerto API
-func WireUpDomain() (*api.DomainService, format.Formatter, error) {
+func WireUpDomain() (*api.DomainService, format.Formatter) {
 
 	f := format.NewTextFormatter(os.Stdout)
 
 	config, err := utils.GetConcertoConfig()
 	if err != nil {
-		return nil, f, err
+		f.PrintFatal("Couldn't wire up config", err)
 	}
 	hcs, err := utils.NewHTTPConcertoService(config)
 	if err != nil {
-		return nil, f, err
+		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
 	ds, err := api.NewDomainService(hcs)
 	if err != nil {
-		return nil, f, err
+		f.PrintFatal("Couldn't wire up domain service", err)
 	}
 
-	return ds, f, nil
+	return ds, f
 }
 
 // DomainList subcommand function
 func DomainList(c *cli.Context) {
-	log.Debugf("domainList: %+v", c.Args().Tail())
+	log.Debugf("DomainList: %+v", c.Args().Tail())
 
-	// wire up
-	domainSvc, formatter, err := WireUpDomain()
+	domainSvc, formatter := WireUpDomain()
+	domains, headers, err := domainSvc.GetDomainListForPrinting()
 	if err != nil {
-		log.Fatal("Couldn't wire up config/api/formatter")
+		formatter.PrintFatal("Couldn't receive domain data", err)
 	}
-
-	domains, headers, err := domainSvc.GetDomainListforPrinting()
-	utils.CheckError(err)
-
 	formatter.PrintList(domains, headers)
+}
 
+// DomainShow subcommand function
+func DomainShow(c *cli.Context) {
+	log.Debugf("DomainShow: %+v", c.Args().Tail())
+	utils.CheckRequiredFlags(c, []string{"id"})
+
+	domainSvc, formatter := WireUpDomain()
+	domain, headers, err := domainSvc.GetDomainForPrinting(c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive domain data", err)
+	}
+	formatter.PrintItem(domain, headers)
+
+	//
+	// w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+	// fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+	// fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+	//
+	// w.Flush()
 }
 
 // func cmdShow(c *cli.Context) {

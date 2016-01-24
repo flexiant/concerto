@@ -16,7 +16,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "show",
 			Usage:  "Shows information about a specific domain.",
-			Action: cmdShow,
+			Action: cmd.DomainShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",

@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// TODO remove after migration
 func FlagsRequired(c *cli.Context, flags []string) {
 	parameters := false
 	for _, flag := range flags {

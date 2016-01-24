@@ -46,9 +46,28 @@ func NewDomainService(concertoService utils.ConcertoService) (*DomainService, er
 	}, nil
 }
 
-// GetDomainListforPrinting returns the list of domains as an array of Map
-// This function is intended for printing
-func (dm *DomainService) GetDomainListforPrinting() (domains [][]string, headers []string, err error) {
+// GetDomainList returns the list of domains as an array of Domain
+func (dm *DomainService) GetDomainList() (domains []Domain, err error) {
+	log.Debug("GetDomainList")
+
+	data, status, err := dm.concertoService.Get("/v1/dns/domains")
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+
+	}
+
+	if err = json.Unmarshal(data, &domains); err != nil {
+		return nil, err
+	}
+
+	return domains, nil
+}
+
+// GetDomainListForPrinting returns the list of domains as an ordered array
+func (dm *DomainService) GetDomainListForPrinting() (domains [][]string, headers []string, err error) {
 	log.Debug("GetDomainListforPrinting")
 
 	dl, err := dm.GetDomainList()
@@ -67,12 +86,11 @@ func (dm *DomainService) GetDomainListforPrinting() (domains [][]string, headers
 	return domains, headerDomain, nil
 }
 
-// GetDomainList returns the list of domains as an array of Domain
-// This function is intended for processing of domains
-func (dm *DomainService) GetDomainList() (domains []Domain, err error) {
+// GetDomain returns a domain by its ID
+func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
 	log.Debug("GetDomainList")
 
-	data, status, err := dm.concertoService.Get("/v1/dns/domains")
+	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s", ID))
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +99,28 @@ func (dm *DomainService) GetDomainList() (domains []Domain, err error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(data, &domains)
-	utils.CheckError(err)
+	if err = json.Unmarshal(data, &domain); err != nil {
+		return nil, err
+	}
 
-	return domains, nil
+	return domain, nil
+
+}
+
+// GetDomainForPrinting returns the domain as an ordered array
+func (dm *DomainService) GetDomainForPrinting(ID string) (domain []string, headers []string, err error) {
+	log.Debug("GetDomainForPrinting")
+
+	d, err := dm.GetDomain(ID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// domain to array. keep same order as header!
+	domain = []string{d.ID, d.Name, strconv.Itoa(d.TTL), d.Contact,
+		strconv.Itoa(d.Minimum), strconv.FormatBool(d.Enabled)}
+
+	headerDomain := []string{"ID", "Name", "TTL", "Contact", "Minimum", "Enabled"}
+
+	return domain, headerDomain, nil
 }
