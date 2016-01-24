@@ -12,7 +12,7 @@ import (
 // WireUpDomain prepares common resources to send request to Concerto API
 func WireUpDomain() (*api.DomainService, format.Formatter, error) {
 
-	f := format.NewTabFormatter(os.Stdout)
+	f := format.NewTextFormatter(os.Stdout)
 
 	config, err := utils.GetConcertoConfig()
 	if err != nil {

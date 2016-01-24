@@ -7,25 +7,25 @@ import (
 	"text/tabwriter"
 )
 
-// TabFormatter prints items and lists
-type TabFormatter struct {
+// TextFormatter prints items and lists
+type TextFormatter struct {
 	output *os.File
 }
 
-// NewTabFormatter creates a new TabFormatter
-func NewTabFormatter(out *os.File) *TabFormatter {
-	return &TabFormatter{
+// NewTextFormatter creates a new TextFormatter
+func NewTextFormatter(out *os.File) *TextFormatter {
+	return &TextFormatter{
 		output: out,
 	}
 }
 
 // PrintItem prints an item
-func (f *TabFormatter) PrintItem(item interface{}, header []string) {
+func (f *TextFormatter) PrintItem(item interface{}, header []string) {
 	fmt.Print("TODO not implemented")
 }
 
 // PrintList prints an item
-func (f *TabFormatter) PrintList(items [][]string, headers []string) {
+func (f *TextFormatter) PrintList(items [][]string, headers []string) {
 	log.Debug("PrintList")
 	w := tabwriter.NewWriter(f.output, 15, 1, 3, ' ', 0)
 
@@ -46,7 +46,7 @@ func (f *TabFormatter) PrintList(items [][]string, headers []string) {
 }
 
 // PrintError prints an error
-func (f *TabFormatter) PrintError(context string, err error) {
+func (f *TextFormatter) PrintError(context string, err error) {
 	fmt.Print("probando error")
 
 }
