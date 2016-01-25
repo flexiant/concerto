@@ -20,6 +20,7 @@ import (
 
 const windowsServerConfigFile = "c:\\concerto\\client.xml"
 const nixServerConfigFile = "/etc/concerto/client.xml"
+const defaultConcertoEndpoint = "https://clients.concerto.io:886/"
 
 // Config stores configuration file contents
 type Config struct {
@@ -147,6 +148,12 @@ func (config *Config) readConcertoConfig(c *cli.Context) error {
 	if overwCa := c.String("ca-cert"); overwCa != "" {
 		log.Debug("CA certificate path taken from env/args")
 		config.Certificate.Ca = overwCa
+	}
+
+	// if endpoint empty set default
+	// we can't set the default from flags, because it would overwrite config file
+	if config.APIEndpoint == "" {
+		config.APIEndpoint = defaultConcertoEndpoint
 	}
 
 	return nil
