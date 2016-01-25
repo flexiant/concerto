@@ -7,6 +7,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/mitchellh/go-homedir"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -163,12 +164,20 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 
 		currUser, err := user.Current()
 		if err != nil {
-			return err
+			log.Debugf("Couldn't use os.user to get user details: %s", err.Error())
+			dir, err := homedir.Dir()
+			if err != nil {
+				return fmt.Errorf("Couldn't get home dir for current user: %s", err.Error())
+			}
+			currUser = &user.User{
+				Username: getUsername(),
+				HomeDir:  dir,
+			}
 		}
 
 		if runtime.GOOS == "windows" {
 			// Server mode Windows
-			if currUser.Gid == "S-1-5-32-544" && FileExists(windowsServerConfigFile) {
+			if (currUser.Gid == "S-1-5-32-544" || currUser.Username == "Administrator") && FileExists(windowsServerConfigFile) {
 				config.ConfFile = configFile
 			} else {
 				// User mode Windows
@@ -176,7 +185,7 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 			}
 		} else {
 			// Server mode *nix
-			if currUser.Uid == "0" && FileExists(nixServerConfigFile) {
+			if currUser.Uid == "0" || currUser.Username == "root" && FileExists(nixServerConfigFile) {
 				config.ConfFile = nixServerConfigFile
 			} else {
 				// User mode *nix
@@ -186,6 +195,35 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 	}
 	config.ConfLocation = path.Dir(config.ConfFile)
 	return nil
+}
+
+// getUsername gets username by env variable.
+// os.user is dependant on cgo, so cross compiling won't work
+func getUsername() string {
+	u := "unknown"
+	osUser := ""
+
+	switch runtime.GOOS {
+	case "darwin", "linux":
+		osUser = os.Getenv("USER")
+	case "windows":
+		osUser = os.Getenv("USERNAME")
+
+		// HACK ugly ... if localized administrator, translate to administrator
+		if osUser == "Järjestelmänvalvoja" ||
+			osUser == "Administrateur" ||
+			osUser == "Rendszergazda" ||
+			osUser == "Administrador" ||
+			osUser == "Администратор" ||
+			osUser == "Administratör" {
+			osUser = "Administrator"
+		}
+	}
+
+	if osUser != "" {
+		u = osUser
+	}
+	return u
 }
 
 // readConcertoURL reads URL from CONCERTO_URL envrionment or calculates using API URL
