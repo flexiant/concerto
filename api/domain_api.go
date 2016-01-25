@@ -5,7 +5,6 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
-	"strconv"
 )
 
 // Domain represents a domain entry
@@ -66,26 +65,6 @@ func (dm *DomainService) GetDomainList() (domains []Domain, err error) {
 	return domains, nil
 }
 
-// GetDomainListForPrinting returns the list of domains as an ordered array
-func (dm *DomainService) GetDomainListForPrinting() (domains [][]string, headers []string, err error) {
-	log.Debug("GetDomainListforPrinting")
-
-	dl, err := dm.GetDomainList()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// domains to array. keep same order as header!
-	for _, d := range dl {
-		domain := []string{d.ID, d.Name, strconv.Itoa(d.TTL), d.Contact,
-			strconv.Itoa(d.Minimum), strconv.FormatBool(d.Enabled)}
-		domains = append(domains, domain)
-	}
-	headerDomain := []string{"ID", "Name", "TTL", "Contact", "Minimum", "Enabled"}
-
-	return domains, headerDomain, nil
-}
-
 // GetDomain returns a domain by its ID
 func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
 	log.Debug("GetDomainList")
@@ -105,22 +84,4 @@ func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
 
 	return domain, nil
 
-}
-
-// GetDomainForPrinting returns the domain as an ordered array
-func (dm *DomainService) GetDomainForPrinting(ID string) (domain []string, headers []string, err error) {
-	log.Debug("GetDomainForPrinting")
-
-	d, err := dm.GetDomain(ID)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// domain to array. keep same order as header!
-	domain = []string{d.ID, d.Name, strconv.Itoa(d.TTL), d.Contact,
-		strconv.Itoa(d.Minimum), strconv.FormatBool(d.Enabled)}
-
-	headerDomain := []string{"ID", "Name", "TTL", "Contact", "Minimum", "Enabled"}
-
-	return domain, headerDomain, nil
 }

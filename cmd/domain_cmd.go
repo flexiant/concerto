@@ -59,27 +59,6 @@ func DomainShow(c *cli.Context) {
 	}
 }
 
-// func cmdShow(c *cli.Context) {
-// 	utils.FlagsRequired(c, []string{"id"})
-// 	var d Domain
-//
-// 	webservice, err := webservice.NewWebService()
-// 	utils.CheckError(err)
-//
-// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
-// 	utils.CheckError(err)
-// 	utils.CheckReturnCode(res, data)
-//
-// 	err = json.Unmarshal(data, &d)
-// 	utils.CheckError(err)
-//
-// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-// 	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.ID, d.Name, d.TTL, d.Contact, d.Minimum, d.Enabled)
-//
-// 	w.Flush()
-// }
-
 // func cmdCreate(c *cli.Context) {
 //
 // 	d := createDomain(c)
