@@ -150,7 +150,7 @@ func (hcs *HTTPConcertoservice) GetFile(path string, directoryPath string) (stri
 	}
 
 	defer response.Body.Close()
-	log.Debugf("Status code: (%d) %s", response.StatusCode, response.Status)
+	log.Debugf("Status code:%d message:%s", response.StatusCode, response.Status)
 
 	r, err := regexp.Compile("filename=\\\"([^\\\"]*){1}\\\"")
 	if err != nil {

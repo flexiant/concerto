@@ -32,7 +32,7 @@ func WireUpDomain() (*api.DomainService, format.Formatter) {
 
 // DomainList subcommand function
 func DomainList(c *cli.Context) {
-	log.Debugf("DomainList: %+v", c.Args().Tail())
+	log.Debug("DomainList")
 
 	domainSvc, formatter := WireUpDomain()
 	domains, headers, err := domainSvc.GetDomainListForPrinting()
@@ -44,7 +44,7 @@ func DomainList(c *cli.Context) {
 
 // DomainShow subcommand function
 func DomainShow(c *cli.Context) {
-	log.Debugf("DomainShow: %+v", c.Args().Tail())
+	log.Debugf("DomainShow id:%s", c.String("id"))
 	utils.CheckRequiredFlags(c, []string{"id"})
 
 	domainSvc, formatter := WireUpDomain()
