@@ -6,13 +6,12 @@ import (
 	"github.com/flexiant/concerto/api"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
-	"os"
 )
 
 // WireUpDomain prepares common resources to send request to Concerto API
-func WireUpDomain() (*api.DomainService, format.Formatter) {
+func WireUpDomain(c *cli.Context) (ds *api.DomainService, f format.Formatter) {
 
-	f := format.NewTextFormatter(os.Stdout)
+	f = format.GetFormatter()
 
 	config, err := utils.GetConcertoConfig()
 	if err != nil {
@@ -22,7 +21,7 @@ func WireUpDomain() (*api.DomainService, format.Formatter) {
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err := api.NewDomainService(hcs)
+	ds, err = api.NewDomainService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up domain service", err)
 	}
@@ -34,12 +33,15 @@ func WireUpDomain() (*api.DomainService, format.Formatter) {
 func DomainList(c *cli.Context) {
 	log.Debug("DomainList")
 
-	domainSvc, formatter := WireUpDomain()
-	domains, headers, err := domainSvc.GetDomainListForPrinting()
+	domainSvc, formatter := WireUpDomain(c)
+	domains, err := domainSvc.GetDomainList()
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive domain data", err)
 	}
-	formatter.PrintList(domains, headers)
+	if err = formatter.PrintList(domains); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+
 }
 
 // DomainShow subcommand function
@@ -47,19 +49,14 @@ func DomainShow(c *cli.Context) {
 	log.Debugf("DomainShow id:%s", c.String("id"))
 	utils.CheckRequiredFlags(c, []string{"id"})
 
-	domainSvc, formatter := WireUpDomain()
-	domain, headers, err := domainSvc.GetDomainForPrinting(c.String("id"))
+	domainSvc, formatter := WireUpDomain(c)
+	domain, err := domainSvc.GetDomain(c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive domain data", err)
 	}
-	formatter.PrintItem(domain, headers)
-
-	//
-	// w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	// fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-	// fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
-	//
-	// w.Flush()
+	if err = formatter.PrintItem(*domain); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
 }
 
 // func cmdShow(c *cli.Context) {

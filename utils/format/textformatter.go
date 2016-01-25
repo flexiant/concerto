@@ -5,6 +5,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"io"
 	"os"
+	"reflect"
 	"text/tabwriter"
 )
 
@@ -15,41 +16,60 @@ type TextFormatter struct {
 
 // NewTextFormatter creates a new TextFormatter
 func NewTextFormatter(out io.Writer) *TextFormatter {
+	log.Debug("Creating Text formatter")
 	return &TextFormatter{
 		output: out,
 	}
 }
 
 // PrintItem prints an item
-func (f *TextFormatter) PrintItem(item []string, header []string) {
-	log.Debug("PrintItem")
+func (f *TextFormatter) PrintItem(item interface{}) error {
+
+	it := reflect.ValueOf(item)
+	nf := it.NumField()
+
 	w := tabwriter.NewWriter(f.output, 15, 1, 3, ' ', 0)
-	for i := range item {
-		fmt.Fprintf(w, "%s:\t%s\n", header[i], item[i])
+	for i := 0; i < nf; i++ {
+		fmt.Fprintf(w, "%s:\t%+v\n", it.Type().Field(i).Tag.Get("header"), it.Field(i).Interface())
 	}
 	fmt.Fprintln(w)
 	w.Flush()
+
+	return nil
 }
 
-// PrintList prints an item
-func (f *TextFormatter) PrintList(items [][]string, headers []string) {
-	log.Debug("PrintList")
+// PrintList prints item list
+func (f *TextFormatter) PrintList(items interface{}) error {
+
+	// should be an array
+	its := reflect.ValueOf(items)
+	t := its.Type().Kind()
+	if t != reflect.Slice {
+		return fmt.Errorf("Couldn't print list. Expected slice, but received %s", t.String())
+	}
+
 	w := tabwriter.NewWriter(f.output, 15, 1, 3, ' ', 0)
 
-	for _, h := range headers {
-		fmt.Fprintf(w, "%s\t", h)
+	// print header
+	header := reflect.TypeOf(items).Elem()
+	nf := header.NumField()
+	for i := 0; i < nf; i++ {
+		fmt.Fprintf(w, "%+v\t", header.Field(i).Tag.Get("header"))
 	}
 	fmt.Fprintln(w)
 
-	for _, item := range items {
-		for _, column := range item {
-			fmt.Fprintf(w, "%s\t", column)
+	// print contents
+	for i := 0; i < its.Len(); i++ {
+		it := its.Index(i)
+		nf := it.NumField()
+		for i := 0; i < nf; i++ {
+			fmt.Fprintf(w, "%+v\t", it.Field(i).Interface())
 		}
 		fmt.Fprintln(w)
 	}
-
 	w.Flush()
 
+	return nil
 }
 
 // PrintError prints an error

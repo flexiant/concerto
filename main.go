@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/admin"
@@ -29,6 +30,7 @@ import (
 	"github.com/flexiant/concerto/settings/saas_accounts"
 	"github.com/flexiant/concerto/setup"
 	"github.com/flexiant/concerto/utils"
+	"github.com/flexiant/concerto/utils/format"
 	"github.com/flexiant/concerto/wizard/apps"
 	"github.com/flexiant/concerto/wizard/cloud_providers"
 	"github.com/flexiant/concerto/wizard/locations"
@@ -331,6 +333,13 @@ func prepareFlags(c *cli.Context) error {
 		return err
 	}
 
+	// validate formatter
+	if c.String("formatter") != "text" && c.String("formatter") != "json" {
+		log.Errorf("Unrecognized formatter %s. Please, use one of [ text | json ]", c.String("formatter"))
+		return fmt.Errorf("Unrecognized formatter %s. Please, use one of [ text | json ]", c.String("formatter"))
+	}
+	format.InitializeFormatter(c.String("formatter"), os.Stdout)
+
 	if config.IsHost {
 		c.App.Commands = ServerCommands
 	} else {
@@ -388,7 +397,14 @@ func main() {
 			Name:   "concerto-url",
 			Usage:  "Concerto Web URL",
 		},
+		cli.StringFlag{
+			EnvVar: "CONCERTO_FORMATTER",
+			Name:   "formatter",
+			Usage:  "Output formatter [ text | json ] ",
+			Value:  "text",
+		},
 	}
 
 	app.Run(os.Args)
+
 }
