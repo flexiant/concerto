@@ -73,7 +73,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete",
 			Usage:  "Deletes a domain",
-			Action: cmdDelete,
+			Action: cmd.DomainDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
