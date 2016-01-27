@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/api"
 	"github.com/flexiant/concerto/utils"
@@ -31,9 +30,9 @@ func WireUpDomain(c *cli.Context) (ds *api.DomainService, f format.Formatter) {
 
 // DomainList subcommand function
 func DomainList(c *cli.Context) {
-	log.Debug("DomainList")
-
+	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
+
 	domains, err := domainSvc.GetDomainList()
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive domain data", err)
@@ -41,18 +40,32 @@ func DomainList(c *cli.Context) {
 	if err = formatter.PrintList(domains); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
-
 }
 
 // DomainShow subcommand function
 func DomainShow(c *cli.Context) {
-	log.Debugf("DomainShow id:%s", c.String("id"))
-	utils.CheckRequiredFlags(c, []string{"id"})
-
+	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
+
+	checkRequiredFlags(c, []string{"id"}, formatter)
 	domain, err := domainSvc.GetDomain(c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive domain data", err)
+	}
+	if err = formatter.PrintItem(*domain); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// DomainCreate subcommand function
+func DomainCreate(c *cli.Context) {
+	domainSvc, formatter := WireUpDomain(c)
+	debugCmdFuncInfo(c)
+	checkRequiredFlags(c, []string{"name", "contact"}, formatter)
+
+	domain, err := domainSvc.CreateDomain(flagConvertParams(c))
+	if err != nil {
+		formatter.PrintFatal("Couldn't create domain", err)
 	}
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)

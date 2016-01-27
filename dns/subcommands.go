@@ -27,7 +27,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "create",
 			Usage:  "Creates a new domain.",
-			Action: cmdCreate,
+			Action: cmd.DomainCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "name",

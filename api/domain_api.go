@@ -83,5 +83,24 @@ func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
 	}
 
 	return domain, nil
+}
 
+// CreateDomain returns a domain by its ID
+func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *Domain, err error) {
+	log.Debug("CreateDomain")
+
+	data, status, err := dm.concertoService.Post("/v1/dns/domains/", domainVector)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &domain); err != nil {
+		return nil, err
+	}
+
+	return domain, nil
 }
