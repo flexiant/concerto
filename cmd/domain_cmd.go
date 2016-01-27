@@ -72,6 +72,21 @@ func DomainCreate(c *cli.Context) {
 	}
 }
 
+// DomainUpdate subcommand function
+func DomainUpdate(c *cli.Context) {
+	domainSvc, formatter := WireUpDomain(c)
+	debugCmdFuncInfo(c)
+	checkRequiredFlags(c, []string{"id"}, formatter)
+
+	domain, err := domainSvc.UpdateDomain(flagConvertParams(c), c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't create domain", err)
+	}
+	if err = formatter.PrintItem(*domain); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
 // func cmdCreate(c *cli.Context) {
 //
 // 	d := createDomain(c)

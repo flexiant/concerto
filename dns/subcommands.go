@@ -50,7 +50,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "update",
 			Usage:  "Updates an existing domain",
-			Action: cmdUpdate,
+			Action: cmd.DomainUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",

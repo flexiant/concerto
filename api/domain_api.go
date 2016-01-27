@@ -104,3 +104,23 @@ func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *
 
 	return domain, nil
 }
+
+// UpdateDomain returns a domain by its ID
+func (dm *DomainService) UpdateDomain(domainVector *map[string]string, id string) (domain *Domain, err error) {
+	log.Debug("CreateDomain")
+
+	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/dns/domains/%s", id), domainVector)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &domain); err != nil {
+		return nil, err
+	}
+
+	return domain, nil
+}
