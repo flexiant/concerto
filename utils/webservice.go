@@ -17,7 +17,7 @@ import (
 type ConcertoService interface {
 	Post(path string, payload *map[string]string) ([]byte, int, error)
 	Put(path string, payload *map[string]string) ([]byte, int, error)
-	Delete(path string, payload *map[string]string) ([]byte, int, error)
+	Delete(path string) ([]byte, int, error)
 	Get(path string) ([]byte, int, error)
 	GetFile(path string, directoryPath string) (string, int, error)
 }
@@ -98,14 +98,14 @@ func (hcs *HTTPConcertoservice) Put(path string, payload *map[string]string) ([]
 }
 
 // Delete sends DELETE request to Concerto API
-func (hcs *HTTPConcertoservice) Delete(path string, payload *map[string]string) ([]byte, int, error) {
-	url, jsPayload, err := hcs.prepareCall(path, payload)
+func (hcs *HTTPConcertoservice) Delete(path string) ([]byte, int, error) {
+	url, _, err := hcs.prepareCall(path, nil)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	log.Debugf("Sending DELETE request to %s with payload %s ", url, jsPayload)
-	request, err := http.NewRequest("DELETE", url, jsPayload)
+	log.Debugf("Sending DELETE request to %s", url)
+	request, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return nil, 0, err
 	}

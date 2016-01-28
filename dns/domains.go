@@ -179,148 +179,148 @@ type DomainRecord struct {
 // 	formatter OutputFormatter
 // }
 
-func cmdList(c *cli.Context) {
-	printDomainList(getDomainList())
-}
-
-func getDomainList() []Domain {
-	var domains []Domain
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, data, res := webservice.Get("/v1/dns/domains")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
-
-	err = json.Unmarshal(data, &domains)
-	utils.CheckError(err)
-
-	return domains
-}
-
-func printDomainList(domains []Domain) {
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-
-	for _, d := range domains {
-		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
-	}
-
-	w.Flush()
-}
-
-func cmdShow(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-	var d Domain
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
-
-	err = json.Unmarshal(data, &d)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
-
-	w.Flush()
-}
-
-func cmdCreate(c *cli.Context) {
-
-	d := createDomain(c)
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
-
-	w.Flush()
-
-}
-
-func createDomain(c *cli.Context) *Domain {
-
-	utils.FlagsRequired(c, []string{"name", "contact"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]string)
-
-	v["name"] = c.String("name")
-	if c.IsSet("ttl") {
-		v["ttl"] = c.String("ttl")
-	}
-	v["contact"] = c.String("contact")
-
-	if c.IsSet("minimum") {
-		v["minimum"] = c.String("minimum")
-	}
-
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Post("/v1/dns/domains", jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var d Domain
-	err = json.Unmarshal(res, &d)
-	utils.CheckError(err)
-
-	return &d
-}
-
-func cmdUpdate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]string)
-
-	if c.IsSet("ttl") {
-		v["ttl"] = c.String("ttl")
-	}
-	if c.IsSet("contact") {
-		v["contact"] = c.String("contact")
-	}
-	if c.IsSet("minimum") {
-		v["minimum"] = c.String("minimum")
-	}
-
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")), jsonBytes)
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var d Domain
-	err = json.Unmarshal(res, &d)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
-
-	w.Flush()
-}
-
-func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-
-}
+// func cmdList(c *cli.Context) {
+// 	printDomainList(getDomainList())
+// }
+//
+// func getDomainList() []Domain {
+// 	var domains []Domain
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get("/v1/dns/domains")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &domains)
+// 	utils.CheckError(err)
+//
+// 	return domains
+// }
+//
+// func printDomainList(domains []Domain) {
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+//
+// 	for _, d := range domains {
+// 		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+// 	}
+//
+// 	w.Flush()
+// }
+//
+// func cmdShow(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+// 	var d Domain
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &d)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+//
+// 	w.Flush()
+// }
+//
+// func cmdCreate(c *cli.Context) {
+//
+// 	d := createDomain(c)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+//
+// 	w.Flush()
+//
+// }
+//
+// func createDomain(c *cli.Context) *Domain {
+//
+// 	utils.FlagsRequired(c, []string{"name", "contact"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]string)
+//
+// 	v["name"] = c.String("name")
+// 	if c.IsSet("ttl") {
+// 		v["ttl"] = c.String("ttl")
+// 	}
+// 	v["contact"] = c.String("contact")
+//
+// 	if c.IsSet("minimum") {
+// 		v["minimum"] = c.String("minimum")
+// 	}
+//
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post("/v1/dns/domains", jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var d Domain
+// 	err = json.Unmarshal(res, &d)
+// 	utils.CheckError(err)
+//
+// 	return &d
+// }
+//
+// func cmdUpdate(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]string)
+//
+// 	if c.IsSet("ttl") {
+// 		v["ttl"] = c.String("ttl")
+// 	}
+// 	if c.IsSet("contact") {
+// 		v["contact"] = c.String("contact")
+// 	}
+// 	if c.IsSet("minimum") {
+// 		v["minimum"] = c.String("minimum")
+// 	}
+//
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")), jsonBytes)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var d Domain
+// 	err = json.Unmarshal(res, &d)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tTTL\tCONTACT\tMINIMUM\tENABLED\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%d\t%t\n", d.Id, d.Name, d.Ttl, d.Contact, d.Minimum, d.Enabled)
+//
+// 	w.Flush()
+// }
+//
+// func cmdDelete(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+//
+// }
 
 func cmdListDomainRecords(c *cli.Context) {
 	var domainRecords []DomainRecord

@@ -84,7 +84,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list_domain_records",
 			Usage:  "Lists the DNS records of a domain.",
-			Action: cmdListDomainRecords,
+			Action: cmd.DomainRecordsList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "domain_id",

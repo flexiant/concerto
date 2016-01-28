@@ -22,8 +22,8 @@ func (m *MockConcertoService) Put(path string, payload *map[string]string) ([]by
 }
 
 // Delete mocks DELETE request to Concerto API
-func (m *MockConcertoService) Delete(path string, payload *map[string]string) ([]byte, int, error) {
-	args := m.Called(path, payload)
+func (m *MockConcertoService) Delete(path string) ([]byte, int, error) {
+	args := m.Called(path)
 	return args.Get(0).([]byte), args.Int(1), args.Error(2)
 }
 

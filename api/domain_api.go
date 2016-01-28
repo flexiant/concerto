@@ -85,7 +85,7 @@ func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
 	return domain, nil
 }
 
-// CreateDomain returns a domain by its ID
+// CreateDomain creates a domain
 func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *Domain, err error) {
 	log.Debug("CreateDomain")
 
@@ -105,7 +105,7 @@ func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *
 	return domain, nil
 }
 
-// UpdateDomain returns a domain by its ID
+// UpdateDomain updates a domain by its ID
 func (dm *DomainService) UpdateDomain(domainVector *map[string]string, ID string) (domain *Domain, err error) {
 	log.Debug("UpdateDomain")
 
@@ -125,11 +125,11 @@ func (dm *DomainService) UpdateDomain(domainVector *map[string]string, ID string
 	return domain, nil
 }
 
-// DeleteDomain
-func (dm *DomainService) DeleteDomain(domainVector *map[string]string) (err error) {
+// DeleteDomain deletes a domain by its ID
+func (dm *DomainService) DeleteDomain(ID string) (err error) {
 	log.Debug("DeleteDomain")
 
-	data, status, err := dm.concertoService.Delete("/v1/dns/domains/%s", domainVector)
+	data, status, err := dm.concertoService.Delete(fmt.Sprintf("/v1/dns/domains/%s", ID))
 	if err != nil {
 		return err
 	}
@@ -142,7 +142,7 @@ func (dm *DomainService) DeleteDomain(domainVector *map[string]string) (err erro
 }
 
 // ListDomainRecords returns a list of domainRecord
-func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *DomainRecord, err error) {
+func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *[]DomainRecord, err error) {
 	log.Debug("ListDomainRecords")
 
 	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records", ID))
@@ -221,11 +221,11 @@ func (dm *DomainService) UpdateDomainRecord(domainRecordVector *map[string]strin
 	return domainRecord, nil
 }
 
-// DeleteDomainRecord
-func (dm *DomainService) DeleteDomainRecord(domainVector *map[string]string) (err error) {
+// DeleteDomainRecord deletes a domain record
+func (dm *DomainService) DeleteDomainRecord(ID string) (err error) {
 	log.Debug("DeleteDomainRecord")
 
-	data, status, err := dm.concertoService.Delete("/v1/dns/domains/%s/records/%s", domainVector)
+	data, status, err := dm.concertoService.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", ID))
 	if err != nil {
 		return err
 	}
