@@ -44,6 +44,7 @@ func TestGetDomainList(t *testing.T) {
 	assert.Nil(err, "Error getting domain list")
 	assert.Equal(domainsIn, domainsOut, "GetDomainList returned different domains")
 
+	// TODO iterate all formatters
 	// write output
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)
@@ -90,6 +91,7 @@ func TestGetDomain(t *testing.T) {
 		assert.Nil(err, "Error getting domain list")
 		assert.Equal(domainIn, *domainOut, "GetDomainList returned different domains")
 
+		// TODO iterate all formatters
 		// write output
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
@@ -102,6 +104,61 @@ func TestGetDomain(t *testing.T) {
 		// TODO add more accurate parsing
 		assert.Regexp("\\{\\\"id\\\":.*\\}", b.String(), "JSON Output didn't match regular expression")
 	}
+}
+
+// TestDomainCreate subcommand
+func TestDomainCreate(t *testing.T) {
+
+	assert := assert.New(t)
+
+	domainsTest, err := GetDomainData()
+	assert.Nil(err, "Couldn't load domain test data")
+
+	// only valid domains
+	var domainsIn []api.Domain
+	for _, domainTest := range domainsTest {
+		if domainTest.Valid {
+			domainsIn = append(domainsIn, domainTest.Domain)
+		}
+	}
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := api.NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	for _, domainIn := range domainsIn {
+
+		// convertMap
+		mapIn, err := itemConvertParams(domainIn)
+		assert.Nil(err, "Domain test data corrupted")
+
+		// to json
+		dOut, err := json.Marshal(domainIn)
+		assert.Nil(err, "Domain test data corrupted")
+
+		// call service
+		cs.On("Post", "/v1/dns/domains/", mapIn).Return(dOut, 200, nil)
+		domainOut, err := ds.CreateDomain(mapIn)
+		assert.Nil(err, "Error creating domain list")
+		assert.Equal(domainIn, *domainOut, "GetDomainList returned different domains")
+
+		// TODO iterate all formatters
+		// write output
+		var b bytes.Buffer
+		mockOut := bufio.NewWriter(&b)
+		f := format.NewJSONFormatter(mockOut)
+		assert.NotNil(f, "Formatter")
+		err = f.PrintList(domainOut)
+		assert.Nil(err, "JSON Formatter Printlinst error")
+		mockOut.Flush()
+
+		// TODO add more accurate parsing
+		assert.Regexp("\\{\\\"id\\\":.*\\}", b.String(), "JSON Output didn't match regular expression")
+
+	}
+
 }
 
 type DomainTest struct {
