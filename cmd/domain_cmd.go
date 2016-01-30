@@ -184,7 +184,7 @@ func DeleteDomainRecord(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
 
-	err := domainSvc.DeleteDomainRecord(c.String("domain_id"))
+	err := domainSvc.DeleteDomainRecord(c.String("domain_id"), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete domain", err)
 	}
