@@ -13,7 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"text/tabwriter"
+	// "text/tabwriter"
 	"time"
 )
 
@@ -52,76 +52,76 @@ func cmdCreate(c *cli.Context) {
 
 }
 
-func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdDelete(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/kaas/fleets/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdStart(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdStart(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", c.String("id")), nil)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdStop(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdStop(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", c.String("id")), nil)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdEmpty(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdEmpty(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", c.String("id")), nil)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdList(c *cli.Context) {
-	var clusters []Cluster
+// func cmdList(c *cli.Context) {
+// 	var clusters []Cluster
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get("/v1/kaas/fleets")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	err, data, res := webservice.Get("/v1/kaas/fleets")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	err = json.Unmarshal(data, &clusters)
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &clusters)
+// 	utils.CheckError(err)
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "CLUSTER\tID\tSTATE\tMASTER COUNT\tSLAVE COUNT")
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "CLUSTER\tID\tSTATE\tMASTER COUNT\tSLAVE COUNT")
 
-	for _, cluster := range clusters {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%d\n", cluster.Name, cluster.Id, cluster.State, cluster.MasterCount, cluster.SlaveCount)
-	}
+// 	for _, cluster := range clusters {
+// 		fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%d\n", cluster.Name, cluster.Id, cluster.State, cluster.MasterCount, cluster.SlaveCount)
+// 	}
 
-	w.Flush()
-}
+// 	w.Flush()
+// }
 
 func cmdKubectlHijack(c *cli.Context) {
 	var clusters []Cluster
@@ -236,82 +236,82 @@ func cmdKubectlHijack(c *cli.Context) {
 
 }
 
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists all available Clusters",
-			Action: cmdList,
-		},
-		{
-			Name:   "start",
-			Usage:  "Starts a given Cluster",
-			Action: cmdStart,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Cluster Id",
-				},
-			},
-		},
-		{
-			Name:   "stop",
-			Usage:  "Stops a given Cluster",
-			Action: cmdStop,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Cluster Id",
-				},
-			},
-		},
-		{
-			Name:   "empty",
-			Usage:  "Empties a given Cluster",
-			Action: cmdEmpty,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Cluster Id",
-				},
-			},
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a Cluster",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "cluster",
-					Usage: "Cluster Name",
-				},
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Domain Id",
-				},
-			},
-		},
-		{
-			Name:   "delete",
-			Usage:  "Deletes a given Cluster",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Cluster Id",
-				},
-			},
-		},
-		{
-			Name:   "kubectl",
-			Usage:  "Kubectl command line wrapper",
-			Action: cmdKubectlHijack,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "cluster",
-					Usage: "Cluster Name",
-				},
-			},
-		},
-	}
-}
+// func SubCommands() []cli.Command {
+// 	return []cli.Command{
+// 		{
+// 			Name:   "list",
+// 			Usage:  "Lists all available Clusters",
+// 			Action: cmdList,
+// 		},
+// 		{
+// 			Name:   "start",
+// 			Usage:  "Starts a given Cluster",
+// 			Action: cmdStart,
+// 			Flags: []cli.Flag{
+// 				cli.StringFlag{
+// 					Name:  "id",
+// 					Usage: "Cluster Id",
+// 				},
+// 			},
+// 		},
+// 		{
+// 			Name:   "stop",
+// 			Usage:  "Stops a given Cluster",
+// 			Action: cmdStop,
+// 			Flags: []cli.Flag{
+// 				cli.StringFlag{
+// 					Name:  "id",
+// 					Usage: "Cluster Id",
+// 				},
+// 			},
+// 		},
+// 		{
+// 			Name:   "empty",
+// 			Usage:  "Empties a given Cluster",
+// 			Action: cmdEmpty,
+// 			Flags: []cli.Flag{
+// 				cli.StringFlag{
+// 					Name:  "id",
+// 					Usage: "Cluster Id",
+// 				},
+// 			},
+// 		},
+// 		{
+// 			Name:   "create",
+// 			Usage:  "Creates a Cluster",
+// 			Action: cmdCreate,
+// 			Flags: []cli.Flag{
+// 				cli.StringFlag{
+// 					Name:  "cluster",
+// 					Usage: "Cluster Name",
+// 				},
+// 				cli.StringFlag{
+// 					Name:  "domain_id",
+// 					Usage: "Domain Id",
+// 				},
+// 			},
+// 		},
+// 		{
+// 			Name:   "delete",
+// 			Usage:  "Deletes a given Cluster",
+// 			Action: cmdDelete,
+// 			Flags: []cli.Flag{
+// 				cli.StringFlag{
+// 					Name:  "id",
+// 					Usage: "Cluster Id",
+// 				},
+// 			},
+// 		},
+// 		{
+// 			Name:   "kubectl",
+// 			Usage:  "Kubectl command line wrapper",
+// 			Action: cmdKubectlHijack,
+// 			Flags: []cli.Flag{
+// 				cli.StringFlag{
+// 					Name:  "cluster",
+// 					Usage: "Cluster Name",
+// 				},
+// 			},
+// 		},
+// 	}
+// }

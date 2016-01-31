@@ -9,7 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"text/tabwriter"
+	// "text/tabwriter"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -52,81 +52,81 @@ func cmdCreate(c *cli.Context) {
 
 }
 
-func cmdStart(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdStart(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", c.String("id")), nil)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdStop(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdStop(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", c.String("id")), nil)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdRestart(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdRestart(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")), nil)
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", c.String("id")), nil)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// func cmdDelete(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/kaas/ships/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/kaas/ships/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
 
-}
+// }
 
-func cmdList(c *cli.Context) {
-	var nodes []Node
+// func cmdList(c *cli.Context) {
+// 	var nodes []Node
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get("/v1/kaas/ships")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	err, data, res := webservice.Get("/v1/kaas/ships")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	err = json.Unmarshal(data, &nodes)
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &nodes)
+// 	utils.CheckError(err)
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "CLUSTER\tMASTER\tID\tNAME\tFQDN\tIP\tSTATE")
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "CLUSTER\tMASTER\tID\tNAME\tFQDN\tIP\tSTATE")
 
-	for _, node := range nodes {
-		if node.Master {
-			fmt.Fprintf(w, "%s\t*\t%s\t%s\t%s\t%s\t%s\n", node.FleetName, node.Id, node.Name, node.Fqdn, node.PublicIp, node.State)
-		} else {
-			fmt.Fprintf(w, "%s\t\t%s\t%s\t%s\t%s\t%s\n", node.FleetName, node.Id, node.Name, node.Fqdn, node.PublicIp, node.State)
-		}
+// 	for _, node := range nodes {
+// 		if node.Master {
+// 			fmt.Fprintf(w, "%s\t*\t%s\t%s\t%s\t%s\t%s\n", node.FleetName, node.Id, node.Name, node.Fqdn, node.PublicIp, node.State)
+// 		} else {
+// 			fmt.Fprintf(w, "%s\t\t%s\t%s\t%s\t%s\t%s\n", node.FleetName, node.Id, node.Name, node.Fqdn, node.PublicIp, node.State)
+// 		}
 
-	}
+// 	}
 
-	w.Flush()
-}
+// 	w.Flush()
+// }
 
 func cmdDockerHijack(c *cli.Context) {
 
@@ -227,85 +227,5 @@ func cmdDockerHijack(c *cli.Context) {
 	} else {
 		log.Warn(fmt.Sprintf("Node \"%s\" is not in your account please create it. Thank you.", nodeName))
 		os.Exit(1)
-	}
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "create",
-			Usage:  "Creates a Node",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "cluster",
-					Usage: "Cluster Name to Attach Node",
-				},
-				cli.StringFlag{
-					Name:  "plan",
-					Usage: "Server Plan to Use to Create Node",
-				},
-			},
-		},
-		{
-			Name:   "list",
-			Usage:  "Lists all available Nodes",
-			Action: cmdList,
-		},
-		{
-			Name:   "start",
-			Usage:  "Starts a given Node",
-			Action: cmdStart,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Node Id",
-				},
-			},
-		},
-		{
-			Name:   "stop",
-			Usage:  "Stops a given Node",
-			Action: cmdStop,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Node Id",
-				},
-			},
-		},
-		{
-			Name:   "restart",
-			Usage:  "Restarts a given Node",
-			Action: cmdRestart,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Node Id",
-				},
-			},
-		},
-		{
-			Name:   "delete",
-			Usage:  "Deletes a given Node",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Node Id",
-				},
-			},
-		},
-		{
-			Name:   "docker",
-			Usage:  "Docker command line wrapper",
-			Action: cmdDockerHijack,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "node",
-					Usage: "Node Name",
-				},
-			},
-		},
 	}
 }
