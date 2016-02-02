@@ -14,6 +14,7 @@ import (
 	"os/user"
 	"path"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strings"
 )
@@ -85,8 +86,48 @@ func InitializeConcertoConfig(c *cli.Context) (*Config, error) {
 		return nil, err
 	}
 
-	log.Debugf("Concerto configuration used: %+v", cachedConfig)
+	debugShowConfig()
 	return cachedConfig, nil
+}
+
+func debugShowConfig() {
+	if log.GetLevel() < log.DebugLevel {
+		return
+	}
+
+	if cachedConfig == nil {
+		log.Debug("Concerto configuration not loaded")
+	}
+
+	debugStruct("", *cachedConfig)
+	// c := reflect.ValueOf(*cachedConfig)
+	// for i := 0; i < c.NumField(); i++ {
+	// 	if c.Type().Field(i).Type.String() != "xml.Name" {
+	// 		log.WithField(c.Type().Field(i).Name, c.Field(i).Interface()).Debug("Configuration item")
+	// 	}
+	// }
+}
+
+// debugStruct iterates struct and show in debug console all items and subitems
+func debugStruct(prefix string, item interface{}) {
+	c := reflect.ValueOf(item)
+	for i := 0; i < c.NumField(); i++ {
+		if c.Type().Field(i).Type.String() != "xml.Name" {
+
+			name := c.Type().Field(i).Name
+			value := c.Field(i).Interface()
+
+			// if value is struct, iterate with recursion
+			if c.Type().Field(i).Type.Kind() == reflect.Struct {
+				debugStruct(name, value)
+			} else {
+				if prefix != "" {
+					name = fmt.Sprintf("%s.%s", prefix, name)
+				}
+				log.WithField(name, value).Debug("Configuration item")
+			}
+		}
+	}
 }
 
 // IsConfigReady returns whether configurations items are filled
