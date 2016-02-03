@@ -202,6 +202,7 @@ func (config *Config) readConcertoConfig(c *cli.Context) error {
 
 // evaluateConcertoConfigFile returns path to concerto config file
 func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
+	log.Debug("evaluateConcertoConfigFile")
 
 	if configFile := c.String("concerto-config"); configFile != "" {
 
@@ -223,12 +224,15 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 			}
 		}
 
+		log.Debugf("Current user is %+v", currUser)
 		if runtime.GOOS == "windows" {
-			// Server mode Windows
+			log.Debugf("Running on windows")
 			if (currUser.Gid == "S-1-5-32-544" || currUser.Username == "Administrator") && FileExists(windowsServerConfigFile) {
-				config.ConfFile = configFile
+				log.Debug("Current user is administrator, setting config file as %s", windowsServerConfigFile)
+				config.ConfFile = windowsServerConfigFile
 			} else {
 				// User mode Windows
+				log.Debug("Current user is regular user")
 				config.ConfFile = filepath.Join(currUser.HomeDir, ".concerto/client.xml")
 			}
 		} else {
