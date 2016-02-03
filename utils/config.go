@@ -286,7 +286,8 @@ func isWinAdministrator(user string) bool {
 		user == "Administrador" ||
 		user == "Администратор" ||
 		user == "Administratör" ||
-		user == "Administrator"
+		user == "Administrator" ||
+		user == "SYSTEM"
 }
 
 // readConcertoURL reads URL from CONCERTO_URL envrionment or calculates using API URL
