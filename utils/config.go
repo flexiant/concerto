@@ -262,7 +262,7 @@ func getUsername() string {
 		osUser = os.Getenv("USERNAME")
 
 		// remove domain
-		osUser = oUser[strings.LastIndex(oUser, "\\")+1:]
+		osUser = osUser[strings.LastIndex(osUser, "\\")+1:]
 
 		// HACK ugly ... if localized administrator, translate to administrator
 		if osUser == "Järjestelmänvalvoja" ||
