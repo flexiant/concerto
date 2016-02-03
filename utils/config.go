@@ -14,6 +14,7 @@ import (
 	"os/user"
 	"path"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strings"
 )
@@ -85,8 +86,48 @@ func InitializeConcertoConfig(c *cli.Context) (*Config, error) {
 		return nil, err
 	}
 
-	log.Debugf("Concerto configuration used: %+v", cachedConfig)
+	debugShowConfig()
 	return cachedConfig, nil
+}
+
+func debugShowConfig() {
+	if log.GetLevel() < log.DebugLevel {
+		return
+	}
+
+	if cachedConfig == nil {
+		log.Debug("Concerto configuration not loaded")
+	}
+
+	debugStruct("", *cachedConfig)
+	// c := reflect.ValueOf(*cachedConfig)
+	// for i := 0; i < c.NumField(); i++ {
+	// 	if c.Type().Field(i).Type.String() != "xml.Name" {
+	// 		log.WithField(c.Type().Field(i).Name, c.Field(i).Interface()).Debug("Configuration item")
+	// 	}
+	// }
+}
+
+// debugStruct iterates struct and show in debug console all items and subitems
+func debugStruct(prefix string, item interface{}) {
+	c := reflect.ValueOf(item)
+	for i := 0; i < c.NumField(); i++ {
+		if c.Type().Field(i).Type.String() != "xml.Name" {
+
+			name := c.Type().Field(i).Name
+			value := c.Field(i).Interface()
+
+			// if value is struct, iterate with recursion
+			if c.Type().Field(i).Type.Kind() == reflect.Struct {
+				debugStruct(name, value)
+			} else {
+				if prefix != "" {
+					name = fmt.Sprintf("%s.%s", prefix, name)
+				}
+				log.WithField(name, value).Debug("Configuration item")
+			}
+		}
+	}
 }
 
 // IsConfigReady returns whether configurations items are filled
@@ -161,6 +202,7 @@ func (config *Config) readConcertoConfig(c *cli.Context) error {
 
 // evaluateConcertoConfigFile returns path to concerto config file
 func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
+	log.Debug("evaluateConcertoConfigFile")
 
 	if configFile := c.String("concerto-config"); configFile != "" {
 
@@ -183,11 +225,15 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 		}
 
 		if runtime.GOOS == "windows" {
-			// Server mode Windows
-			if (currUser.Gid == "S-1-5-32-544" || currUser.Username == "Administrator") && FileExists(windowsServerConfigFile) {
-				config.ConfFile = configFile
+			currUser.Username = currUser.Username[strings.LastIndex(currUser.Username, "\\")+1:]
+			log.Debugf("Windows username is %s", currUser.Username)
+
+			if (currUser.Gid == "S-1-5-32-544" || isWinAdministrator(currUser.Username)) && FileExists(windowsServerConfigFile) {
+				log.Debug("Current user is administrator, setting config file as %s", windowsServerConfigFile)
+				config.ConfFile = windowsServerConfigFile
 			} else {
 				// User mode Windows
+				log.Debugf("Current user is regular user: %s", currUser.Username)
 				config.ConfFile = filepath.Join(currUser.HomeDir, ".concerto/client.xml")
 			}
 		} else {
@@ -207,6 +253,7 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 // getUsername gets username by env variable.
 // os.user is dependant on cgo, so cross compiling won't work
 func getUsername() string {
+	log.Debug("getUsername")
 	u := "unknown"
 	osUser := ""
 
@@ -216,13 +263,12 @@ func getUsername() string {
 	case "windows":
 		osUser = os.Getenv("USERNAME")
 
+		// remove domain
+		osUser = osUser[strings.LastIndex(osUser, "\\")+1:]
+		log.Debugf("Windows user has been transformed into %s", osUser)
+
 		// HACK ugly ... if localized administrator, translate to administrator
-		if osUser == "Järjestelmänvalvoja" ||
-			osUser == "Administrateur" ||
-			osUser == "Rendszergazda" ||
-			osUser == "Administrador" ||
-			osUser == "Администратор" ||
-			osUser == "Administratör" {
+		if isWinAdministrator(osUser) {
 			osUser = "Administrator"
 		}
 	}
@@ -231,6 +277,17 @@ func getUsername() string {
 		u = osUser
 	}
 	return u
+}
+
+func isWinAdministrator(user string) bool {
+	return user == "Järjestelmänvalvoja" ||
+		user == "Administrateur" ||
+		user == "Rendszergazda" ||
+		user == "Administrador" ||
+		user == "Администратор" ||
+		user == "Administratör" ||
+		user == "Administrator" ||
+		user == "SYSTEM"
 }
 
 // readConcertoURL reads URL from CONCERTO_URL envrionment or calculates using API URL
