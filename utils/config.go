@@ -226,7 +226,9 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 
 		log.Debugf("Current user is %+v", currUser)
 		if runtime.GOOS == "windows" {
-			log.Debugf("Running on windows")
+			log.Debugf("Running on windows, removing domain from user nama")
+			currUser.Username = currUser.Username[strings.LastIndex(currUser.Username, "\\")+1:]
+
 			if (currUser.Gid == "S-1-5-32-544" || currUser.Username == "Administrator") && FileExists(windowsServerConfigFile) {
 				log.Debug("Current user is administrator, setting config file as %s", windowsServerConfigFile)
 				config.ConfFile = windowsServerConfigFile
