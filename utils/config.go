@@ -252,6 +252,7 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 // getUsername gets username by env variable.
 // os.user is dependant on cgo, so cross compiling won't work
 func getUsername() string {
+	log.Debug("getUsername")
 	u := "unknown"
 	osUser := ""
 
@@ -263,6 +264,7 @@ func getUsername() string {
 
 		// remove domain
 		osUser = osUser[strings.LastIndex(osUser, "\\")+1:]
+		log.Debugf("Windows user has been transformed into %s", osUser)
 
 		// HACK ugly ... if localized administrator, translate to administrator
 		if osUser == "Järjestelmänvalvoja" ||
