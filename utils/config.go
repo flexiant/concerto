@@ -224,17 +224,16 @@ func (config *Config) evaluateConcertoConfigFile(c *cli.Context) error {
 			}
 		}
 
-		log.Debugf("Current user is %+v", currUser)
 		if runtime.GOOS == "windows" {
-			log.Debugf("Running on windows, removing domain from user nama")
 			currUser.Username = currUser.Username[strings.LastIndex(currUser.Username, "\\")+1:]
+			log.Debugf("Windows username is %s", currUser.Username)
 
-			if (currUser.Gid == "S-1-5-32-544" || currUser.Username == "Administrator") && FileExists(windowsServerConfigFile) {
+			if (currUser.Gid == "S-1-5-32-544" || isWinAdministrator(currUser.Username)) && FileExists(windowsServerConfigFile) {
 				log.Debug("Current user is administrator, setting config file as %s", windowsServerConfigFile)
 				config.ConfFile = windowsServerConfigFile
 			} else {
 				// User mode Windows
-				log.Debug("Current user is regular user")
+				log.Debugf("Current user is regular user: %s", currUser.Username)
 				config.ConfFile = filepath.Join(currUser.HomeDir, ".concerto/client.xml")
 			}
 		} else {
@@ -269,12 +268,7 @@ func getUsername() string {
 		log.Debugf("Windows user has been transformed into %s", osUser)
 
 		// HACK ugly ... if localized administrator, translate to administrator
-		if osUser == "Järjestelmänvalvoja" ||
-			osUser == "Administrateur" ||
-			osUser == "Rendszergazda" ||
-			osUser == "Administrador" ||
-			osUser == "Администратор" ||
-			osUser == "Administratör" {
+		if isWinAdministrator(osUser) {
 			osUser = "Administrator"
 		}
 	}
@@ -283,6 +277,15 @@ func getUsername() string {
 		u = osUser
 	}
 	return u
+}
+
+func isWinAdministrator(user string) bool {
+	return user == "Järjestelmänvalvoja" ||
+		user == "Administrateur" ||
+		user == "Rendszergazda" ||
+		user == "Administrador" ||
+		user == "Администратор" ||
+		user == "Administratör"
 }
 
 // readConcertoURL reads URL from CONCERTO_URL envrionment or calculates using API URL
