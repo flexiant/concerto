@@ -74,8 +74,8 @@ func DomainCreate(c *cli.Context) {
 
 // DomainUpdate subcommand function
 func DomainUpdate(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
+	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
 	domain, err := domainSvc.UpdateDomain(flagConvertParams(c), c.String("id"))
@@ -89,8 +89,8 @@ func DomainUpdate(c *cli.Context) {
 
 // DomainDelete subcommand function
 func DomainDelete(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
+	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
 	err := domainSvc.DeleteDomain(c.String("id"))
@@ -101,8 +101,8 @@ func DomainDelete(c *cli.Context) {
 
 // DomainRecordsList subcommand function
 func DomainRecordsList(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
+	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"domain_id"}, formatter)
 	domainRecords, err := domainSvc.ListDomainRecords(c.String("domain_id"))
@@ -116,10 +116,10 @@ func DomainRecordsList(c *cli.Context) {
 
 // ShowDomainRecord subcommand function
 func ShowDomainRecord(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
-	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
+	domainSvc, formatter := WireUpDomain(c)
 
+	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
 	domain, err := domainSvc.ShowDomainRecord(c.String("domain_id"), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't list domain records", err)
@@ -131,8 +131,9 @@ func ShowDomainRecord(c *cli.Context) {
 
 // CreateDomainRecord subcommand function
 func CreateDomainRecord(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
+	domainSvc, formatter := WireUpDomain(c)
+
 	checkRequiredFlags(c, []string{"domain_id", "type", "name"}, formatter)
 
 	// if c.String("type") == "A" {

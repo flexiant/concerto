@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-//
+// debugCmdFuncInfo writes context info about the calling function
 func debugCmdFuncInfo(c *cli.Context) {
 	if log.GetLevel() < log.DebugLevel {
 		return
