@@ -12,8 +12,8 @@ import (
 	"testing"
 )
 
-// TestGetDomainList subcommand
-func TestGetDomainList(t *testing.T) {
+// TestDomainList subcommand
+func TestDomainList(t *testing.T) {
 
 	assert := assert.New(t)
 
@@ -23,7 +23,7 @@ func TestGetDomainList(t *testing.T) {
 	// only valid domains
 	var domainsIn []api.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.Valid {
+		if domainTest.fieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -58,8 +58,8 @@ func TestGetDomainList(t *testing.T) {
 	assert.Regexp("\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON Output didn't match regular expression")
 }
 
-// TestGetDomain subcommand
-func TestGetDomain(t *testing.T) {
+// TestDomainShow subcommand
+func TestDomainShow(t *testing.T) {
 
 	assert := assert.New(t)
 
@@ -69,7 +69,7 @@ func TestGetDomain(t *testing.T) {
 	// only valid domains
 	var domainsIn []api.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.Valid {
+		if domainTest.fieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -117,7 +117,7 @@ func TestDomainCreate(t *testing.T) {
 	// only valid domains
 	var domainsIn []api.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.Valid {
+		if domainTest.fieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -172,7 +172,7 @@ func TestDomainUpdate(t *testing.T) {
 	// only valid domains
 	var domainsIn []api.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.Valid {
+		if domainTest.fieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -216,8 +216,8 @@ func TestDomainUpdate(t *testing.T) {
 
 }
 
-// TestDeleteDomain subcommand
-func TestDeleteDomain(t *testing.T) {
+// TestDomainDelete subcommand
+func TestDomainDelete(t *testing.T) {
 
 	assert := assert.New(t)
 
@@ -227,7 +227,7 @@ func TestDeleteDomain(t *testing.T) {
 	// only valid domains
 	var domainsIn []api.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.Valid {
+		if domainTest.fieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -250,14 +250,69 @@ func TestDeleteDomain(t *testing.T) {
 	}
 }
 
+func TestDomainRecordsList(t *testing.T) {
+
+	assert := assert.New(t)
+
+	domainsTest, err := GetDomainData()
+	assert.Nil(err, "Couldn't load domain test data")
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := api.NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// only valid domains
+	var domainsIn []api.Domain
+	for _, domainTest := range domainsTest {
+		if domainTest.fieldsOK {
+			domainsIn = append(domainsIn, domainTest.Domain)
+		}
+	}
+
+	for _, domainIn := range domainsIn {
+		// to json
+		dIn, err := json.Marshal(domainIn)
+		assert.Nil(err, "Domain test data corrupted")
+
+		// call service
+		cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 200, nil)
+		err = ds.DeleteDomain(domainIn.ID)
+		assert.Nil(err, "Error getting domain list")
+	}
+
+	/*
+		domainSvc, formatter := WireUpDomain(c)
+
+		checkRequiredFlags(c, []string{"domain_id"}, formatter)
+		domainRecords, err := domainSvc.ListDomainRecords(c.String("domain_id"))
+		if err != nil {
+			formatter.PrintFatal("Couldn't list domain records", err)
+		}
+		if err = formatter.PrintList(*domainRecords); err != nil {
+			formatter.PrintFatal("Couldn't print/format result", err)
+		}
+	*/
+
+}
+
+// DomainTest holds test data domains
 type DomainTest struct {
-	Domain api.Domain
-	Valid  bool
+	Domain   api.Domain
+	fieldsOK bool // true if all mandatory fields are informed
+}
+
+// DomainRecordTest holds test data domains records
+type DomainRecordTest struct {
+	DomainRecord api.DomainRecord
+	fieldsOK     bool // true if all mandatory fields are informed
 }
 
 var testDomains []DomainTest
+var testDomainRecords []DomainRecordTest
 
-// GetDomainData loads json test data from "./testdata"
+// GetDomainData loads loads test data
 func GetDomainData() ([]DomainTest, error) {
 
 	testDomains = []DomainTest{
@@ -270,7 +325,7 @@ func GetDomainData() ([]DomainTest, error) {
 				Minimum: 10,
 				Enabled: true,
 			},
-			Valid: true,
+			fieldsOK: true,
 		},
 		{
 			Domain: api.Domain{
@@ -281,9 +336,31 @@ func GetDomainData() ([]DomainTest, error) {
 				Minimum: 11,
 				Enabled: false,
 			},
-			Valid: true,
+			fieldsOK: true,
 		},
 	}
 
 	return testDomains, nil
+}
+
+// GetDomainRecordData loads test data
+func GetDomainRecordData() ([]DomainRecordTest, error) {
+
+	testDomainRecords = []DomainRecordTest{
+		{
+			DomainRecord: api.DomainRecord{
+				ID:       "fakeID0.0",
+				Type:     "CNAME",
+				Name:     "otherserver",
+				Content:  "my.server.com",
+				TTL:      300,
+				Prio:     10,
+				ServerID: "server",
+				DomainID: "fakeID0",
+			},
+			fieldsOK: true,
+		},
+	}
+
+	return testDomainRecords, nil
 }
