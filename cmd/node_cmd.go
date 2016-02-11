@@ -48,7 +48,7 @@ func NodeCreate(c *cli.Context) {
 	nodeSvc, formatter := WireUpNode(c)
 
 	checkRequiredFlags(c, []string{"cluster", "plan"}, formatter)
-	node, err := nodeSvc.CreateNode(flagConvertParams(c))
+	node, err := nodeSvc.CreateNode(utils.FlagConvertParams(c))
 	if err != nil {
 		formatter.PrintFatal("Couldn't create node", err)
 	}
@@ -75,7 +75,7 @@ func NodeStart(c *cli.Context) {
 	nodeSvc, formatter := WireUpNode(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	err := nodeSvc.StartNode(flagConvertParams(c), c.String("id"))
+	err := nodeSvc.StartNode(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't start node", err)
 	}
@@ -87,7 +87,7 @@ func NodeStop(c *cli.Context) {
 	nodeSvc, formatter := WireUpNode(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	err := nodeSvc.StopNode(flagConvertParams(c), c.String("id"))
+	err := nodeSvc.StopNode(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't stop node", err)
 	}
@@ -99,7 +99,7 @@ func NodeRestart(c *cli.Context) {
 	nodeSvc, formatter := WireUpNode(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	err := nodeSvc.RestartNode(flagConvertParams(c), c.String("id"))
+	err := nodeSvc.RestartNode(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't restart node", err)
 	}

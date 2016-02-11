@@ -48,7 +48,7 @@ func ClusterCreate(c *cli.Context) {
 	clusterSvc, formatter := WireUpCluster(c)
 
 	checkRequiredFlags(c, []string{"name"}, formatter)
-	cluster, err := clusterSvc.CreateCluster(flagConvertParams(c))
+	cluster, err := clusterSvc.CreateCluster(utils.FlagConvertParams(c))
 	if err != nil {
 		formatter.PrintFatal("Couldn't create cluster", err)
 	}
@@ -75,7 +75,7 @@ func ClusterStart(c *cli.Context) {
 	clusterSvc, formatter := WireUpCluster(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	err := clusterSvc.StartCluster(flagConvertParams(c), c.String("id"))
+	err := clusterSvc.StartCluster(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't start cluster", err)
 	}
@@ -87,7 +87,7 @@ func ClusterStop(c *cli.Context) {
 	clusterSvc, formatter := WireUpCluster(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	err := clusterSvc.StopCluster(flagConvertParams(c), c.String("id"))
+	err := clusterSvc.StopCluster(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't stop cluster", err)
 	}
@@ -99,7 +99,7 @@ func ClusterEmpty(c *cli.Context) {
 	clusterSvc, formatter := WireUpCluster(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	err := clusterSvc.EmptyCluster(flagConvertParams(c), c.String("id"))
+	err := clusterSvc.EmptyCluster(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't empty cluster", err)
 	}

@@ -63,7 +63,7 @@ func DomainCreate(c *cli.Context) {
 	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"name", "contact"}, formatter)
-	domain, err := domainSvc.CreateDomain(flagConvertParams(c))
+	domain, err := domainSvc.CreateDomain(utils.FlagConvertParams(c))
 	if err != nil {
 		formatter.PrintFatal("Couldn't create domain", err)
 	}
@@ -78,7 +78,7 @@ func DomainUpdate(c *cli.Context) {
 	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	domain, err := domainSvc.UpdateDomain(flagConvertParams(c), c.String("id"))
+	domain, err := domainSvc.UpdateDomain(utils.FlagConvertParams(c), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't update domain", err)
 	}
@@ -155,7 +155,7 @@ func CreateDomainRecord(c *cli.Context) {
 	// 	utils.FlagsRequired(c, []string{"content", "prio"})
 	// }
 
-	domain, err := domainSvc.CreateDomainRecord(flagConvertParams(c), c.String("domain_id"))
+	domain, err := domainSvc.CreateDomainRecord(utils.FlagConvertParams(c), c.String("domain_id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't create domain", err)
 	}
@@ -170,7 +170,7 @@ func UpdateDomainRecord(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
 
-	domain, err := domainSvc.UpdateDomainRecord(flagConvertParams(c), c.String("domain_id"), c.String("id"))
+	domain, err := domainSvc.UpdateDomainRecord(utils.FlagConvertParams(c), c.String("domain_id"), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't update domain", err)
 	}

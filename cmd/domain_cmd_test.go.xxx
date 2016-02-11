@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/flexiant/concerto/api"
-	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
@@ -18,27 +17,19 @@ import (
 func TestDomainList(t *testing.T) {
 
 	assert := assert.New(t)
+	domainsIn := testdata.GetDomainData()
 
-	domainsTest, err := testdata.GetDomainData()
-	assert.Nil(err, "Couldn't load domain test data")
+	// get list
+	domainsOut := api.GetDomainListMocked(t, domainsIn)
 
-	// only valid domains
-	var domainsIn []types.Domain
-	for _, domainTest := range domainsTest {
-		if domainTest.FieldsOK {
-			domainsIn = append(domainsIn, domainTest.Domain)
-		}
-	}
-
-	domainsOut := api.GetTestDomainList(t, &domainsIn)
-
+	// format
 	// TODO iterate all formatters
 	// write output
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)
 	f := format.NewJSONFormatter(mockOut)
 	assert.NotNil(f, "Formatter")
-	err = f.PrintList(domainsOut)
+	err := f.PrintList(domainsOut)
 	assert.Nil(err, "JSON Formatter Printlinst error")
 	mockOut.Flush()
 
@@ -50,34 +41,10 @@ func TestDomainList(t *testing.T) {
 func TestDomainShow(t *testing.T) {
 
 	assert := assert.New(t)
+	domainsIn := testdata.GetDomainData()
 
-	domainsTest, err := testdata.GetDomainData()
-	assert.Nil(err, "Couldn't load domain test data")
-
-	// only valid domains
-	var domainsIn []types.Domain
-	for _, domainTest := range domainsTest {
-		if domainTest.FieldsOK {
-			domainsIn = append(domainsIn, domainTest.Domain)
-		}
-	}
-
-	// wire up
-	cs := &utils.MockConcertoService{}
-	ds, err := api.NewDomainService(cs)
-	assert.Nil(err, "Couldn't load domain service")
-	assert.NotNil(ds, "Domain service not instanced")
-
-	for _, domainIn := range domainsIn {
-		// to json
-		dIn, err := json.Marshal(domainIn)
-		assert.Nil(err, "Domain test data corrupted")
-
-		// call service
-		cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 200, nil)
-		domainOut, err := ds.GetDomain(domainIn.ID)
-		assert.Nil(err, "Error getting domain list")
-		assert.Equal(domainIn, *domainOut, "GetDomainList returned different domains")
+	for _, domainIn := range *domainsIn {
+		domainOut := api.GetDomainMocked(t, &domainIn)
 
 		// TODO iterate all formatters
 		// write output
@@ -85,7 +52,7 @@ func TestDomainShow(t *testing.T) {
 		mockOut := bufio.NewWriter(&b)
 		f := format.NewJSONFormatter(mockOut)
 		assert.NotNil(f, "Formatter")
-		err = f.PrintList(domainOut)
+		err := f.PrintList(domainOut)
 		assert.Nil(err, "JSON Formatter Printlinst error")
 		mockOut.Flush()
 
@@ -98,47 +65,18 @@ func TestDomainShow(t *testing.T) {
 func TestDomainCreate(t *testing.T) {
 
 	assert := assert.New(t)
+	domainsIn := testdata.GetDomainData()
 
-	domainsTest, err := testdata.GetDomainData()
-	assert.Nil(err, "Couldn't load domain test data")
+	for _, domainIn := range *domainsIn {
 
-	// only valid domains
-	var domainsIn []types.Domain
-	for _, domainTest := range domainsTest {
-		if domainTest.FieldsOK {
-			domainsIn = append(domainsIn, domainTest.Domain)
-		}
-	}
-
-	// wire up
-	cs := &utils.MockConcertoService{}
-	ds, err := api.NewDomainService(cs)
-	assert.Nil(err, "Couldn't load domain service")
-	assert.NotNil(ds, "Domain service not instanced")
-
-	for _, domainIn := range domainsIn {
-
-		// convertMap
-		mapIn, err := itemConvertParams(domainIn)
-		assert.Nil(err, "Domain test data corrupted")
-
-		// to json
-		dOut, err := json.Marshal(domainIn)
-		assert.Nil(err, "Domain test data corrupted")
-
-		// call service
-		cs.On("Post", "/v1/dns/domains/", mapIn).Return(dOut, 200, nil)
-		domainOut, err := ds.CreateDomain(mapIn)
-		assert.Nil(err, "Error creating domain list")
-		assert.Equal(domainIn, *domainOut, "GetDomainList returned different domains")
-
+		domainOut := api.CreateDomainMocked(t, &domainIn)
 		// TODO iterate all formatters
 		// write output
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
 		f := format.NewJSONFormatter(mockOut)
 		assert.NotNil(f, "Formatter")
-		err = f.PrintList(domainOut)
+		err := f.PrintList(domainOut)
 		assert.Nil(err, "JSON Formatter Printlinst error")
 		mockOut.Flush()
 
@@ -153,17 +91,7 @@ func TestDomainCreate(t *testing.T) {
 func TestDomainUpdate(t *testing.T) {
 
 	assert := assert.New(t)
-
-	domainsTest, err := testdata.GetDomainData()
-	assert.Nil(err, "Couldn't load domain test data")
-
-	// only valid domains
-	var domainsIn []types.Domain
-	for _, domainTest := range domainsTest {
-		if domainTest.FieldsOK {
-			domainsIn = append(domainsIn, domainTest.Domain)
-		}
-	}
+	domainsIn := testdata.GetDomainData()
 
 	// wire up
 	cs := &utils.MockConcertoService{}
@@ -171,10 +99,10 @@ func TestDomainUpdate(t *testing.T) {
 	assert.Nil(err, "Couldn't load domain service")
 	assert.NotNil(ds, "Domain service not instanced")
 
-	for _, domainIn := range domainsIn {
+	for _, domainIn := range *domainsIn {
 
 		// convertMap
-		mapIn, err := itemConvertParams(domainIn)
+		mapIn, err := utils.ItemConvertParams(domainIn)
 		assert.Nil(err, "Domain test data corrupted")
 
 		// to json
@@ -209,16 +137,7 @@ func TestDomainDelete(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := testdata.GetDomainData()
-	assert.Nil(err, "Couldn't load domain test data")
-
-	// only valid domains
-	var domainsIn []types.Domain
-	for _, domainTest := range domainsTest {
-		if domainTest.FieldsOK {
-			domainsIn = append(domainsIn, domainTest.Domain)
-		}
-	}
+	domainsIn := testdata.GetDomainData()
 
 	// wire up
 	cs := &utils.MockConcertoService{}
@@ -226,7 +145,7 @@ func TestDomainDelete(t *testing.T) {
 	assert.Nil(err, "Couldn't load domain service")
 	assert.NotNil(ds, "Domain service not instanced")
 
-	for _, domainIn := range domainsIn {
+	for _, domainIn := range *domainsIn {
 		// to json
 		dIn, err := json.Marshal(domainIn)
 		assert.Nil(err, "Domain test data corrupted")
@@ -242,8 +161,7 @@ func TestDomainRecordsList(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := testdata.GetDomainData()
-	assert.Nil(err, "Couldn't load domain test data")
+	domainsIn := testdata.GetDomainData()
 
 	// wire up
 	cs := &utils.MockConcertoService{}
@@ -251,15 +169,7 @@ func TestDomainRecordsList(t *testing.T) {
 	assert.Nil(err, "Couldn't load domain service")
 	assert.NotNil(ds, "Domain service not instanced")
 
-	// only valid domains
-	var domainsIn []types.Domain
-	for _, domainTest := range domainsTest {
-		if domainTest.FieldsOK {
-			domainsIn = append(domainsIn, domainTest.Domain)
-		}
-	}
-
-	for _, domainIn := range domainsIn {
+	for _, domainIn := range *domainsIn {
 		// to json
 		dIn, err := json.Marshal(domainIn)
 		assert.Nil(err, "Domain test data corrupted")
