@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/types"
+	"github.com/flexiant/concerto/testdata"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 	"github.com/stretchr/testify/assert"
@@ -17,13 +19,13 @@ func TestDomainList(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := GetDomainData()
+	domainsTest, err := testdata.GetDomainData()
 	assert.Nil(err, "Couldn't load domain test data")
 
 	// only valid domains
-	var domainsIn []api.Domain
+	var domainsIn []types.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.fieldsOK {
+		if domainTest.FieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -63,13 +65,13 @@ func TestDomainShow(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := GetDomainData()
+	domainsTest, err := testdata.GetDomainData()
 	assert.Nil(err, "Couldn't load domain test data")
 
 	// only valid domains
-	var domainsIn []api.Domain
+	var domainsIn []types.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.fieldsOK {
+		if domainTest.FieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -111,13 +113,13 @@ func TestDomainCreate(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := GetDomainData()
+	domainsTest, err := testdata.GetDomainData()
 	assert.Nil(err, "Couldn't load domain test data")
 
 	// only valid domains
-	var domainsIn []api.Domain
+	var domainsIn []types.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.fieldsOK {
+		if domainTest.FieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -166,13 +168,13 @@ func TestDomainUpdate(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := GetDomainData()
+	domainsTest, err := testdata.GetDomainData()
 	assert.Nil(err, "Couldn't load domain test data")
 
 	// only valid domains
-	var domainsIn []api.Domain
+	var domainsIn []types.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.fieldsOK {
+		if domainTest.FieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -221,13 +223,13 @@ func TestDomainDelete(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := GetDomainData()
+	domainsTest, err := testdata.GetDomainData()
 	assert.Nil(err, "Couldn't load domain test data")
 
 	// only valid domains
-	var domainsIn []api.Domain
+	var domainsIn []types.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.fieldsOK {
+		if domainTest.FieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -254,7 +256,7 @@ func TestDomainRecordsList(t *testing.T) {
 
 	assert := assert.New(t)
 
-	domainsTest, err := GetDomainData()
+	domainsTest, err := testdata.GetDomainData()
 	assert.Nil(err, "Couldn't load domain test data")
 
 	// wire up
@@ -264,9 +266,9 @@ func TestDomainRecordsList(t *testing.T) {
 	assert.NotNil(ds, "Domain service not instanced")
 
 	// only valid domains
-	var domainsIn []api.Domain
+	var domainsIn []types.Domain
 	for _, domainTest := range domainsTest {
-		if domainTest.fieldsOK {
+		if domainTest.FieldsOK {
 			domainsIn = append(domainsIn, domainTest.Domain)
 		}
 	}
@@ -295,72 +297,4 @@ func TestDomainRecordsList(t *testing.T) {
 		}
 	*/
 
-}
-
-// DomainTest holds test data domains
-type DomainTest struct {
-	Domain   api.Domain
-	fieldsOK bool // true if all mandatory fields are informed
-}
-
-// DomainRecordTest holds test data domains records
-type DomainRecordTest struct {
-	DomainRecord api.DomainRecord
-	fieldsOK     bool // true if all mandatory fields are informed
-}
-
-var testDomains []DomainTest
-var testDomainRecords []DomainRecordTest
-
-// GetDomainData loads loads test data
-func GetDomainData() ([]DomainTest, error) {
-
-	testDomains = []DomainTest{
-		{
-			Domain: api.Domain{
-				ID:      "fakeID0",
-				Name:    "fakeName0",
-				TTL:     1000,
-				Contact: "fakeContact0",
-				Minimum: 10,
-				Enabled: true,
-			},
-			fieldsOK: true,
-		},
-		{
-			Domain: api.Domain{
-				ID:      "fakeID1",
-				Name:    "fakeName1",
-				TTL:     1001,
-				Contact: "fakeContact1",
-				Minimum: 11,
-				Enabled: false,
-			},
-			fieldsOK: true,
-		},
-	}
-
-	return testDomains, nil
-}
-
-// GetDomainRecordData loads test data
-func GetDomainRecordData() ([]DomainRecordTest, error) {
-
-	testDomainRecords = []DomainRecordTest{
-		{
-			DomainRecord: api.DomainRecord{
-				ID:       "fakeID0.0",
-				Type:     "CNAME",
-				Name:     "otherserver",
-				Content:  "my.server.com",
-				TTL:      300,
-				Prio:     10,
-				ServerID: "server",
-				DomainID: "fakeID0",
-			},
-			fieldsOK: true,
-		},
-	}
-
-	return testDomainRecords, nil
 }

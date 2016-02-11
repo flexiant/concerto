@@ -4,30 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 )
-
-// Domain represents a domain entry
-type Domain struct {
-	ID      string `json:"id" header:"ID"`
-	Name    string `json:"name" header:"NAME"`
-	TTL     int    `json:"ttl" header:"TTL"`
-	Contact string `json:"contact" header:"CONTACT"`
-	Minimum int    `json:"minimum" header:"MINIMUM"`
-	Enabled bool   `json:"enabled" header:"ENABLED"`
-}
-
-// DomainRecord represents a domain record entry
-type DomainRecord struct {
-	ID       string `json:"id" header:"ID"`
-	Type     string `json:"type" header:"TYPE"`
-	Name     string `json:"name" header:"NAME"`
-	Content  string `json:"content" header:"CONTENT"`
-	TTL      int    `json:"ttl" header:"TTL"`
-	Prio     int    `json:"prio" header:"PRIO"`
-	ServerID string `json:"server_id" header:"SERVER ID"`
-	DomainID string `json:"domain_id" header:"DOMAIN ID"`
-}
 
 // DomainService manages domain operations
 type DomainService struct {
@@ -46,7 +25,7 @@ func NewDomainService(concertoService utils.ConcertoService) (*DomainService, er
 }
 
 // GetDomainList returns the list of domains as an array of Domain
-func (dm *DomainService) GetDomainList() (domains []Domain, err error) {
+func (dm *DomainService) GetDomainList() (domains []types.Domain, err error) {
 	log.Debug("GetDomainList")
 
 	data, status, err := dm.concertoService.Get("/v1/dns/domains")
@@ -66,7 +45,7 @@ func (dm *DomainService) GetDomainList() (domains []Domain, err error) {
 }
 
 // GetDomain returns a domain by its ID
-func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
+func (dm *DomainService) GetDomain(ID string) (domain *types.Domain, err error) {
 	log.Debug("GetDomain")
 
 	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s", ID))
@@ -86,7 +65,7 @@ func (dm *DomainService) GetDomain(ID string) (domain *Domain, err error) {
 }
 
 // CreateDomain creates a domain
-func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *Domain, err error) {
+func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *types.Domain, err error) {
 	log.Debug("CreateDomain")
 
 	data, status, err := dm.concertoService.Post("/v1/dns/domains/", domainVector)
@@ -106,7 +85,7 @@ func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *
 }
 
 // UpdateDomain updates a domain by its ID
-func (dm *DomainService) UpdateDomain(domainVector *map[string]string, ID string) (domain *Domain, err error) {
+func (dm *DomainService) UpdateDomain(domainVector *map[string]string, ID string) (domain *types.Domain, err error) {
 	log.Debug("UpdateDomain")
 
 	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/dns/domains/%s", ID), domainVector)
@@ -142,7 +121,7 @@ func (dm *DomainService) DeleteDomain(ID string) (err error) {
 }
 
 // ListDomainRecords returns a list of domainRecord
-func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *[]DomainRecord, err error) {
+func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *[]types.DomainRecord, err error) {
 	log.Debug("ListDomainRecords")
 
 	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records", ID))
@@ -162,10 +141,10 @@ func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *[]DomainRec
 }
 
 // ShowDomainRecord returns a list of domainRecord
-func (dm *DomainService) ShowDomainRecord(DOM_ID string, ID string) (domainRecord *DomainRecord, err error) {
+func (dm *DomainService) ShowDomainRecord(domID string, ID string) (domainRecord *types.DomainRecord, err error) {
 	log.Debug("ShowDomainRecord")
 
-	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", DOM_ID, ID))
+	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", domID, ID))
 	if err != nil {
 		return nil, err
 	}
@@ -182,10 +161,10 @@ func (dm *DomainService) ShowDomainRecord(DOM_ID string, ID string) (domainRecor
 }
 
 // CreateDomainRecord returns a list of domainRecord
-func (dm *DomainService) CreateDomainRecord(domainRecordVector *map[string]string, DOM_ID string) (domainRecord *DomainRecord, err error) {
+func (dm *DomainService) CreateDomainRecord(domainRecordVector *map[string]string, domID string) (domainRecord *types.DomainRecord, err error) {
 	log.Debug("CreateDomainRecord")
 
-	data, status, err := dm.concertoService.Post(fmt.Sprintf("/v1/dns/domains/%s/records", DOM_ID), domainRecordVector)
+	data, status, err := dm.concertoService.Post(fmt.Sprintf("/v1/dns/domains/%s/records", domID), domainRecordVector)
 	if err != nil {
 		return nil, err
 	}
@@ -202,10 +181,10 @@ func (dm *DomainService) CreateDomainRecord(domainRecordVector *map[string]strin
 }
 
 // UpdateDomainRecord returns a list of domainRecord
-func (dm *DomainService) UpdateDomainRecord(domainRecordVector *map[string]string, DOM_ID string, ID string) (domainRecord *DomainRecord, err error) {
+func (dm *DomainService) UpdateDomainRecord(domainRecordVector *map[string]string, domID string, ID string) (domainRecord *types.DomainRecord, err error) {
 	log.Debug("UpdateDomainRecord")
 
-	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", DOM_ID, ID), domainRecordVector)
+	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", domID, ID), domainRecordVector)
 	if err != nil {
 		return nil, err
 	}
@@ -222,10 +201,10 @@ func (dm *DomainService) UpdateDomainRecord(domainRecordVector *map[string]strin
 }
 
 // DeleteDomainRecord deletes a domain record
-func (dm *DomainService) DeleteDomainRecord(DOM_ID string, ID string) (err error) {
+func (dm *DomainService) DeleteDomainRecord(domID string, ID string) (err error) {
 	log.Debug("DeleteDomainRecord")
 
-	data, status, err := dm.concertoService.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", DOM_ID, ID))
+	data, status, err := dm.concertoService.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", domID, ID))
 	if err != nil {
 		return err
 	}
