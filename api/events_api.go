@@ -4,18 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
-	"time"
 )
-
-// Event stores an Concerto event item
-type Event struct {
-	Id          string    `json:"id" header:"ID"`
-	Timestamp   time.Time `json:"timestamp" header:"TIMESTAMP"`
-	Level       string    `json:"level" header:"LEVEL"`
-	Header      string    `json:"header" header:"HEADER"`
-	Description string    `json:"description" header:"DESCRIPTION"`
-}
 
 // EventService manages event operations
 type EventService struct {
@@ -34,7 +25,7 @@ func NewEventService(concertoService utils.ConcertoService) (*EventService, erro
 }
 
 // GetEventList returns the list of events as an array of Event
-func (cl *EventService) GetEventList() (events []Event, err error) {
+func (cl *EventService) GetEventList() (events []types.Event, err error) {
 	log.Debug("GetEventList")
 
 	data, status, err := cl.concertoService.Get("/v1/audit/events")
@@ -54,7 +45,7 @@ func (cl *EventService) GetEventList() (events []Event, err error) {
 }
 
 // GetSysEventList returns the list of events as an array of Event
-func (cl *EventService) GetSysEventList() (events []Event, err error) {
+func (cl *EventService) GetSysEventList() (events []types.Event, err error) {
 	log.Debug("GetEventList")
 
 	data, status, err := cl.concertoService.Get("/v1/audit/system_events")

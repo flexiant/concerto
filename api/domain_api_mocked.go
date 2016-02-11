@@ -155,8 +155,60 @@ func ListDomainRecordsMocked(t *testing.T, domainRecordsIn *[]types.DomainRecord
 	// call service
 	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s/records", domainID)).Return(drsIn, 200, nil)
 	drsOut, err := ds.ListDomainRecords(domainID)
-	assert.Nil(err, "Error getting domain list")
-	assert.Equal(*domainRecordsIn, *drsOut, "GetDomainList returned different domains")
+	assert.Nil(err, "Error getting domain records list")
+	assert.Equal(*domainRecordsIn, *drsOut, "ListDomainRecords returned different domains")
 
 	return drsOut
+}
+
+// ShowDomainRecordMocked test mocked function
+func ShowDomainRecordMocked(t *testing.T, domainRecordsIn *[]types.DomainRecord, domainID string, domainRecordID string) *types.DomainRecord {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	drsIn, err := json.Marshal(domainRecordsIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s/records/%s", domainID, domainRecordID)).Return(drsIn, 200, nil)
+	drsOut, err := ds.ShowDomainRecord(domainID, domainRecordID)
+	assert.Nil(err, "Error getting domain record data")
+	assert.Equal(*domainRecordsIn, *drsOut, "ShowDomainRecord returned different domain record data")
+
+	return drsOut
+}
+
+// CreateDomainRecordMocked test mocked function
+func CreateDomainRecordMocked(t *testing.T, domainRecordIn *types.DomainRecord) *types.DomainRecord {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*domainRecordIn)
+	assert.Nil(err, "Domain record test data corrupted")
+
+	// to json
+	drIn, err := json.Marshal(domainRecordIn)
+	assert.Nil(err, "Domain record test data corrupted")
+
+	// call service
+	cs.On("Post", fmt.Sprintf("/v1/dns/domains/%s/records", domainRecordIn.DomainID, mapIn)).Return(drIn, 200, nil)
+	domainRecordOut, err := ds.CreateDomainRecord(mapIn, domainRecordIn.DomainID)
+	assert.Nil(err, "Error creating domain record list")
+	assert.Equal(domainRecordIn, domainRecordOut, "CreateDomain returned different domains")
+
+	return domainRecordOut
 }
