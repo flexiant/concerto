@@ -31,3 +31,17 @@ func TestUpdateDomain(t *testing.T) {
 		UpdateDomainMocked(t, &domainIn)
 	}
 }
+
+func TestDeleteDomain(t *testing.T) {
+	domainsIn := testdata.GetDomainData()
+	for _, domainIn := range *domainsIn {
+		DeleteDomainMocked(t, &domainIn)
+	}
+}
+
+func TestListDomainRecords(t *testing.T) {
+	drsIn := testdata.GetDomainRecordData()
+	for _, drIn := range *drsIn {
+		ListDomainRecordsMocked(t, drsIn, drIn.ID)
+	}
+}

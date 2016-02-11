@@ -13,6 +13,8 @@ import (
 	"testing"
 )
 
+
+***** MIGRATED
 // TestDomainList subcommand
 func TestDomainList(t *testing.T) {
 
@@ -37,6 +39,7 @@ func TestDomainList(t *testing.T) {
 	assert.Regexp("\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON Output didn't match regular expression")
 }
 
+******* MIGRATED
 // TestDomainShow subcommand
 func TestDomainShow(t *testing.T) {
 
@@ -61,6 +64,7 @@ func TestDomainShow(t *testing.T) {
 	}
 }
 
+******** MIGRATED
 // TestDomainCreate subcommand
 func TestDomainCreate(t *testing.T) {
 
@@ -87,6 +91,7 @@ func TestDomainCreate(t *testing.T) {
 
 }
 
+******** MIGRATED
 // TestDomainUpdate subcommand
 func TestDomainUpdate(t *testing.T) {
 
@@ -132,6 +137,7 @@ func TestDomainUpdate(t *testing.T) {
 
 }
 
+*************** MIGRATED
 // TestDomainDelete subcommand
 func TestDomainDelete(t *testing.T) {
 
@@ -157,6 +163,7 @@ func TestDomainDelete(t *testing.T) {
 	}
 }
 
+*************** PENDING
 func TestDomainRecordsList(t *testing.T) {
 
 	assert := assert.New(t)

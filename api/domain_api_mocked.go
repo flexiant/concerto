@@ -53,8 +53,8 @@ func GetDomainMocked(t *testing.T, domain *types.Domain) *types.Domain {
 	// call service
 	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s", domain.ID)).Return(dIn, 200, nil)
 	domainOut, err := ds.GetDomain(domain.ID)
-	assert.Nil(err, "Error getting domain list")
-	assert.Equal(*domain, *domainOut, "GetDomainList returned different domains")
+	assert.Nil(err, "Error getting domain")
+	assert.Equal(*domain, *domainOut, "GetDomain returned different domains")
 
 	return domainOut
 }
@@ -82,7 +82,7 @@ func CreateDomainMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
 	cs.On("Post", "/v1/dns/domains/", mapIn).Return(dOut, 200, nil)
 	domainOut, err := ds.CreateDomain(mapIn)
 	assert.Nil(err, "Error creating domain list")
-	assert.Equal(domainIn, domainOut, "GetDomainList returned different domains")
+	assert.Equal(domainIn, domainOut, "CreateDomain returned different domains")
 
 	return domainOut
 }
@@ -109,8 +109,8 @@ func UpdateDomainMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
 	// call service
 	cs.On("Put", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID), mapIn).Return(dOut, 200, nil)
 	domainOut, err := ds.UpdateDomain(mapIn, domainIn.ID)
-	assert.Nil(err, "Error creating domain list")
-	assert.Equal(domainIn, domainOut, "GetDomainList returned different domains")
+	assert.Nil(err, "Error updating domain list")
+	assert.Equal(domainIn, domainOut, "UpdateDomain returned different domains")
 
 	return domainOut
 }
@@ -133,6 +133,30 @@ func DeleteDomainMocked(t *testing.T, domainIn *types.Domain) {
 	// call service
 	cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 200, nil)
 	err = ds.DeleteDomain(domainIn.ID)
-	assert.Nil(err, "Error getting domain list")
+	assert.Nil(err, "Error deleting domain")
 
+}
+
+// ListDomainRecordsMocked test mocked function
+func ListDomainRecordsMocked(t *testing.T, domainRecordsIn *[]types.DomainRecord, domainID string) *[]types.DomainRecord {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	drsIn, err := json.Marshal(domainRecordsIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s/records", domainID)).Return(drsIn, 200, nil)
+	drsOut, err := ds.ListDomainRecords(domainID)
+	assert.Nil(err, "Error getting domain list")
+	assert.Equal(*domainRecordsIn, *drsOut, "GetDomainList returned different domains")
+
+	return drsOut
 }

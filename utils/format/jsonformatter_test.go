@@ -19,7 +19,8 @@ func TestPrintItemDomain(t *testing.T) {
 
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
-		f := NewJSONFormatter(mockOut)
+		InitializeFormatter("json", mockOut)
+		f := GetFormatter()
 		assert.NotNil(f, "Formatter")
 
 		err := f.PrintItem(domainOut)
@@ -39,7 +40,8 @@ func TestPrintListDomains(t *testing.T) {
 
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)
-	f := NewJSONFormatter(mockOut)
+	InitializeFormatter("json", mockOut)
+	f := GetFormatter()
 	assert.NotNil(f, "Formatter")
 
 	err := f.PrintList(domainOut)
