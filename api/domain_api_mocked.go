@@ -114,3 +114,25 @@ func UpdateDomainMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
 
 	return domainOut
 }
+
+// DeleteDomainMocked test mocked function
+func DeleteDomainMocked(t *testing.T, domainIn *types.Domain) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 200, nil)
+	err = ds.DeleteDomain(domainIn.ID)
+	assert.Nil(err, "Error getting domain list")
+
+}
