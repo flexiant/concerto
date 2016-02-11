@@ -30,21 +30,7 @@ func TestDomainList(t *testing.T) {
 		}
 	}
 
-	// wire up
-	cs := &utils.MockConcertoService{}
-	ds, err := api.NewDomainService(cs)
-	assert.Nil(err, "Couldn't load domain service")
-	assert.NotNil(ds, "Domain service not instanced")
-
-	// to json
-	dIn, err := json.Marshal(domainsIn)
-	assert.Nil(err, "Domain test data corrupted")
-
-	// call service
-	cs.On("Get", "/v1/dns/domains").Return(dIn, 200, nil)
-	domainsOut, err := ds.GetDomainList()
-	assert.Nil(err, "Error getting domain list")
-	assert.Equal(domainsIn, domainsOut, "GetDomainList returned different domains")
+	domainsOut := api.GetTestDomainList(t, &domainsIn)
 
 	// TODO iterate all formatters
 	// write output
