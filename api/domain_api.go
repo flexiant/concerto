@@ -142,7 +142,7 @@ func (dm *DomainService) GetDomainRecordList(domainID string) (domainRecord *[]t
 
 // GetDomainRecord returns a domainRecord
 func (dm *DomainService) GetDomainRecord(domID string, ID string) (domainRecord *types.DomainRecord, err error) {
-	log.Debug("ShowDomainRecord")
+	log.Debug("GetDomainRecord")
 
 	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", domID, ID))
 	if err != nil {

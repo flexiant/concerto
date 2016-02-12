@@ -321,49 +321,49 @@ type DomainRecord struct {
 // 	utils.CheckReturnCode(res, mesg)
 //
 // }
-
-func cmdListDomainRecords(c *cli.Context) {
-	var domainRecords []DomainRecord
-	utils.FlagsRequired(c, []string{"domain_id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
-
-	err = json.Unmarshal(data, &domainRecords)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
-
-	for _, dr := range domainRecords {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
-	}
-	w.Flush()
-}
-
-func cmdShowDomainRecords(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"domain_id", "id"})
-	var dr DomainRecord
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
-
-	err = json.Unmarshal(data, &dr)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
-
-	w.Flush()
-}
+//
+// func cmdListDomainRecords(c *cli.Context) {
+// 	var domainRecords []DomainRecord
+// 	utils.FlagsRequired(c, []string{"domain_id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &domainRecords)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
+//
+// 	for _, dr := range domainRecords {
+// 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
+// 	}
+// 	w.Flush()
+// }
+//
+// func cmdShowDomainRecords(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"domain_id", "id"})
+// 	var dr DomainRecord
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &dr)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
+//
+// 	w.Flush()
+// }
 
 func cmdCreateDomainRecords(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"domain_id", "type", "name"})

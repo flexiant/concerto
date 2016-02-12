@@ -136,28 +136,18 @@ func DomainRecordCreate(c *cli.Context) {
 
 	checkRequiredFlags(c, []string{"domain_id", "type", "name"}, formatter)
 
-	// if c.String("type") == "A" {
-	// 	if !c.IsSet("content") && !c.IsSet("server_id") {
-	// 		formatter.PrintError("Incorrect usage.", "Please use either parameter --content or --server_id")
-	// 		cli.ShowCommandHelp(c, c.Command.Name)
-	// 		os.Exit(2)
-	// 	}
-	// }
-	// if c.String("type") == "AAAA" {
-	// 	utils.FlagsRequired(c, []string{"content"})
-	// }
-
-	// if c.String("type") == "CNAME" {
-	// 	utils.FlagsRequired(c, []string{"content"})
-	// }
-
-	// if c.String("type") == "MX" {
-	// 	utils.FlagsRequired(c, []string{"content", "prio"})
-	// }
+	switch c.String("type") {
+	case "A":
+		checkRequiredFlagsOr(c, []string{"content", "server_id"}, formatter)
+	case "AAAA", "CNAME":
+		checkRequiredFlags(c, []string{"content"}, formatter)
+	case "MX":
+		checkRequiredFlags(c, []string{"content", "prio"}, formatter)
+	}
 
 	domain, err := domainSvc.CreateDomainRecord(utils.FlagConvertParams(c), c.String("domain_id"))
 	if err != nil {
-		formatter.PrintFatal("Couldn't create domain", err)
+		formatter.PrintFatal("Couldn't create domain record", err)
 	}
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)

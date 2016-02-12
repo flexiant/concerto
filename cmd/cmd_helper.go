@@ -42,13 +42,28 @@ func checkRequiredFlags(c *cli.Context, flags []string, f format.Formatter) {
 	missing := ""
 	for _, flag := range flags {
 		if !c.IsSet(flag) {
-			missing = fmt.Sprintf("%s\n\t--%s\n", missing, flag)
+			missing = fmt.Sprintf("%s\n\t--%s", missing, flag)
 		}
 	}
 
 	if missing != "" {
-		f.PrintError("Incorrect usage.", fmt.Errorf("Mandatory parameters missing: %s", missing))
+		f.PrintError("Incorrect usage.", fmt.Errorf("Mandatory parameters missing: %s\n", missing))
 		cli.ShowCommandHelp(c, c.Command.Name)
 		os.Exit(2)
 	}
+}
+
+// checkRequiredFlagsOr checks that at least one of required flags is present, and show usage if requirements not met
+func checkRequiredFlagsOr(c *cli.Context, flags []string, f format.Formatter) {
+	missing := ""
+	for _, flag := range flags {
+		if c.IsSet(flag) {
+			return
+		}
+		missing = fmt.Sprintf("%s\n\t--%s", missing, flag)
+	}
+
+	f.PrintError("Incorrect usage.", fmt.Errorf("Please use either parameter: %s\n", missing))
+	cli.ShowCommandHelp(c, c.Command.Name)
+	os.Exit(2)
 }

@@ -111,6 +111,7 @@ func SubCommands() []cli.Command {
 			Name:   "create_domain_record",
 			Usage:  "Creates a new DNS record.",
 			Action: cmdCreateDomainRecords,
+			//Action: cmd.DomainRecordCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "domain_id",
