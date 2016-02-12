@@ -1,9 +1,9 @@
 package types
 
 type Script struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Code        string   `json:"code"`
-	Parameters  []string `json:"parameters"`
+	Id          string   `json:"id" header:"ID"`
+	Name        string   `json:"name" header:"NAME"`
+	Description string   `json:"description" header:"DESCRIPTION"`
+	Code        string   `json:"code" header:"CODE"`
+	Parameters  []string `json:"parameters" header:"PARAMETERS"`
 }
