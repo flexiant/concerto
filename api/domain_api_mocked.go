@@ -137,8 +137,8 @@ func DeleteDomainMocked(t *testing.T, domainIn *types.Domain) {
 
 }
 
-// ListDomainRecordsMocked test mocked function
-func ListDomainRecordsMocked(t *testing.T, domainRecordsIn *[]types.DomainRecord, domainID string) *[]types.DomainRecord {
+// GetDomainRecordListMocked test mocked function
+func GetDomainRecordListMocked(t *testing.T, domainRecordsIn *[]types.DomainRecord, domainID string) *[]types.DomainRecord {
 
 	assert := assert.New(t)
 
@@ -150,13 +150,37 @@ func ListDomainRecordsMocked(t *testing.T, domainRecordsIn *[]types.DomainRecord
 
 	// to json
 	drsIn, err := json.Marshal(domainRecordsIn)
-	assert.Nil(err, "Domain test data corrupted")
+	assert.Nil(err, "Domain record test data corrupted")
 
 	// call service
 	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s/records", domainID)).Return(drsIn, 200, nil)
-	drsOut, err := ds.ListDomainRecords(domainID)
+	drsOut, err := ds.GetDomainRecordList(domainID)
 	assert.Nil(err, "Error getting domain list")
 	assert.Equal(*domainRecordsIn, *drsOut, "GetDomainList returned different domains")
 
 	return drsOut
+}
+
+// GetDomainRecordMocked test mocked function
+func GetDomainRecordMocked(t *testing.T, dr *types.DomainRecord) *types.DomainRecord {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Domain record test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s/records/%s", dr.DomainID, dr.ID)).Return(drIn, 200, nil)
+	drOut, err := ds.GetDomainRecord(dr.DomainID, dr.ID)
+	assert.Nil(err, "Error getting domain")
+	assert.Equal(*dr, *drOut, "GetDomainRecord returned different domain records")
+
+	return drOut
 }

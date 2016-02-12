@@ -105,7 +105,7 @@ func DomainRecordsList(c *cli.Context) {
 	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"domain_id"}, formatter)
-	domainRecords, err := domainSvc.ListDomainRecords(c.String("domain_id"))
+	domainRecords, err := domainSvc.GetDomainRecordList(c.String("domain_id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't list domain records", err)
 	}
@@ -120,7 +120,7 @@ func ShowDomainRecord(c *cli.Context) {
 	domainSvc, formatter := WireUpDomain(c)
 
 	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
-	domain, err := domainSvc.ShowDomainRecord(c.String("domain_id"), c.String("id"))
+	domain, err := domainSvc.GetDomainRecord(c.String("domain_id"), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't list domain records", err)
 	}
