@@ -166,45 +166,17 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
 )
 
-type Template struct {
-	Id                      string           `json:"id,omitempty"`
-	Name                    string           `json:"name,omitempty"`
-	GenericImgId            string           `json:"generic_image_id,omitempty"`
-	ServiceList             []string         `json:"service_list,omitempty"`
-	ConfigurationAttributes *json.RawMessage `json:"configuration_attributes,omitempty"`
-}
-
-type TemplateScript struct {
-	Id               string          `json:"id"`
-	Type             string          `json:"type"`
-	Template_Id      string          `json:"template_id"`
-	Script_Id        string          `json:"script_id"`
-	Parameter_Values json.RawMessage `json:"parameter_values"`
-	Execution_Order  int             `json:"execution_order"`
-}
-
-type TemplateServer struct {
-	Id             string `json:"id"`
-	Name           string `json:"name"`
-	Fqdn           string `json:"fqdn"`
-	State          string `json:"state"`
-	Public_ip      string `json:"public_ip"`
-	Workspace_id   string `json:"workspace_id"`
-	Template_id    string `json:"template_id"`
-	Server_plan_id string `json:"server_plan_id"`
-	Ssh_profile_id string `json:"ssh_profile_id"`
-}
-
 type TemplateScriptCredentials interface{}
 
 func cmdList(c *cli.Context) {
-	var templates []Template
+	var templates []types.Template
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -228,7 +200,7 @@ func cmdList(c *cli.Context) {
 
 func cmdShow(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id"})
-	var template Template
+	var template types.Template
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -254,7 +226,7 @@ func cmdCreate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	template := Template{
+	template := types.Template{
 		Name:         c.String("name"),
 		GenericImgId: c.String("generic_image_id"),
 	}
@@ -299,7 +271,7 @@ func cmdUpdate(c *cli.Context) {
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
 
-	template := Template{
+	template := types.Template{
 		Id: c.String("id"),
 	}
 
@@ -351,7 +323,7 @@ func cmdDelete(c *cli.Context) {
 }
 
 func cmdListTemplateScripts(c *cli.Context) {
-	var templateScripts []TemplateScript
+	var templateScripts []types.TemplateScript
 	utils.FlagsRequired(c, []string{"template_id", "type"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -375,7 +347,7 @@ func cmdListTemplateScripts(c *cli.Context) {
 
 func cmdShowTemplateScript(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id", "template_id"})
-	var templateScript TemplateScript
+	var templateScript types.TemplateScript
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -416,7 +388,7 @@ func cmdCreateTemplateScript(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var templateScript TemplateScript
+	var templateScript types.TemplateScript
 	err = json.Unmarshal(res, &templateScript)
 	utils.CheckError(err)
 
@@ -446,7 +418,7 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var templateScript TemplateScript
+	var templateScript types.TemplateScript
 	err = json.Unmarshal(res, &templateScript)
 	utils.CheckError(err)
 
@@ -483,7 +455,7 @@ func cmdReorderTemplateScripts(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var templateScripts []TemplateScript
+	var templateScripts []types.TemplateScript
 	err = json.Unmarshal(res, &templateScripts)
 	utils.CheckError(err)
 
@@ -496,7 +468,7 @@ func cmdReorderTemplateScripts(c *cli.Context) {
 }
 
 func cmdListTemplateServers(c *cli.Context) {
-	var templateServers []TemplateServer
+	var templateServers []types.TemplateServer
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -516,199 +488,4 @@ func cmdListTemplateServers(c *cli.Context) {
 	}
 
 	w.Flush()
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists all available templates",
-			Action: cmdList,
-		},
-		{
-			Name:   "show",
-			Usage:  "Shows information about a specific template",
-			Action: cmdShow,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Template Id",
-				},
-			},
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a new template.",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the template",
-				},
-				cli.StringFlag{
-					Name:  "generic_image_id",
-					Usage: "Identifier of the OS image that the template builds on",
-				},
-				cli.StringFlag{
-					Name:  "service_list",
-					Usage: "A list of space separated service recipes that is run on the servers at start-up",
-				},
-				cli.StringFlag{
-					Name:  "configuration_attributes",
-					Usage: "The attributes used to configure the services in the service_list",
-				},
-			},
-		},
-		{
-			Name:   "update",
-			Usage:  "Updates an existing template",
-			Action: cmdUpdate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the template",
-				},
-				cli.StringFlag{
-					Name:  "service_list",
-					Usage: "A list of service recipes that is run on the servers at start-up",
-				},
-				cli.StringFlag{
-					Name:  "configuration_attributes",
-					Usage: "The attributes used to configure the services in the service_list",
-				},
-			},
-		},
-		{
-			Name:   "delete",
-			Usage:  "Deletes a template",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Template Id",
-				},
-			},
-		},
-		{
-			Name:   "list_template_scripts",
-			Usage:  "Shows the script characterisations of a template",
-			Action: cmdListTemplateScripts,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "type",
-					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
-				},
-			},
-		},
-		{
-			Name:   "show_template_script",
-			Usage:  "Shows information about a specific script characterisation",
-			Action: cmdShowTemplateScript,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Script Id",
-				},
-			},
-		},
-		{
-			Name:   "create_template_script",
-			Usage:  "Creates a new script characterisation for a template and appends it to the list of script characterisations of the same type.",
-			Action: cmdCreateTemplateScript,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "type",
-					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
-				},
-				cli.StringFlag{
-					Name:  "script_id",
-					Usage: "Identifier for the script that is parameterised by the script characterisation",
-				},
-				cli.StringFlag{
-					Name:  "parameter_values",
-					Usage: "A map that assigns a value to each script parameter",
-				},
-			},
-		},
-		{
-			Name:   "update_template_script",
-			Usage:  "Updates an existing script characterisation for a template.",
-			Action: cmdUpdateTemplateScript,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Identifier for the script that is parameterised by the script characterisation",
-				},
-				cli.StringFlag{
-					Name:  "parameter_values",
-					Usage: "A map that assigns a value to each script parameter",
-				},
-			},
-		},
-		{
-			Name:   "reorder_template_scripts",
-			Usage:  "Reorders the scripts of the template and type specified according to the provided order, changing their execution order as corresponds.",
-			Action: cmdReorderTemplateScripts,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "type",
-					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
-				},
-				cli.StringFlag{
-					Name:  "script_ids",
-					Usage: "An array that must contain all the ids of scripts of the given template and type in the desired execution order",
-				},
-			},
-		},
-		{
-			Name:   "delete_template_script",
-			Usage:  "Removes a parametrized script from a template",
-			Action: cmdDeleteTemplateScript,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-				cli.StringFlag{
-					Name:  "script_id",
-					Usage: "Identifier for the script that is parameterised by the script characterisation",
-				},
-			},
-		},
-		{
-			Name:   "list_template_servers",
-			Usage:  "Returns information about the servers that use a specific template. ",
-			Action: cmdListTemplateServers,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "template_id",
-					Usage: "Template Id",
-				},
-			},
-		},
-	}
 }

@@ -4,21 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 )
-
-type Cluster struct {
-	Id                string   `json:"id" header:"ID"`
-	Name              string   `json:"name" header:"NAME"`
-	State             string   `json:"state" header:"STATE"`
-	MasterCount       int      `json:"master_count" header:"MASTER_COUNT"`
-	SlaveCount        int      `json:"slave_count" header:"SLAVE_COUNT"`
-	WorkspaceId       string   `json:"workspace_id" header:"WORKSPACE_ID"`
-	FirewallProfileId string   `json:"firewall_profile_id" header:"FIREWALL_PROFILE_ID"`
-	MasterTemplateId  string   `json:"master_template_id" header:"MASTER_TEMPLATE_ID"`
-	SlaveTemplateId   string   `json:"slave_template_id" header:"SLAVE_TEMPLATE_ID"`
-	Masters           []string `json:"masters" header:"MASTERS"`
-}
 
 // ClusterService manages cluster operations
 type ClusterService struct {
@@ -37,7 +25,7 @@ func NewClusterService(concertoService utils.ConcertoService) (*ClusterService, 
 }
 
 // GetClusterList returns the list of clusters as an array of Cluster
-func (cl *ClusterService) GetClusterList() (clusters []Cluster, err error) {
+func (cl *ClusterService) GetClusterList() (clusters []types.Cluster, err error) {
 	log.Debug("GetClusterList")
 
 	data, status, err := cl.concertoService.Get("/v1/kaas/fleets")
@@ -57,7 +45,7 @@ func (cl *ClusterService) GetClusterList() (clusters []Cluster, err error) {
 }
 
 // CreateCluster creates a cluster
-func (cl *ClusterService) CreateCluster(clusterVector *map[string]string) (cluster *Cluster, err error) {
+func (cl *ClusterService) CreateCluster(clusterVector *map[string]string) (cluster *types.Cluster, err error) {
 	log.Debug("CreateCluster")
 
 	data, status, err := cl.concertoService.Post("/v1/kaas/fleets", clusterVector)

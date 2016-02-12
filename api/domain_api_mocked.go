@@ -183,4 +183,5 @@ func GetDomainRecordMocked(t *testing.T, dr *types.DomainRecord) *types.DomainRe
 	assert.Equal(*dr, *drOut, "GetDomainRecord returned different domain records")
 
 	return drOut
+
 }

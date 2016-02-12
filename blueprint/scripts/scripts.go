@@ -79,22 +79,15 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
 )
 
-type Script struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Code        string   `json:"code"`
-	Parameters  []string `json:"parameters"`
-}
-
 func cmdList(c *cli.Context) {
-	var scripts []Script
+	var scripts []types.Script
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -118,7 +111,7 @@ func cmdList(c *cli.Context) {
 
 func cmdShow(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id"})
-	var script Script
+	var script types.Script
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -160,7 +153,7 @@ func cmdCreate(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var new_script Script
+	var new_script types.Script
 	err = json.Unmarshal(res, &new_script)
 	utils.CheckError(err)
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
@@ -199,7 +192,7 @@ func cmdUpdate(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var new_script Script
+	var new_script types.Script
 	err = json.Unmarshal(res, &new_script)
 	utils.CheckError(err)
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
@@ -218,86 +211,4 @@ func cmdDelete(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/scripts/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists all available scripts",
-			Action: cmdList,
-		},
-		{
-			Name:   "show",
-			Usage:  "Shows information about a specific script",
-			Action: cmdShow,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Script Id",
-				},
-			},
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a new script to be used in the templates. ",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the script",
-				},
-				cli.StringFlag{
-					Name:  "description",
-					Usage: "Description of the script's purpose ",
-				},
-				cli.StringFlag{
-					Name:  "code",
-					Usage: "The script's code",
-				},
-				cli.StringFlag{
-					Name:  "parameters",
-					Usage: "The names of the script's parameters",
-				},
-			},
-		},
-		{
-			Name:   "update",
-			Usage:  "Updates an existing script",
-			Action: cmdUpdate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Script Id",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the script",
-				},
-				cli.StringFlag{
-					Name:  "description",
-					Usage: "Description of the script's purpose ",
-				},
-				cli.StringFlag{
-					Name:  "code",
-					Usage: "The script's code",
-				},
-				cli.StringFlag{
-					Name:  "parameters",
-					Usage: "The names of the script's parameters",
-				},
-			},
-		},
-		{
-			Name:   "delete",
-			Usage:  "Deletes a script",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Script Id",
-				},
-			},
-		},
-	}
 }

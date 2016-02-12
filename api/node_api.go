@@ -4,20 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 )
-
-type Node struct {
-	Id        string `json:"id" header:"ID"`
-	Name      string `json:"name" header:"NAME"`
-	Fqdn      string `json:"fqdn" header:"FQDN"`
-	PublicIp  string `json:"public_ip" header:"PUBLIC_IP"`
-	State     string `json:"state" header:"STATE"`
-	Os        string `json:"os" header:"OS"`
-	Plan      string `json:"plan" header:"PLAN"`
-	FleetName string `json:"fleet_name" header:"FLEET_NAME"`
-	Master    bool   `json:"is_master" header:"IS_MASTER"`
-}
 
 // NodeService manages node operations
 type NodeService struct {
@@ -36,7 +25,7 @@ func NewNodeService(concertoService utils.ConcertoService) (*NodeService, error)
 }
 
 // GetNodeList returns the list of nodes as an array of Node
-func (cl *NodeService) GetNodeList() (nodes []Node, err error) {
+func (cl *NodeService) GetNodeList() (nodes []types.Node, err error) {
 	log.Debug("GetNodeList")
 
 	data, status, err := cl.concertoService.Get("/v1/kaas/ships")
@@ -56,7 +45,7 @@ func (cl *NodeService) GetNodeList() (nodes []Node, err error) {
 }
 
 // CreateNode creates a node
-func (cl *NodeService) CreateNode(nodeVector *map[string]string) (node *Node, err error) {
+func (cl *NodeService) CreateNode(nodeVector *map[string]string) (node *types.Node, err error) {
 	log.Debug("CreateNode")
 
 	data, status, err := cl.concertoService.Post("/v1/kaas/ships", nodeVector)
