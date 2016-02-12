@@ -2,7 +2,7 @@ package scripts
 
 import (
 	"github.com/codegangsta/cli"
-	// "github.com/flexiant/concerto/cmd"
+	"github.com/flexiant/concerto/cmd"
 )
 
 func SubCommands() []cli.Command {
@@ -10,12 +10,12 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list",
 			Usage:  "Lists all available scripts",
-			Action: cmdList,
+			Action: cmd.ScriptsList,
 		},
 		{
 			Name:   "show",
 			Usage:  "Shows information about a specific script",
-			Action: cmdShow,
+			Action: cmd.ScriptShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -26,7 +26,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "create",
 			Usage:  "Creates a new script to be used in the templates. ",
-			Action: cmdCreate,
+			Action: cmd.ScriptCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "name",
@@ -49,7 +49,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "update",
 			Usage:  "Updates an existing script",
-			Action: cmdUpdate,
+			Action: cmd.ScriptUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -76,7 +76,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete",
 			Usage:  "Deletes a script",
-			Action: cmdDelete,
+			Action: cmd.ScriptDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",

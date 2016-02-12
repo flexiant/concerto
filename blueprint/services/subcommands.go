@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/codegangsta/cli"
-	// "github.com/flexiant/concerto/cmd"
+	"github.com/flexiant/concerto/cmd"
 )
 
 func SubCommands() []cli.Command {
@@ -10,12 +10,12 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list",
 			Usage:  "Lists all available services",
-			Action: cmdList,
+			Action: cmd.ServiceList,
 		},
 		{
 			Name:   "show",
 			Usage:  "Shows information about a specific service",
-			Action: cmdShow,
+			Action: cmd.ServiceShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
