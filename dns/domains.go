@@ -145,7 +145,7 @@ package dns
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
+	//	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
@@ -364,70 +364,70 @@ type DomainRecord struct {
 //
 // 	w.Flush()
 // }
-
-func cmdCreateDomainRecords(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"domain_id", "type", "name"})
-	if c.String("type") == "A" {
-		if !c.IsSet("content") && !c.IsSet("server_id") {
-			log.Warn(fmt.Sprintf("Please use either parameter --content or --server_id"))
-			fmt.Printf("\n")
-			cli.ShowCommandHelp(c, c.Command.Name)
-			os.Exit(2)
-		}
-	}
-	if c.String("type") == "AAAA" {
-		utils.FlagsRequired(c, []string{"content"})
-	}
-
-	if c.String("type") == "CNAME" {
-		utils.FlagsRequired(c, []string{"content"})
-	}
-
-	if c.String("type") == "MX" {
-		utils.FlagsRequired(c, []string{"content", "prio"})
-	}
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]string)
-
-	v["type"] = c.String("type")
-	if c.IsSet("name") {
-		v["name"] = c.String("name")
-	}
-	if c.IsSet("content") {
-		v["content"] = c.String("content")
-	}
-	if c.IsSet("ttl") {
-		v["ttl"] = c.String("ttl")
-	}
-	if c.IsSet("prio") {
-		v["prio"] = c.String("prio")
-	}
-	if c.IsSet("server_id") {
-		v["server_id"] = c.String("server_id")
-	}
-
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Post(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")), jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var dr DomainRecord
-	err = json.Unmarshal(res, &dr)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
-
-	w.Flush()
-
-}
+//
+// func cmdCreateDomainRecords(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"domain_id", "type", "name"})
+// 	if c.String("type") == "A" {
+// 		if !c.IsSet("content") && !c.IsSet("server_id") {
+// 			log.Warn(fmt.Sprintf("Please use either parameter --content or --server_id"))
+// 			fmt.Printf("\n")
+// 			cli.ShowCommandHelp(c, c.Command.Name)
+// 			os.Exit(2)
+// 		}
+// 	}
+// 	if c.String("type") == "AAAA" {
+// 		utils.FlagsRequired(c, []string{"content"})
+// 	}
+//
+// 	if c.String("type") == "CNAME" {
+// 		utils.FlagsRequired(c, []string{"content"})
+// 	}
+//
+// 	if c.String("type") == "MX" {
+// 		utils.FlagsRequired(c, []string{"content", "prio"})
+// 	}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]string)
+//
+// 	v["type"] = c.String("type")
+// 	if c.IsSet("name") {
+// 		v["name"] = c.String("name")
+// 	}
+// 	if c.IsSet("content") {
+// 		v["content"] = c.String("content")
+// 	}
+// 	if c.IsSet("ttl") {
+// 		v["ttl"] = c.String("ttl")
+// 	}
+// 	if c.IsSet("prio") {
+// 		v["prio"] = c.String("prio")
+// 	}
+// 	if c.IsSet("server_id") {
+// 		v["server_id"] = c.String("server_id")
+// 	}
+//
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post(fmt.Sprintf("/v1/dns/domains/%s/records", c.String("domain_id")), jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var dr DomainRecord
+// 	err = json.Unmarshal(res, &dr)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
+//
+// 	w.Flush()
+//
+// }
 
 func cmdUpdateDomainRecords(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"domain_id", "id"})

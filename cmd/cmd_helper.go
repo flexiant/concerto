@@ -63,7 +63,7 @@ func checkRequiredFlagsOr(c *cli.Context, flags []string, f format.Formatter) {
 		missing = fmt.Sprintf("%s\n\t--%s", missing, flag)
 	}
 
-	f.PrintError("Incorrect usage.", fmt.Errorf("Please use either parameter: %s\n", missing))
+	f.PrintError("Incorrect usage.", fmt.Errorf("Please use one of these parameters: %s\n", missing))
 	cli.ShowCommandHelp(c, c.Command.Name)
 	os.Exit(2)
 }

@@ -183,5 +183,32 @@ func GetDomainRecordMocked(t *testing.T, dr *types.DomainRecord) *types.DomainRe
 	assert.Equal(*dr, *drOut, "GetDomainRecord returned different domain records")
 
 	return drOut
+}
 
+// CreateDomainRecordMocked test mocked function
+func CreateDomainRecordMocked(t *testing.T, dr *types.DomainRecord) *types.DomainRecord {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*dr)
+	assert.Nil(err, "Domain record test data corrupted")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Domain record test data corrupted")
+
+	// call service
+	cs.On("Post", fmt.Sprintf("/v1/dns/domains/%s/records", dr.DomainID), mapIn).Return(drIn, 200, nil)
+	drOut, err := ds.CreateDomainRecord(mapIn, dr.DomainID)
+	assert.Nil(err, "Error getting domain")
+	assert.Equal(*dr, *drOut, "CreateDomainRecord returned different domain records")
+
+	return drOut
 }
