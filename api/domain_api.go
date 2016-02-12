@@ -120,11 +120,11 @@ func (dm *DomainService) DeleteDomain(ID string) (err error) {
 	return nil
 }
 
-// ListDomainRecords returns a list of domainRecord
-func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *[]types.DomainRecord, err error) {
+// GetDomainRecordList returns a list of domainRecord by domain ID
+func (dm *DomainService) GetDomainRecordList(domainID string) (domainRecord *[]types.DomainRecord, err error) {
 	log.Debug("ListDomainRecords")
 
-	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records", ID))
+	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records", domainID))
 	if err != nil {
 		return nil, err
 	}
@@ -140,8 +140,8 @@ func (dm *DomainService) ListDomainRecords(ID string) (domainRecord *[]types.Dom
 	return domainRecord, nil
 }
 
-// ShowDomainRecord returns a list of domainRecord
-func (dm *DomainService) ShowDomainRecord(domID string, ID string) (domainRecord *types.DomainRecord, err error) {
+// GetDomainRecord returns a domainRecord
+func (dm *DomainService) GetDomainRecord(domID string, ID string) (domainRecord *types.DomainRecord, err error) {
 	log.Debug("ShowDomainRecord")
 
 	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/dns/domains/%s/records/%s", domID, ID))
