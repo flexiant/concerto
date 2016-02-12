@@ -99,8 +99,8 @@ func DomainDelete(c *cli.Context) {
 	}
 }
 
-// DomainRecordsList subcommand function
-func DomainRecordsList(c *cli.Context) {
+// DomainRecordList subcommand function
+func DomainRecordList(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -114,8 +114,8 @@ func DomainRecordsList(c *cli.Context) {
 	}
 }
 
-// ShowDomainRecord subcommand function
-func ShowDomainRecord(c *cli.Context) {
+// DomainRecordShow subcommand function
+func DomainRecordShow(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -129,8 +129,8 @@ func ShowDomainRecord(c *cli.Context) {
 	}
 }
 
-// CreateDomainRecord subcommand function
-func CreateDomainRecord(c *cli.Context) {
+// DomainRecordCreate subcommand function
+func DomainRecordCreate(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -164,8 +164,8 @@ func CreateDomainRecord(c *cli.Context) {
 	}
 }
 
-// UpdateDomainRecord subcommand function
-func UpdateDomainRecord(c *cli.Context) {
+// DomainRecordUpdate subcommand function
+func DomainRecordUpdate(c *cli.Context) {
 	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
 	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
