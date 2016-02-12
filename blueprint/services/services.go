@@ -30,23 +30,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
 )
 
-type Service struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Public      bool     `json:"public"`
-	License     string   `json:"license"`
-	Recipes     []string `json:"recipes"`
-}
-
 func cmdList(c *cli.Context) {
-	var services []Service
+	var services []types.Service
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -70,7 +62,7 @@ func cmdList(c *cli.Context) {
 
 func cmdShow(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id"})
-	var service Service
+	var service types.Service
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
