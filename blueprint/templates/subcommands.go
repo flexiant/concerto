@@ -2,7 +2,7 @@ package templates
 
 import (
 	"github.com/codegangsta/cli"
-	// "github.com/flexiant/concerto/cmd"
+	"github.com/flexiant/concerto/cmd"
 )
 
 func SubCommands() []cli.Command {
@@ -10,12 +10,12 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list",
 			Usage:  "Lists all available templates",
-			Action: cmdList,
+			Action: cmd.TemplateList,
 		},
 		{
 			Name:   "show",
 			Usage:  "Shows information about a specific template",
-			Action: cmdShow,
+			Action: cmd.TemplateShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -26,7 +26,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "create",
 			Usage:  "Creates a new template.",
-			Action: cmdCreate,
+			Action: cmd.TemplateCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "name",
@@ -49,7 +49,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "update",
 			Usage:  "Updates an existing template",
-			Action: cmdUpdate,
+			Action: cmd.TemplateUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -72,7 +72,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete",
 			Usage:  "Deletes a template",
-			Action: cmdDelete,
+			Action: cmd.TemplateDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",

@@ -173,154 +173,152 @@ import (
 	"text/tabwriter"
 )
 
-type TemplateScriptCredentials interface{}
+// func cmdList(c *cli.Context) {
+// 	var templates []types.Template
 
-func cmdList(c *cli.Context) {
-	var templates []types.Template
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	err, data, res := webservice.Get("/v1/blueprint/templates")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	err, data, res := webservice.Get("/v1/blueprint/templates")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	err = json.Unmarshal(data, &templates)
+// 	utils.CheckError(err)
 
-	err = json.Unmarshal(data, &templates)
-	utils.CheckError(err)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\r")
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\r")
+// 	for _, template := range templates {
+// 		fmt.Fprintf(w, "%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId)
+// 	}
 
-	for _, template := range templates {
-		fmt.Fprintf(w, "%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId)
-	}
+// 	w.Flush()
+// }
 
-	w.Flush()
-}
+// func cmdShow(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+// 	var template types.Template
 
-func cmdShow(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-	var template types.Template
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	err = json.Unmarshal(data, &template)
+// 	utils.CheckError(err)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
+// 	if template.Id != "" {
+// 		serviceList, err := json.Marshal(template.ServiceList)
+// 		utils.CheckError(err)
+// 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
+// 	}
+// 	w.Flush()
+// }
 
-	err = json.Unmarshal(data, &template)
-	utils.CheckError(err)
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	if template.Id != "" {
-		serviceList, err := json.Marshal(template.ServiceList)
-		utils.CheckError(err)
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
-	}
-	w.Flush()
-}
+// func cmdCreate(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"name", "generic_image_id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdCreate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"name", "generic_image_id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	template := types.Template{
+// 		Name:         c.String("name"),
+// 		GenericImgId: c.String("generic_image_id"),
+// 	}
 
-	template := types.Template{
-		Name:         c.String("name"),
-		GenericImgId: c.String("generic_image_id"),
-	}
+// 	if c.IsSet("service_list") {
+// 		var services []string
+// 		err = json.Unmarshal([]byte(c.String("service_list")), &services)
+// 		utils.CheckError(err)
+// 		template.ServiceList = services
+// 	}
 
-	if c.IsSet("service_list") {
-		var services []string
-		err = json.Unmarshal([]byte(c.String("service_list")), &services)
-		utils.CheckError(err)
-		template.ServiceList = services
-	}
+// 	if c.IsSet("configuration_attributes") {
+// 		attributes := []byte(c.String("configuration_attributes"))
+// 		attributesAddress := (*json.RawMessage)(&attributes)
+// 		template.ConfigurationAttributes = attributesAddress
+// 		utils.CheckError(err)
+// 	}
 
-	if c.IsSet("configuration_attributes") {
-		attributes := []byte(c.String("configuration_attributes"))
-		attributesAddress := (*json.RawMessage)(&attributes)
-		template.ConfigurationAttributes = attributesAddress
-		utils.CheckError(err)
-	}
+// 	jsonBytes, err := json.Marshal(template)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post("/v1/blueprint/templates", jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
 
-	jsonBytes, err := json.Marshal(template)
-	utils.CheckError(err)
-	err, res, code := webservice.Post("/v1/blueprint/templates", jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
+// 	err = json.Unmarshal(res, &template)
+// 	utils.CheckError(err)
+// 	serviceList, err := json.Marshal(template.ServiceList)
+// 	utils.CheckError(err)
 
-	err = json.Unmarshal(res, &template)
-	utils.CheckError(err)
-	serviceList, err := json.Marshal(template.ServiceList)
-	utils.CheckError(err)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
+// 	w.Flush()
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
-	w.Flush()
+// }
 
-}
+// func cmdUpdate(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdUpdate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	template := types.Template{
+// 		Id: c.String("id"),
+// 	}
 
-	template := types.Template{
-		Id: c.String("id"),
-	}
+// 	if c.IsSet("name") {
+// 		template.Name = c.String("name")
+// 	}
 
-	if c.IsSet("name") {
-		template.Name = c.String("name")
-	}
+// 	if c.IsSet("service_list") {
+// 		var services []string
+// 		err = json.Unmarshal([]byte(c.String("service_list")), &services)
+// 		utils.CheckError(err)
+// 		template.ServiceList = services
+// 	}
 
-	if c.IsSet("service_list") {
-		var services []string
-		err = json.Unmarshal([]byte(c.String("service_list")), &services)
-		utils.CheckError(err)
-		template.ServiceList = services
-	}
+// 	if c.IsSet("configuration_attributes") {
+// 		attributes := []byte(c.String("configuration_attributes"))
+// 		attributesAddress := (*json.RawMessage)(&attributes)
+// 		template.ConfigurationAttributes = attributesAddress
+// 		utils.CheckError(err)
+// 	}
 
-	if c.IsSet("configuration_attributes") {
-		attributes := []byte(c.String("configuration_attributes"))
-		attributesAddress := (*json.RawMessage)(&attributes)
-		template.ConfigurationAttributes = attributesAddress
-		utils.CheckError(err)
-	}
+// 	jsonBytes, err := json.Marshal(template)
 
-	jsonBytes, err := json.Marshal(template)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), jsonBytes)
+// 	utils.CheckReturnCode(code, res)
 
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")), jsonBytes)
-	utils.CheckReturnCode(code, res)
+// 	utils.CheckError(err)
+// 	err = json.Unmarshal(res, &template)
+// 	utils.CheckError(err)
+// 	serviceList, err := json.Marshal(template.ServiceList)
+// 	utils.CheckError(err)
 
-	utils.CheckError(err)
-	err = json.Unmarshal(res, &template)
-	utils.CheckError(err)
-	serviceList, err := json.Marshal(template.ServiceList)
-	utils.CheckError(err)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
+// 	w.Flush()
+// }
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tGENERIC IMAGE ID\tSERVICE LIST\tCONFIGURATION ATTRIBUTES\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", template.Id, template.Name, template.GenericImgId, serviceList, *template.ConfigurationAttributes)
-	w.Flush()
-}
+// func cmdDelete(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-}
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+// }
 
 func cmdListTemplateScripts(c *cli.Context) {
 	var templateScripts []types.TemplateScript
@@ -372,7 +370,7 @@ func cmdCreateTemplateScript(c *cli.Context) {
 	utils.CheckError(err)
 
 	v := make(map[string]interface{})
-	var params TemplateScriptCredentials
+	var params types.TemplateScriptCredentials
 
 	err = json.Unmarshal([]byte(c.String("credentials")), &params)
 	v["script_id"] = c.String("script_id")
@@ -407,7 +405,7 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 	v := make(map[string]interface{})
 
 	if c.IsSet("parameter_values") {
-		var params TemplateScriptCredentials
+		var params types.TemplateScriptCredentials
 		err = json.Unmarshal([]byte(c.String("credentials")), &params)
 		v["parameter_values"] = params
 	}
