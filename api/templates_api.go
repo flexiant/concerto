@@ -119,3 +119,143 @@ func (tp *TemplateService) DeleteTemplate(ID string) (err error) {
 
 	return nil
 }
+
+// ================ Template Script =================
+
+// GetTemplateScriptList returns a list of templateScript by template ID
+func (tp *TemplateService) GetTemplateScriptList(templateID string, scriptType string) (templateScript *[]types.TemplateScript, err error) {
+	log.Debug("ListTemplateScripts")
+
+	data, status, err := tp.concertoService.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", templateID, scriptType))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &templateScript); err != nil {
+		return nil, err
+	}
+
+	return templateScript, nil
+}
+
+// GetTemplateScript returns a templateScript
+func (tp *TemplateService) GetTemplateScript(templateID string, ID string) (templateScript *types.TemplateScript, err error) {
+	log.Debug("GetTemplateScript")
+
+	data, status, err := tp.concertoService.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", templateID, ID))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &templateScript); err != nil {
+		return nil, err
+	}
+
+	return templateScript, nil
+}
+
+// CreateTemplateScript returns a list of templateScript
+func (tp *TemplateService) CreateTemplateScript(templateScriptVector *map[string]string, templateID string) (templateScript *types.TemplateScript, err error) {
+	log.Debug("CreateTemplateScript")
+
+	data, status, err := tp.concertoService.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", templateID), templateScriptVector)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &templateScript); err != nil {
+		return nil, err
+	}
+
+	return templateScript, nil
+}
+
+// UpdateTemplateScript returns a list of templateScript
+func (tp *TemplateService) UpdateTemplateScript(templateScriptVector *map[string]string, templateID string, ID string) (templateScript *types.TemplateScript, err error) {
+	log.Debug("UpdateTemplateScript")
+
+	data, status, err := tp.concertoService.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", templateID, ID), templateScriptVector)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &templateScript); err != nil {
+		return nil, err
+	}
+
+	return templateScript, nil
+}
+
+// DeleteTemplateScript deletes a template record
+func (tp *TemplateService) DeleteTemplateScript(templateID string, ID string) (err error) {
+	log.Debug("DeleteTemplateScript")
+
+	data, status, err := tp.concertoService.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", templateID, ID))
+	if err != nil {
+		return err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ReorderTemplateScript returns a list of templateScript
+func (tp *TemplateService) ReorderTemplateScript(templateID string) (templateScript *types.TemplateScript, err error) {
+	log.Debug("UpdateTemplateScript")
+
+	data, status, err := tp.concertoService.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", templateID), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &templateScript); err != nil {
+		return nil, err
+	}
+
+	return templateScript, nil
+}
+
+// ================ Template Servers =================
+
+// GetTemplateServersList returns a list of templateServers by template ID
+func (tp *TemplateService) GetTemplateServersList(templateID string) (templateScript *[]types.TemplateScript, err error) {
+	log.Debug("ListTemplateScripts")
+
+	data, status, err := tp.concertoService.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", templateID))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &templateScript); err != nil {
+		return nil, err
+	}
+
+	return templateScript, nil
+}

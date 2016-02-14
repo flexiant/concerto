@@ -98,3 +98,109 @@ func TemplateDelete(c *cli.Context) {
 		formatter.PrintFatal("Couldn't delete template", err)
 	}
 }
+
+// =========== Template Scripts =============
+
+// TemplateScriptList subcommand function
+func TemplateScriptList(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"template_id", "type"}, formatter)
+	templateScripts, err := templateScriptSvc.GetTemplateScriptList(c.String("template_id"), c.String("type"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive templateScript data", err)
+	}
+	if err = formatter.PrintList(templateScripts); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// TemplateScriptShow subcommand function
+func TemplateScriptShow(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"id", "template_id"}, formatter)
+	templateScript, err := templateScriptSvc.GetTemplateScript(c.String("template_id"), c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive templateScript data", err)
+	}
+	if err = formatter.PrintItem(*templateScript); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// TemplateScriptCreate subcommand function
+func TemplateScriptCreate(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"template_id", "type", "parameter_values"}, formatter)
+	templateScript, err := templateScriptSvc.CreateTemplateScript(utils.FlagConvertParams(c), c.String("template_id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't create templateScript", err)
+	}
+	if err = formatter.PrintItem(*templateScript); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// TemplateScriptUpdate subcommand function
+func TemplateScriptUpdate(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"id", "template_id"}, formatter)
+	templateScript, err := templateScriptSvc.UpdateTemplateScript(utils.FlagConvertParams(c), c.String("template_id"), c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't update templateScript", err)
+	}
+	if err = formatter.PrintItem(*templateScript); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// TemplateScriptDelete subcommand function
+func TemplateScriptDelete(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"id", "template_id"}, formatter)
+	err := templateScriptSvc.DeleteTemplateScript(c.String("template_id"), c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't delete templateScript", err)
+	}
+}
+
+// TemplateScriptReorder subcommand function
+func TemplateScriptReorder(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"template_id", "type", "script_ids"}, formatter)
+	templateScript, err := templateScriptSvc.ReorderTemplateScript(c.String("template_id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't reorder templateScript", err)
+	}
+	if err = formatter.PrintItem(*templateScript); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// =========== Template Servers =============
+
+// TemplateServers subcommand function
+func TemplateServersList(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	templateScriptSvc, formatter := WireUpTemplate(c)
+
+	checkRequiredFlags(c, []string{"template_id"}, formatter)
+	templateScripts, err := templateScriptSvc.GetTemplateServersList(c.String("template_id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive templateServers data", err)
+	}
+	if err = formatter.PrintList(templateScripts); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
