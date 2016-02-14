@@ -59,3 +59,17 @@ func TestCreateDomainRecords(t *testing.T) {
 		CreateDomainRecordMocked(t, &drIn)
 	}
 }
+
+func TestUpdateDomainRecords(t *testing.T) {
+	drsIn := testdata.GetDomainRecordData()
+	for _, drIn := range *drsIn {
+		UpdateDomainRecordMocked(t, &drIn)
+	}
+}
+
+func TestDeleteDomainRecords(t *testing.T) {
+	drsIn := testdata.GetDomainRecordData()
+	for _, drIn := range *drsIn {
+		DeleteDomainRecordMocked(t, &drIn)
+	}
+}
