@@ -10,13 +10,13 @@ type MockConcertoService struct {
 }
 
 // Post mocks POST request to Concerto API
-func (m *MockConcertoService) Post(path string, payload *map[string]string) ([]byte, int, error) {
+func (m *MockConcertoService) Post(path string, payload *map[string]interface{}) ([]byte, int, error) {
 	args := m.Called(path, payload)
 	return args.Get(0).([]byte), args.Int(1), args.Error(2)
 }
 
 // Put mocks PUT request to Concerto API
-func (m *MockConcertoService) Put(path string, payload *map[string]string) ([]byte, int, error) {
+func (m *MockConcertoService) Put(path string, payload *map[string]interface{}) ([]byte, int, error) {
 	args := m.Called(path, payload)
 	return args.Get(0).([]byte), args.Int(1), args.Error(2)
 }

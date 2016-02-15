@@ -45,7 +45,7 @@ func (cl *ClusterService) GetClusterList() (clusters []types.Cluster, err error)
 }
 
 // CreateCluster creates a cluster
-func (cl *ClusterService) CreateCluster(clusterVector *map[string]string) (cluster *types.Cluster, err error) {
+func (cl *ClusterService) CreateCluster(clusterVector *map[string]interface{}) (cluster *types.Cluster, err error) {
 	log.Debug("CreateCluster")
 
 	data, status, err := cl.concertoService.Post("/v1/kaas/fleets", clusterVector)
@@ -81,7 +81,7 @@ func (cl *ClusterService) DeleteCluster(ID string) (err error) {
 }
 
 // StartCluster starts a cluster by its ID
-func (cl *ClusterService) StartCluster(clusterVector *map[string]string, ID string) (err error) {
+func (cl *ClusterService) StartCluster(clusterVector *map[string]interface{}, ID string) (err error) {
 	log.Debug("StartCluster")
 
 	data, status, err := cl.concertoService.Put(fmt.Sprintf("/v1/kaas/fleets/%s/start", ID), clusterVector)
@@ -97,7 +97,7 @@ func (cl *ClusterService) StartCluster(clusterVector *map[string]string, ID stri
 }
 
 // StopCluster stops a cluster by its ID
-func (cl *ClusterService) StopCluster(clusterVector *map[string]string, ID string) (err error) {
+func (cl *ClusterService) StopCluster(clusterVector *map[string]interface{}, ID string) (err error) {
 	log.Debug("StopCluster")
 
 	data, status, err := cl.concertoService.Put(fmt.Sprintf("/v1/kaas/fleets/%s/stop", ID), clusterVector)
@@ -113,7 +113,7 @@ func (cl *ClusterService) StopCluster(clusterVector *map[string]string, ID strin
 }
 
 // EmptyCluster empties a cluster by its ID
-func (cl *ClusterService) EmptyCluster(clusterVector *map[string]string, ID string) (err error) {
+func (cl *ClusterService) EmptyCluster(clusterVector *map[string]interface{}, ID string) (err error) {
 	log.Debug("EmptyCluster")
 
 	data, status, err := cl.concertoService.Put(fmt.Sprintf("/v1/kaas/fleets/%s/empty", ID), clusterVector)

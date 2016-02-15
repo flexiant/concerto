@@ -15,8 +15,8 @@ import (
 
 // ConcertoService defines actions to be performed by web service manager
 type ConcertoService interface {
-	Post(path string, payload *map[string]string) ([]byte, int, error)
-	Put(path string, payload *map[string]string) ([]byte, int, error)
+	Post(path string, payload *map[string]interface{}) ([]byte, int, error)
+	Put(path string, payload *map[string]interface{}) ([]byte, int, error)
 	Delete(path string) ([]byte, int, error)
 	Get(path string) ([]byte, int, error)
 	GetFile(path string, directoryPath string) (string, int, error)
@@ -60,7 +60,7 @@ func NewHTTPConcertoService(config *Config) (hcs *HTTPConcertoservice, err error
 }
 
 // Post sends POST request to Concerto API
-func (hcs *HTTPConcertoservice) Post(path string, payload *map[string]string) ([]byte, int, error) {
+func (hcs *HTTPConcertoservice) Post(path string, payload *map[string]interface{}) ([]byte, int, error) {
 
 	url, jsPayload, err := hcs.prepareCall(path, payload)
 	if err != nil {
@@ -77,7 +77,7 @@ func (hcs *HTTPConcertoservice) Post(path string, payload *map[string]string) ([
 }
 
 // Put sends PUT request to Concerto API
-func (hcs *HTTPConcertoservice) Put(path string, payload *map[string]string) ([]byte, int, error) {
+func (hcs *HTTPConcertoservice) Put(path string, payload *map[string]interface{}) ([]byte, int, error) {
 	url, jsPayload, err := hcs.prepareCall(path, payload)
 	if err != nil {
 		return nil, 0, err
@@ -176,7 +176,7 @@ func (hcs *HTTPConcertoservice) GetFile(path string, directoryPath string) (stri
 	return realFileName, response.StatusCode, nil
 }
 
-func (hcs *HTTPConcertoservice) prepareCall(path string, payload *map[string]string) (url string, jsPayload *strings.Reader, err error) {
+func (hcs *HTTPConcertoservice) prepareCall(path string, payload *map[string]interface{}) (url string, jsPayload *strings.Reader, err error) {
 
 	if hcs.config == nil || hcs.client == nil {
 		return "", nil, fmt.Errorf("Can not call web service without loading configuration")

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/api"
 	"github.com/flexiant/concerto/utils"
@@ -136,8 +137,16 @@ func TemplateScriptCreate(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
-	checkRequiredFlags(c, []string{"template_id", "type", "parameter_values"}, formatter)
-	templateScript, err := templateScriptSvc.CreateTemplateScript(utils.FlagConvertParams(c), c.String("template_id"))
+	checkRequiredFlags(c, []string{"template_id", "type", "parameter_values", "script_id"}, formatter)
+
+	// parse json parameter values
+	params := utils.FlagConvertParams(c)
+
+	var pv interface{}
+	err := json.Unmarshal([]byte(c.String("parameter_values")), &pv)
+	(*params)["parameter_values"] = pv
+
+	templateScript, err := templateScriptSvc.CreateTemplateScript(params, c.String("template_id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't create templateScript", err)
 	}

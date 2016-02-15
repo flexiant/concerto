@@ -45,7 +45,7 @@ func (cl *NodeService) GetNodeList() (nodes []types.Node, err error) {
 }
 
 // CreateNode creates a node
-func (cl *NodeService) CreateNode(nodeVector *map[string]string) (node *types.Node, err error) {
+func (cl *NodeService) CreateNode(nodeVector *map[string]interface{}) (node *types.Node, err error) {
 	log.Debug("CreateNode")
 
 	data, status, err := cl.concertoService.Post("/v1/kaas/ships", nodeVector)
@@ -81,7 +81,7 @@ func (cl *NodeService) DeleteNode(ID string) (err error) {
 }
 
 // StartNode starts a node by its ID
-func (cl *NodeService) StartNode(nodeVector *map[string]string, ID string) (err error) {
+func (cl *NodeService) StartNode(nodeVector *map[string]interface{}, ID string) (err error) {
 	log.Debug("StartNode")
 
 	data, status, err := cl.concertoService.Put(fmt.Sprintf("/v1/kaas/ships/%s/start", ID), nodeVector)
@@ -97,7 +97,7 @@ func (cl *NodeService) StartNode(nodeVector *map[string]string, ID string) (err 
 }
 
 // StopNode stops a node by its ID
-func (cl *NodeService) StopNode(nodeVector *map[string]string, ID string) (err error) {
+func (cl *NodeService) StopNode(nodeVector *map[string]interface{}, ID string) (err error) {
 	log.Debug("StopNode")
 
 	data, status, err := cl.concertoService.Put(fmt.Sprintf("/v1/kaas/ships/%s/stop", ID), nodeVector)
@@ -113,7 +113,7 @@ func (cl *NodeService) StopNode(nodeVector *map[string]string, ID string) (err e
 }
 
 // RestartNode empties a node by its ID
-func (cl *NodeService) RestartNode(nodeVector *map[string]string, ID string) (err error) {
+func (cl *NodeService) RestartNode(nodeVector *map[string]interface{}, ID string) (err error) {
 	log.Debug("RestartNode")
 
 	data, status, err := cl.concertoService.Put(fmt.Sprintf("/v1/kaas/ships/%s/restart", ID), nodeVector)

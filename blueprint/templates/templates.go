@@ -164,7 +164,7 @@ package templates
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
+	//	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
@@ -219,38 +219,39 @@ import (
 // 	w.Flush()
 // }
 
-func cmdCreateTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"template_id", "type", "parameter_values"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]interface{})
-	var params types.TemplateScriptCredentials
-
-	err = json.Unmarshal([]byte(c.String("credentials")), &params)
-	v["script_id"] = c.String("script_id")
-	v["type"] = c.String("type")
-	v["parameter_values"] = params
-
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", c.String("template_id")), jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var templateScript types.TemplateScript
-	err = json.Unmarshal(res, &templateScript)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
-
-	w.Flush()
-}
+// func cmdCreateTemplateScript(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"template_id", "type", "parameter_values"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]interface{})
+// 	var params types.TemplateScriptCredentials
+//
+// 	err = json.Unmarshal([]byte(c.String("parameter_values")), &params)
+// 	v["script_id"] = c.String("script_id")
+// 	v["type"] = c.String("type")
+// 	v["parameter_values"] = params
+//
+// 	fmt.Printf("************************************script_id: %s\n", c.String("script_id"))
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", c.String("template_id")), jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var templateScript types.TemplateScript
+// 	err = json.Unmarshal(res, &templateScript)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
+//
+// 	w.Flush()
+// }
 
 func cmdUpdateTemplateScript(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id", "template_id"})

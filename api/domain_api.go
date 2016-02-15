@@ -65,7 +65,7 @@ func (dm *DomainService) GetDomain(ID string) (domain *types.Domain, err error) 
 }
 
 // CreateDomain creates a domain
-func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *types.Domain, err error) {
+func (dm *DomainService) CreateDomain(domainVector *map[string]interface{}) (domain *types.Domain, err error) {
 	log.Debug("CreateDomain")
 
 	data, status, err := dm.concertoService.Post("/v1/dns/domains/", domainVector)
@@ -85,7 +85,7 @@ func (dm *DomainService) CreateDomain(domainVector *map[string]string) (domain *
 }
 
 // UpdateDomain updates a domain by its ID
-func (dm *DomainService) UpdateDomain(domainVector *map[string]string, ID string) (domain *types.Domain, err error) {
+func (dm *DomainService) UpdateDomain(domainVector *map[string]interface{}, ID string) (domain *types.Domain, err error) {
 	log.Debug("UpdateDomain")
 
 	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/dns/domains/%s", ID), domainVector)
@@ -161,7 +161,7 @@ func (dm *DomainService) GetDomainRecord(domID string, ID string) (domainRecord 
 }
 
 // CreateDomainRecord returns a list of domainRecord
-func (dm *DomainService) CreateDomainRecord(domainRecordVector *map[string]string, domID string) (domainRecord *types.DomainRecord, err error) {
+func (dm *DomainService) CreateDomainRecord(domainRecordVector *map[string]interface{}, domID string) (domainRecord *types.DomainRecord, err error) {
 	log.Debug("CreateDomainRecord")
 
 	data, status, err := dm.concertoService.Post(fmt.Sprintf("/v1/dns/domains/%s/records", domID), domainRecordVector)
@@ -181,7 +181,7 @@ func (dm *DomainService) CreateDomainRecord(domainRecordVector *map[string]strin
 }
 
 // UpdateDomainRecord returns a list of domainRecord
-func (dm *DomainService) UpdateDomainRecord(domainRecordVector *map[string]string, domID string, ID string) (domainRecord *types.DomainRecord, err error) {
+func (dm *DomainService) UpdateDomainRecord(domainRecordVector *map[string]interface{}, domID string, ID string) (domainRecord *types.DomainRecord, err error) {
 	log.Debug("UpdateDomainRecord")
 
 	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", domID, ID), domainRecordVector)

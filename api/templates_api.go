@@ -65,7 +65,7 @@ func (tp *TemplateService) GetTemplate(ID string) (template *types.Template, err
 }
 
 // CreateTemplate creates a template
-func (tp *TemplateService) CreateTemplate(templateVector *map[string]string) (template *types.Template, err error) {
+func (tp *TemplateService) CreateTemplate(templateVector *map[string]interface{}) (template *types.Template, err error) {
 	log.Debug("CreateTemplate")
 
 	data, status, err := tp.concertoService.Post("/v1/blueprint/templates/", templateVector)
@@ -85,7 +85,7 @@ func (tp *TemplateService) CreateTemplate(templateVector *map[string]string) (te
 }
 
 // UpdateTemplate updates a template by its ID
-func (tp *TemplateService) UpdateTemplate(templateVector *map[string]string, ID string) (template *types.Template, err error) {
+func (tp *TemplateService) UpdateTemplate(templateVector *map[string]interface{}, ID string) (template *types.Template, err error) {
 	log.Debug("UpdateTemplate")
 
 	data, status, err := tp.concertoService.Put(fmt.Sprintf("/v1/blueprint/templates/%s", ID), templateVector)
@@ -163,7 +163,7 @@ func (tp *TemplateService) GetTemplateScript(templateID string, ID string) (temp
 }
 
 // CreateTemplateScript returns a list of templateScript
-func (tp *TemplateService) CreateTemplateScript(templateScriptVector *map[string]string, templateID string) (templateScript *types.TemplateScript, err error) {
+func (tp *TemplateService) CreateTemplateScript(templateScriptVector *map[string]interface{}, templateID string) (templateScript *types.TemplateScript, err error) {
 	log.Debug("CreateTemplateScript")
 
 	data, status, err := tp.concertoService.Post(fmt.Sprintf("/v1/blueprint/templates/%s/scripts", templateID), templateScriptVector)
@@ -183,7 +183,7 @@ func (tp *TemplateService) CreateTemplateScript(templateScriptVector *map[string
 }
 
 // UpdateTemplateScript returns a list of templateScript
-func (tp *TemplateService) UpdateTemplateScript(templateScriptVector *map[string]string, templateID string, ID string) (templateScript *types.TemplateScript, err error) {
+func (tp *TemplateService) UpdateTemplateScript(templateScriptVector *map[string]interface{}, templateID string, ID string) (templateScript *types.TemplateScript, err error) {
 	log.Debug("UpdateTemplateScript")
 
 	data, status, err := tp.concertoService.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", templateID, ID), templateScriptVector)

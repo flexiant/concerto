@@ -112,10 +112,10 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "create_template_script",
-			Usage:  "Creates a new script characterisation for a template and appends it to the list of script characterisations of the same type.",
-			Action: cmdCreateTemplateScript,
-			//Action: cmd.TemplateScriptCreate,
+			Name:  "create_template_script",
+			Usage: "Creates a new script characterisation for a template and appends it to the list of script characterisations of the same type.",
+			//Action: cmdCreateTemplateScript,
+			Action: cmd.TemplateScriptCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",

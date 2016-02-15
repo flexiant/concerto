@@ -65,7 +65,7 @@ func (sc *ScriptService) GetScript(ID string) (script *types.Script, err error) 
 }
 
 // CreateScript creates a script
-func (sc *ScriptService) CreateScript(scriptVector *map[string]string) (script *types.Script, err error) {
+func (sc *ScriptService) CreateScript(scriptVector *map[string]interface{}) (script *types.Script, err error) {
 	log.Debug("CreateScript")
 
 	data, status, err := sc.concertoService.Post("/v1/blueprint/scripts", scriptVector)
@@ -85,7 +85,7 @@ func (sc *ScriptService) CreateScript(scriptVector *map[string]string) (script *
 }
 
 // UpdateScript updates a script by its ID
-func (sc *ScriptService) UpdateScript(scriptVector *map[string]string, ID string) (script *types.Script, err error) {
+func (sc *ScriptService) UpdateScript(scriptVector *map[string]interface{}, ID string) (script *types.Script, err error) {
 	log.Debug("UpdateScript")
 
 	data, status, err := sc.concertoService.Put(fmt.Sprintf("/v1/blueprint/scripts/%s", ID), scriptVector)

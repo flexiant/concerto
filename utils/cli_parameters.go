@@ -7,8 +7,8 @@ import (
 )
 
 // FlagConvertParams converts cli parameters in API callable params
-func FlagConvertParams(c *cli.Context) *map[string]string {
-	v := make(map[string]string)
+func FlagConvertParams(c *cli.Context) *map[string]interface{} {
+	v := make(map[string]interface{})
 	for _, flag := range c.FlagNames() {
 		if c.IsSet(flag) {
 			v[flag] = c.String(flag)
@@ -17,12 +17,12 @@ func FlagConvertParams(c *cli.Context) *map[string]string {
 	return &v
 }
 
-// ItemConvertParams converts API items into map of strings
-func ItemConvertParams(item interface{}) (*map[string]string, error) {
+// ItemConvertParams converts API items into map of interface
+func ItemConvertParams(item interface{}) (*map[string]interface{}, error) {
 
 	it := reflect.ValueOf(item)
 	nf := it.NumField()
-	v := make(map[string]string)
+	v := make(map[string]interface{})
 
 	for i := 0; i < nf; i++ {
 		v[it.Type().Field(i).Name] = fmt.Sprintf("%s", it.Field(i).Interface())
