@@ -5,11 +5,11 @@ import (
 )
 
 type Template struct {
-	Id                      string           `json:"id,omitempty" header:"ID"`
-	Name                    string           `json:"name,omitempty" header:"NAME"`
-	GenericImgId            string           `json:"generic_image_id,omitempty" header:"GENERIC_IMAGE_ID"`
-	ServiceList             []string         `json:"service_list,omitempty" header:"SERVICE_LIST"`
-	ConfigurationAttributes *json.RawMessage `json:"configuration_attributes,omitempty" header:"CONFIGURATION_ATTRIBUTES"`
+	Id                      string          `json:"id,omitempty" header:"ID"`
+	Name                    string          `json:"name,omitempty" header:"NAME"`
+	GenericImgId            string          `json:"generic_image_id,omitempty" header:"GENERIC IMAGE ID"`
+	ServiceList             []string        `json:"service_list,omitempty" header:"SERVICE LIST" show:"nolist"`
+	ConfigurationAttributes json.RawMessage `json:"configuration_attributes,omitempty" header:"CONFIGURATION ATTRIBUTES" show:"nolist"`
 }
 
 type TemplateScript struct {

@@ -30,7 +30,15 @@ func (f *TextFormatter) PrintItem(item interface{}) error {
 
 	w := tabwriter.NewWriter(f.output, 15, 1, 3, ' ', 0)
 	for i := 0; i < nf; i++ {
-		fmt.Fprintf(w, "%s:\t%+v\n", it.Type().Field(i).Tag.Get("header"), it.Field(i).Interface())
+		// TODO not the best way to use reflection. Check this later
+		switch it.Field(i).Type().String() {
+		case "json.RawMessage":
+			fmt.Fprintf(w, "%s:\t%s\n", it.Type().Field(i).Tag.Get("header"), it.Field(i).Interface())
+		case "*json.RawMessage":
+			fmt.Fprintf(w, "%s:\t%s\n", it.Type().Field(i).Tag.Get("header"), it.Field(i).Elem())
+		default:
+			fmt.Fprintf(w, "%s:\t%+v\n", it.Type().Field(i).Tag.Get("header"), it.Field(i).Interface())
+		}
 	}
 	fmt.Fprintln(w)
 	w.Flush()
@@ -50,11 +58,24 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 
 	w := tabwriter.NewWriter(f.output, 15, 1, 3, ' ', 0)
 
-	// print header
 	header := reflect.TypeOf(items).Elem()
 	nf := header.NumField()
+
+	// avoid printing elements with 'show:nolist'  attribute
+	avoid := make([]bool, nf)
 	for i := 0; i < nf; i++ {
-		fmt.Fprintf(w, "%+v\t", header.Field(i).Tag.Get("header"))
+		if header.Field(i).Tag.Get("show") == "nolist" {
+			avoid[i] = true
+		} else {
+			avoid[i] = false
+		}
+	}
+
+	// print header
+	for i := 0; i < nf; i++ {
+		if !avoid[i] {
+			fmt.Fprintf(w, "%+v\t", header.Field(i).Tag.Get("header"))
+		}
 	}
 	fmt.Fprintln(w)
 
@@ -63,7 +84,16 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 		it := its.Index(i)
 		nf := it.NumField()
 		for i := 0; i < nf; i++ {
-			fmt.Fprintf(w, "%+v\t", it.Field(i).Interface())
+			if !avoid[i] {
+				switch it.Field(i).Type().String() {
+				case "json.RawMessage":
+					fmt.Fprintf(w, "%s\t", it.Field(i).Interface())
+				case "*json.RawMessage":
+					fmt.Fprintf(w, "%s\t", it.Field(i).Elem())
+				default:
+					fmt.Fprintf(w, "%+v\t", it.Field(i).Interface())
+				}
+			}
 		}
 		fmt.Fprintln(w)
 	}
