@@ -142,36 +142,36 @@
 */
 package dns
 
-import (
-	"encoding/json"
-	"fmt"
-	//	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
-)
-
-type Domain struct {
-	Id      string `json:"id"`
-	Name    string `json:"name"`
-	Ttl     int    `json:"ttl"`
-	Contact string `json:"contact"`
-	Minimum int    `json:"minimum"`
-	Enabled bool   `json:"enabled"`
-}
-
-type DomainRecord struct {
-	Id        string `json:"id"`
-	Type      string `json:"type"`
-	Name      string `json:"name"`
-	Content   string `json:"content"`
-	Ttl       int    `json:"ttl"`
-	Prio      int    `json:"prio"`
-	Server_id string `json:"server_id"`
-	Domain_id string `json:"domain_id"`
-}
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	//	log "github.com/Sirupsen/logrus"
+// 	"github.com/codegangsta/cli"
+// 	"github.com/flexiant/concerto/utils"
+// 	"github.com/flexiant/concerto/webservice"
+// 	"os"
+// 	"text/tabwriter"
+// )
+//
+// type Domain struct {
+// 	Id      string `json:"id"`
+// 	Name    string `json:"name"`
+// 	Ttl     int    `json:"ttl"`
+// 	Contact string `json:"contact"`
+// 	Minimum int    `json:"minimum"`
+// 	Enabled bool   `json:"enabled"`
+// }
+//
+// type DomainRecord struct {
+// 	Id        string `json:"id"`
+// 	Type      string `json:"type"`
+// 	Name      string `json:"name"`
+// 	Content   string `json:"content"`
+// 	Ttl       int    `json:"ttl"`
+// 	Prio      int    `json:"prio"`
+// 	Server_id string `json:"server_id"`
+// 	Domain_id string `json:"domain_id"`
+// }
 
 // type APIRequester struct {
 // 	ws        Webservice
@@ -428,54 +428,54 @@ type DomainRecord struct {
 // 	w.Flush()
 //
 // }
-
-func cmdUpdateDomainRecords(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"domain_id", "id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]string)
-
-	if c.IsSet("name") {
-		v["name"] = c.String("name")
-	}
-	if c.IsSet("content") {
-		v["content"] = c.String("content")
-	}
-	if c.IsSet("ttl") {
-		v["ttl"] = c.String("ttl")
-	}
-	if c.IsSet("prio") {
-		v["prio"] = c.String("prio")
-	}
-	if c.IsSet("server_id") {
-		v["server_id"] = c.String("server_id")
-	}
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")), jsonBytes)
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var dr DomainRecord
-	err = json.Unmarshal(res, &dr)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
-
-	w.Flush()
-
-}
-
-func cmdDeleteDomainRecords(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"domain_id", "id"})
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-}
+//
+// func cmdUpdateDomainRecords(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"domain_id", "id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]string)
+//
+// 	if c.IsSet("name") {
+// 		v["name"] = c.String("name")
+// 	}
+// 	if c.IsSet("content") {
+// 		v["content"] = c.String("content")
+// 	}
+// 	if c.IsSet("ttl") {
+// 		v["ttl"] = c.String("ttl")
+// 	}
+// 	if c.IsSet("prio") {
+// 		v["prio"] = c.String("prio")
+// 	}
+// 	if c.IsSet("server_id") {
+// 		v["server_id"] = c.String("server_id")
+// 	}
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")), jsonBytes)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var dr DomainRecord
+// 	err = json.Unmarshal(res, &dr)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tNAME\tCONTENT\tTTL\tPRIORITY\tSERVER ID\tDOMAIN ID\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\n", dr.Id, dr.Type, dr.Name, dr.Content, dr.Ttl, dr.Prio, dr.Server_id, dr.Domain_id)
+//
+// 	w.Flush()
+//
+// }
+//
+// func cmdDeleteDomainRecords(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"domain_id", "id"})
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/dns/domains/%s/records/%s", c.String("domain_id"), c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+// }

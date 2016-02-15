@@ -156,27 +156,28 @@ func DomainRecordCreate(c *cli.Context) {
 
 // DomainRecordUpdate subcommand function
 func DomainRecordUpdate(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
 	debugCmdFuncInfo(c)
+	domainSvc, formatter := WireUpDomain(c)
+
 	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
 
 	domain, err := domainSvc.UpdateDomainRecord(utils.FlagConvertParams(c), c.String("domain_id"), c.String("id"))
 	if err != nil {
-		formatter.PrintFatal("Couldn't update domain", err)
+		formatter.PrintFatal("Couldn't update domain record", err)
 	}
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
 }
 
-// DeleteDomainRecord subcommand function
-func DeleteDomainRecord(c *cli.Context) {
-	domainSvc, formatter := WireUpDomain(c)
+// DomainRecordDelete subcommand function
+func DomainRecordDelete(c *cli.Context) {
 	debugCmdFuncInfo(c)
-	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
+	domainSvc, formatter := WireUpDomain(c)
 
+	checkRequiredFlags(c, []string{"domain_id", "id"}, formatter)
 	err := domainSvc.DeleteDomainRecord(c.String("domain_id"), c.String("id"))
 	if err != nil {
-		formatter.PrintFatal("Couldn't delete domain", err)
+		formatter.PrintFatal("Couldn't delete domain record", err)
 	}
 }

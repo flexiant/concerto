@@ -145,7 +145,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "update_domain_record",
 			Usage:  "Updates an existing DNS record.",
-			Action: cmdUpdateDomainRecords,
+			Action: cmd.DomainRecordUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "domain_id",
@@ -180,7 +180,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete_domain_record",
 			Usage:  "Deletes a DNS record",
-			Action: cmdDeleteDomainRecords,
+			Action: cmd.DomainRecordDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
