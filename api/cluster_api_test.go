@@ -24,3 +24,24 @@ func TestDeleteCluster(t *testing.T) {
 		DeleteClusterMocked(t, &clusterIn)
 	}
 }
+
+func TestStartCluster(t *testing.T) {
+	clustersIn := testdata.GetClusterData()
+	for _, clusterIn := range *clustersIn {
+		StartClusterMocked(t, &clusterIn)
+	}
+}
+
+func TestStopCluster(t *testing.T) {
+	clustersIn := testdata.GetClusterData()
+	for _, clusterIn := range *clustersIn {
+		StopClusterMocked(t, &clusterIn)
+	}
+}
+
+func TestEmptyCluster(t *testing.T) {
+	clustersIn := testdata.GetClusterData()
+	for _, clusterIn := range *clustersIn {
+		EmptyClusterMocked(t, &clusterIn)
+	}
+}

@@ -82,3 +82,79 @@ func DeleteClusterMocked(t *testing.T, clusterIn *types.Cluster) {
 	assert.Nil(err, "Error deleting cluster")
 
 }
+
+// StartClusterMocked test mocked function
+func StartClusterMocked(t *testing.T, clusterIn *types.Cluster) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewClusterService(cs)
+	assert.Nil(err, "Couldn't load cluster service")
+	assert.NotNil(ds, "Cluster service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*clusterIn)
+	assert.Nil(err, "Cluster test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(clusterIn)
+	assert.Nil(err, "Cluster test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/kaas/fleets/%s/start", clusterIn.Id), mapIn).Return(dOut, 200, nil)
+	err = ds.StartCluster(mapIn, clusterIn.Id)
+	assert.Nil(err, "Error updating cluster list")
+}
+
+// StopClusterMocked test mocked function
+func StopClusterMocked(t *testing.T, clusterIn *types.Cluster) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewClusterService(cs)
+	assert.Nil(err, "Couldn't load cluster service")
+	assert.NotNil(ds, "Cluster service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*clusterIn)
+	assert.Nil(err, "Cluster test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(clusterIn)
+	assert.Nil(err, "Cluster test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/kaas/fleets/%s/stop", clusterIn.Id), mapIn).Return(dOut, 200, nil)
+	err = ds.StopCluster(mapIn, clusterIn.Id)
+	assert.Nil(err, "Error updating cluster list")
+}
+
+// EmptyClusterMocked test mocked function
+func EmptyClusterMocked(t *testing.T, clusterIn *types.Cluster) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewClusterService(cs)
+	assert.Nil(err, "Couldn't load cluster service")
+	assert.NotNil(ds, "Cluster service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*clusterIn)
+	assert.Nil(err, "Cluster test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(clusterIn)
+	assert.Nil(err, "Cluster test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/kaas/fleets/%s/empty", clusterIn.Id), mapIn).Return(dOut, 200, nil)
+	err = ds.EmptyCluster(mapIn, clusterIn.Id)
+	assert.Nil(err, "Error updating cluster list")
+
+}
