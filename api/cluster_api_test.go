@@ -10,3 +10,17 @@ func TestGetClusterList(t *testing.T) {
 	clustersIn := testdata.GetClusterData()
 	GetClusterListMocked(t, clustersIn)
 }
+
+func TestCreateCluster(t *testing.T) {
+	clustersIn := testdata.GetClusterData()
+	for _, clusterIn := range *clustersIn {
+		CreateClusterMocked(t, &clusterIn)
+	}
+}
+
+func TestDeleteCluster(t *testing.T) {
+	clustersIn := testdata.GetClusterData()
+	for _, clusterIn := range *clustersIn {
+		DeleteClusterMocked(t, &clusterIn)
+	}
+}
