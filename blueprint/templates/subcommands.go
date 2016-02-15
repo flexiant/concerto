@@ -81,10 +81,10 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "list_template_scripts",
-			Usage:  "Shows the script characterisations of a template",
-			Action: cmdListTemplateScripts,
-			//Action: cmd.TemplateScriptList,
+			Name:  "list_template_scripts",
+			Usage: "Shows the script characterisations of a template",
+			//Action: cmdListTemplateScripts,
+			Action: cmd.TemplateScriptList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -99,8 +99,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "show_template_script",
 			Usage:  "Shows information about a specific script characterisation",
-			Action: cmdShowTemplateScript,
-			// Action: cmd.TemplateScriptShow,
+			Action: cmd.TemplateScriptShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",

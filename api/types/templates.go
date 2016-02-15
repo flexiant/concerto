@@ -4,33 +4,37 @@ import (
 	"encoding/json"
 )
 
+// Template stores blueprint templates
 type Template struct {
-	Id                      string          `json:"id,omitempty" header:"ID"`
+	ID                      string          `json:"id,omitempty" header:"ID"`
 	Name                    string          `json:"name,omitempty" header:"NAME"`
-	GenericImgId            string          `json:"generic_image_id,omitempty" header:"GENERIC IMAGE ID"`
+	GenericImgID            string          `json:"generic_image_id,omitempty" header:"GENERIC IMAGE ID"`
 	ServiceList             []string        `json:"service_list,omitempty" header:"SERVICE LIST" show:"nolist"`
 	ConfigurationAttributes json.RawMessage `json:"configuration_attributes,omitempty" header:"CONFIGURATION ATTRIBUTES" show:"nolist"`
 }
 
+// TemplateScript stores a templates' script info
 type TemplateScript struct {
-	Id               string          `json:"id" header:"ID"`
-	Type             string          `json:"type" header:"TYPE"`
-	Execution_Order  int             `json:"execution_order" header:"EXECUTION_ORDER"`
-	Template_Id      string          `json:"template_id" header:"TEMPLATE_ID"`
-	Script_Id        string          `json:"script_id" header:"SCRIPT_ID"`
-	Parameter_Values json.RawMessage `json:"parameter_values" header:"PARAMETER_VALUES"`
+	ID              string          `json:"id" header:"ID"`
+	Type            string          `json:"type" header:"TYPE"`
+	ExecutionOrder  int             `json:"execution_order" header:"EXECUTION ORDER"`
+	TemplateID      string          `json:"template_id" header:"TEMPLATE ID"`
+	ScriptID        string          `json:"script_id" header:"SCRIPT ID"`
+	ParameterValues json.RawMessage `json:"parameter_values" header:"PARAMETER VALUES"`
 }
 
+// TemplateServer stores servers associated with the template
 type TemplateServer struct {
-	Id             string `json:"id"  header:"ID"`
-	Name           string `json:"name" header:"NAME"`
-	Fqdn           string `json:"fqdn" header:"FQDN"`
-	State          string `json:"state" header:"STATE"`
-	Public_ip      string `json:"public_ip" header:"PUBLIC_IP"`
-	Workspace_id   string `json:"workspace_id" header:"WORKSPACE_ID"`
-	Template_id    string `json:"template_id" header:"TEMPLATE_ID"`
-	Server_plan_id string `json:"server_plan_id" header:"SERVER_PLAN_ID"`
-	Ssh_profile_id string `json:"ssh_profile_id" header:"SSH_PROFILE_ID"`
+	ID           string `json:"id"  header:"ID"`
+	Name         string `json:"name" header:"NAME"`
+	Fqdn         string `json:"fqdn" header:"FQDN"`
+	State        string `json:"state" header:"STATE"`
+	PublicIP     string `json:"public_ip" header:"PUBLIC IP"`
+	WorkspaceID  string `json:"workspace_id" header:"WORKSPACE ID"`
+	TemplateID   string `json:"template_id" header:"TEMPLATE ID"`
+	ServerPlanID string `json:"server_plan_id" header:"SERVER PLAN ID"`
+	SSHProfileID string `json:"ssh_profile_id" header:"SSH PROFILE ID"`
 }
 
+// TemplateScriptCredentials stores credentials to servers
 type TemplateScriptCredentials interface{}

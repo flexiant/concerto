@@ -1,5 +1,5 @@
 /*
-	A template bundles the operating system to be run by a cloud server and the services and scripts to be applied to it, thus defining a blueprint for cloud server configuration management.
+A template bundles the operating system to be run by a cloud server and the services and scripts to be applied to it, thus defining a blueprint for cloud server configuration management.
 
 	The available commands are:
 		list
@@ -173,49 +173,51 @@ import (
 	"text/tabwriter"
 )
 
-func cmdListTemplateScripts(c *cli.Context) {
-	var templateScripts []types.TemplateScript
-	utils.FlagsRequired(c, []string{"template_id", "type"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// TODO DELETE THIS
 
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", c.String("template_id"), c.String("type")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// func cmdListTemplateScripts(c *cli.Context) {
+// 	var templateScripts []types.TemplateScript
+// 	utils.FlagsRequired(c, []string{"template_id", "type"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", c.String("template_id"), c.String("type")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &templateScripts)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+//
+// 	for _, templateScript := range templateScripts {
+// 		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
+// 	}
+//
+// 	w.Flush()
+// }
 
-	err = json.Unmarshal(data, &templateScripts)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-
-	for _, templateScript := range templateScripts {
-		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
-	}
-
-	w.Flush()
-}
-
-func cmdShowTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id", "template_id"})
-	var templateScript types.TemplateScript
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
-
-	err = json.Unmarshal(data, &templateScript)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
-
-	w.Flush()
-}
+// func cmdShowTemplateScript(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id", "template_id"})
+// 	var templateScript types.TemplateScript
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &templateScript)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
+//
+// 	w.Flush()
+// }
 
 func cmdCreateTemplateScript(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"template_id", "type", "parameter_values"})
@@ -245,7 +247,7 @@ func cmdCreateTemplateScript(c *cli.Context) {
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
 
 	w.Flush()
 }
@@ -275,7 +277,7 @@ func cmdUpdateTemplateScript(c *cli.Context) {
 
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
 
 	w.Flush()
 }
@@ -313,7 +315,7 @@ func cmdReorderTemplateScripts(c *cli.Context) {
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
 	for _, templateScript := range templateScripts {
-		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.Id, templateScript.Type, templateScript.Execution_Order, templateScript.Template_Id, templateScript.Script_Id, templateScript.Parameter_Values)
+		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
 	}
 	w.Flush()
 }
@@ -335,7 +337,7 @@ func cmdListTemplateServers(c *cli.Context) {
 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
 
 	for _, templateServer := range templateServers {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", templateServer.Id, templateServer.Name, templateServer.Fqdn, templateServer.State, templateServer.Public_ip, templateServer.Workspace_id, templateServer.Template_id, templateServer.Server_plan_id, templateServer.Ssh_profile_id)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", templateServer.ID, templateServer.Name, templateServer.Fqdn, templateServer.State, templateServer.PublicIP, templateServer.WorkspaceID, templateServer.TemplateID, templateServer.ServerPlanID, templateServer.SSHProfileID)
 	}
 
 	w.Flush()
