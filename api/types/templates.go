@@ -32,3 +32,5 @@ type TemplateServer struct {
 	Server_plan_id string `json:"server_plan_id" header:"SERVER_PLAN_ID"`
 	Ssh_profile_id string `json:"ssh_profile_id" header:"SSH_PROFILE_ID"`
 }
+
+type TemplateScriptCredentials interface{}

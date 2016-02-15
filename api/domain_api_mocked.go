@@ -230,13 +230,34 @@ func UpdateDomainRecordMocked(t *testing.T, dr *types.DomainRecord) *types.Domai
 
 	// to json
 	drIn, err := json.Marshal(dr)
-	assert.Nil(err, "Domain test data corrupted")
+	assert.Nil(err, "Domain record test data corrupted")
 
 	// call service
 	cs.On("Put", fmt.Sprintf("/v1/dns/domains/%s/records/%s", dr.DomainID, dr.ID), mapIn).Return(drIn, 200, nil)
 	drOut, err := ds.UpdateDomainRecord(mapIn, dr.DomainID, dr.ID)
 	assert.Nil(err, "Error updating domain list")
-	assert.Equal(*dr, *drOut, "UpdateDomain returned different domains")
+	assert.Equal(*dr, *drOut, "UpdateDomainRecord returned different domain records")
 
 	return drOut
+}
+
+// DeleteDomainRecordMocked test mocked function
+func DeleteDomainRecordMocked(t *testing.T, dr *types.DomainRecord) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Domain record test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s/records/%s", dr.DomainID, dr.ID)).Return(drIn, 200, nil)
+	err = ds.DeleteDomainRecord(dr.DomainID, dr.ID)
+	assert.Nil(err, "Error deleting domain record")
 }

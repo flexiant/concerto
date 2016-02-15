@@ -2,7 +2,7 @@ package templates
 
 import (
 	"github.com/codegangsta/cli"
-	// "github.com/flexiant/concerto/cmd"
+	"github.com/flexiant/concerto/cmd"
 )
 
 func SubCommands() []cli.Command {
@@ -10,12 +10,12 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list",
 			Usage:  "Lists all available templates",
-			Action: cmdList,
+			Action: cmd.TemplateList,
 		},
 		{
 			Name:   "show",
 			Usage:  "Shows information about a specific template",
-			Action: cmdShow,
+			Action: cmd.TemplateShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -26,7 +26,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "create",
 			Usage:  "Creates a new template.",
-			Action: cmdCreate,
+			Action: cmd.TemplateCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "name",
@@ -49,7 +49,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "update",
 			Usage:  "Updates an existing template",
-			Action: cmdUpdate,
+			Action: cmd.TemplateUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -72,7 +72,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete",
 			Usage:  "Deletes a template",
-			Action: cmdDelete,
+			Action: cmd.TemplateDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -84,6 +84,7 @@ func SubCommands() []cli.Command {
 			Name:   "list_template_scripts",
 			Usage:  "Shows the script characterisations of a template",
 			Action: cmdListTemplateScripts,
+			//Action: cmd.TemplateScriptList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -99,6 +100,7 @@ func SubCommands() []cli.Command {
 			Name:   "show_template_script",
 			Usage:  "Shows information about a specific script characterisation",
 			Action: cmdShowTemplateScript,
+			// Action: cmd.TemplateScriptShow,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -114,6 +116,7 @@ func SubCommands() []cli.Command {
 			Name:   "create_template_script",
 			Usage:  "Creates a new script characterisation for a template and appends it to the list of script characterisations of the same type.",
 			Action: cmdCreateTemplateScript,
+			//Action: cmd.TemplateScriptCreate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -137,6 +140,7 @@ func SubCommands() []cli.Command {
 			Name:   "update_template_script",
 			Usage:  "Updates an existing script characterisation for a template.",
 			Action: cmdUpdateTemplateScript,
+			// Action: cmd.TemplateScriptUpdate,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -175,6 +179,7 @@ func SubCommands() []cli.Command {
 			Name:   "delete_template_script",
 			Usage:  "Removes a parametrized script from a template",
 			Action: cmdDeleteTemplateScript,
+			// Action: cmd.TemplateScriptDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -187,8 +192,9 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "list_template_servers",
-			Usage:  "Returns information about the servers that use a specific template. ",
+			Name:  "list_template_servers",
+			Usage: "Returns information about the servers that use a specific template. ",
+			// Action: cmd.TemplateServersList,
 			Action: cmdListTemplateServers,
 			Flags: []cli.Flag{
 				cli.StringFlag{
