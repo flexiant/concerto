@@ -124,7 +124,7 @@ func (tp *TemplateService) DeleteTemplate(ID string) (err error) {
 
 // GetTemplateScriptList returns a list of templateScript by template ID
 func (tp *TemplateService) GetTemplateScriptList(templateID string, scriptType string) (templateScript *[]types.TemplateScript, err error) {
-	log.Debug("ListTemplateScripts")
+	log.Debug("GetTemplateScriptList")
 
 	data, status, err := tp.concertoService.Get(fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", templateID, scriptType))
 	if err != nil {
