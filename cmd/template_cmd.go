@@ -111,7 +111,7 @@ func TemplateScriptList(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive templateScript data", err)
 	}
-	if err = formatter.PrintList(templateScripts); err != nil {
+	if err = formatter.PrintList(*templateScripts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
 }
