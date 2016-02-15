@@ -15,10 +15,10 @@ type Template struct {
 type TemplateScript struct {
 	Id               string          `json:"id" header:"ID"`
 	Type             string          `json:"type" header:"TYPE"`
+	Execution_Order  int             `json:"execution_order" header:"EXECUTION_ORDER"`
 	Template_Id      string          `json:"template_id" header:"TEMPLATE_ID"`
 	Script_Id        string          `json:"script_id" header:"SCRIPT_ID"`
 	Parameter_Values json.RawMessage `json:"parameter_values" header:"PARAMETER_VALUES"`
-	Execution_Order  int             `json:"execution_order" header:"EXECUTION_ORDER"`
 }
 
 type TemplateServer struct {
