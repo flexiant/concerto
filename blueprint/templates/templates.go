@@ -282,18 +282,18 @@ import (
 //
 // 	w.Flush()
 // }
-
-func cmdDeleteTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id", "template_id"})
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-}
-
+//
+// func cmdDeleteTemplateScript(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id", "template_id"})
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+// }
+//
 func cmdReorderTemplateScripts(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"template_id", "type", "script_ids"})
 	webservice, err := webservice.NewWebService()

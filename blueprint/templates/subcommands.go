@@ -148,7 +148,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "id",
-					Usage: "Identifier for the script that is parameterised by the script characterisation",
+					Usage: "Identifier for the template-script that is parameterised by the script characterisation",
 				},
 				cli.StringFlag{
 					Name:  "parameter_values",
@@ -178,16 +178,15 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "delete_template_script",
 			Usage:  "Removes a parametrized script from a template",
-			Action: cmdDeleteTemplateScript,
-			// Action: cmd.TemplateScriptDelete,
+			Action: cmd.TemplateScriptDelete,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
 					Usage: "Template Id",
 				},
 				cli.StringFlag{
-					Name:  "script_id",
-					Usage: "Identifier for the script that is parameterised by the script characterisation",
+					Name:  "id",
+					Usage: "Identifier for the template-script that is parameterised by the script characterisation",
 				},
 			},
 		},
