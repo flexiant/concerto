@@ -136,18 +136,19 @@ func TemplateScriptCreate(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
-	checkRequiredFlags(c, []string{"template_id", "type", "parameter_values", "script_id"}, formatter)
+	checkRequiredFlags(c, []string{"template_id", "type", "script_id"}, formatter)
 
 	// parse json parameter values
 	params := utils.FlagConvertParams(c)
 
 	// parameter values is raw json.
-	parameterValues, err := utils.JSONParam(c.String("parameter_values"))
-	if err != nil {
-		formatter.PrintFatal("parameter_values must be valid JSON", err)
+	if c.IsSet("parameter_values") {
+		parameterValues, err := utils.JSONParam(c.String("parameter_values"))
+		if err != nil {
+			formatter.PrintFatal("parameter_values must be valid JSON", err)
+		}
+		(*params)["parameter_values"] = parameterValues
 	}
-
-	(*params)["parameter_values"] = parameterValues
 
 	templateScript, err := templateScriptSvc.CreateTemplateScript(params, c.String("template_id"))
 	if err != nil {
@@ -163,8 +164,22 @@ func TemplateScriptUpdate(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
+	// TODO type script_id parameter_values
 	checkRequiredFlags(c, []string{"id", "template_id"}, formatter)
-	templateScript, err := templateScriptSvc.UpdateTemplateScript(utils.FlagConvertParams(c), c.String("template_id"), c.String("id"))
+
+	// parse json parameter values
+	params := utils.FlagConvertParams(c)
+
+	// parameter values is raw json.
+	if c.IsSet("parameter_values") {
+		parameterValues, err := utils.JSONParam(c.String("parameter_values"))
+		if err != nil {
+			formatter.PrintFatal("parameter_values must be valid JSON", err)
+		}
+		(*params)["parameter_values"] = parameterValues
+	}
+
+	templateScript, err := templateScriptSvc.UpdateTemplateScript(params, c.String("template_id"), c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't update templateScript", err)
 	}

@@ -252,36 +252,36 @@ import (
 //
 // 	w.Flush()
 // }
-
-func cmdUpdateTemplateScript(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id", "template_id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]interface{})
-
-	if c.IsSet("parameter_values") {
-		var params types.TemplateScriptCredentials
-		err = json.Unmarshal([]byte(c.String("credentials")), &params)
-		v["parameter_values"] = params
-	}
-
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var templateScript types.TemplateScript
-	err = json.Unmarshal(res, &templateScript)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
-
-	w.Flush()
-}
+//
+// func cmdUpdateTemplateScript(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id", "template_id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]interface{})
+//
+// 	if c.IsSet("parameter_values") {
+// 		var params types.TemplateScriptCredentials
+// 		err = json.Unmarshal([]byte(c.String("credentials")), &params)
+// 		v["parameter_values"] = params
+// 	}
+//
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", c.String("template_id"), c.String("id")), jsonBytes)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var templateScript types.TemplateScript
+// 	err = json.Unmarshal(res, &templateScript)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
+//
+// 	w.Flush()
+// }
 
 func cmdDeleteTemplateScript(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id", "template_id"})
