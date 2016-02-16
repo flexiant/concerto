@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"reflect"
@@ -33,4 +34,11 @@ func ItemConvertParams(item interface{}) (*map[string]interface{}, error) {
 		// }
 	}
 	return &v, nil
+}
+
+// JSONParam parses parameter to be
+func JSONParam(param string) (interface{}, error) {
+	var p interface{}
+	err := json.Unmarshal([]byte(param), &p)
+	return p, err
 }

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/api"
 	"github.com/flexiant/concerto/utils"
@@ -142,9 +141,13 @@ func TemplateScriptCreate(c *cli.Context) {
 	// parse json parameter values
 	params := utils.FlagConvertParams(c)
 
-	var pv interface{}
-	err := json.Unmarshal([]byte(c.String("parameter_values")), &pv)
-	(*params)["parameter_values"] = pv
+	// parameter values is raw json.
+	parameterValues, err := utils.JSONParam(c.String("parameter_values"))
+	if err != nil {
+		formatter.PrintFatal("parameter_values must be valid JSON", err)
+	}
+
+	(*params)["parameter_values"] = parameterValues
 
 	templateScript, err := templateScriptSvc.CreateTemplateScript(params, c.String("template_id"))
 	if err != nil {
