@@ -63,7 +63,14 @@ func TemplateCreate(c *cli.Context) {
 	templateSvc, formatter := WireUpTemplate(c)
 
 	checkRequiredFlags(c, []string{"name", "generic_image_id"}, formatter)
-	template, err := templateSvc.CreateTemplate(utils.FlagConvertParams(c))
+
+	// parse json parameter values
+	params, err := utils.FlagConvertParamsJSON(c, []string{"service_list", "configuration_attributes"})
+	if err != nil {
+		formatter.PrintFatal("Error parsing parameters", err)
+	}
+
+	template, err := templateSvc.CreateTemplate(params)
 	if err != nil {
 		formatter.PrintFatal("Couldn't create template", err)
 	}
@@ -78,7 +85,14 @@ func TemplateUpdate(c *cli.Context) {
 	templateSvc, formatter := WireUpTemplate(c)
 
 	checkRequiredFlags(c, []string{"id"}, formatter)
-	template, err := templateSvc.UpdateTemplate(utils.FlagConvertParams(c), c.String("id"))
+
+	// parse json parameter values
+	params, err := utils.FlagConvertParamsJSON(c, []string{"service_list", "configuration_attributes"})
+	if err != nil {
+		formatter.PrintFatal("Error parsing parameters", err)
+	}
+
+	template, err := templateSvc.UpdateTemplate(params, c.String("id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't update template", err)
 	}
@@ -139,15 +153,9 @@ func TemplateScriptCreate(c *cli.Context) {
 	checkRequiredFlags(c, []string{"template_id", "type", "script_id"}, formatter)
 
 	// parse json parameter values
-	params := utils.FlagConvertParams(c)
-
-	// parameter values is raw json.
-	if c.IsSet("parameter_values") {
-		parameterValues, err := utils.JSONParam(c.String("parameter_values"))
-		if err != nil {
-			formatter.PrintFatal("parameter_values must be valid JSON", err)
-		}
-		(*params)["parameter_values"] = parameterValues
+	params, err := utils.FlagConvertParamsJSON(c, []string{"parameter_values"})
+	if err != nil {
+		formatter.PrintFatal("Error parsing parameters", err)
 	}
 
 	templateScript, err := templateScriptSvc.CreateTemplateScript(params, c.String("template_id"))
@@ -168,15 +176,9 @@ func TemplateScriptUpdate(c *cli.Context) {
 	checkRequiredFlags(c, []string{"id", "template_id"}, formatter)
 
 	// parse json parameter values
-	params := utils.FlagConvertParams(c)
-
-	// parameter values is raw json.
-	if c.IsSet("parameter_values") {
-		parameterValues, err := utils.JSONParam(c.String("parameter_values"))
-		if err != nil {
-			formatter.PrintFatal("parameter_values must be valid JSON", err)
-		}
-		(*params)["parameter_values"] = parameterValues
+	params, err := utils.FlagConvertParamsJSON(c, []string{"parameter_values"})
+	if err != nil {
+		formatter.PrintFatal("Error parsing parameters", err)
 	}
 
 	templateScript, err := templateScriptSvc.UpdateTemplateScript(params, c.String("template_id"), c.String("id"))

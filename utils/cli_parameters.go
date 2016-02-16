@@ -18,6 +18,39 @@ func FlagConvertParams(c *cli.Context) *map[string]interface{} {
 	return &v
 }
 
+// FlagConvertParamsJSON converts cli parameters in API callable params, and encodes JSON parameters
+func FlagConvertParamsJSON(c *cli.Context, jsonFlags []string) (*map[string]interface{}, error) {
+	v := make(map[string]interface{})
+	for _, flag := range c.FlagNames() {
+		if c.IsSet(flag) {
+
+			// check if field is json
+			isJSON := false
+			if jsonFlags != nil {
+				for _, js := range jsonFlags {
+					if js == flag {
+						isJSON = true
+						break
+					}
+				}
+			}
+
+			if isJSON {
+				// parse json before assigning to map
+				var p interface{}
+				err := json.Unmarshal([]byte(c.String(flag)), &p)
+				if err != nil {
+					return nil, fmt.Errorf("flag %s isn't a valid JSON. %s", flag, err)
+				}
+				v[flag] = p
+			} else {
+				v[flag] = c.String(flag)
+			}
+		}
+	}
+	return &v, nil
+}
+
 // ItemConvertParams converts API items into map of interface
 func ItemConvertParams(item interface{}) (*map[string]interface{}, error) {
 
@@ -36,7 +69,7 @@ func ItemConvertParams(item interface{}) (*map[string]interface{}, error) {
 	return &v, nil
 }
 
-// JSONParam parses parameter to be
+// JSONParam parses parameter as json structure
 func JSONParam(param string) (interface{}, error) {
 	var p interface{}
 	err := json.Unmarshal([]byte(param), &p)

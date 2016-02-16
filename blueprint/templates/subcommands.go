@@ -129,7 +129,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "parameter_values",
-					Usage: "A map that assigns a value to each script parameter",
+					Usage: "A map that assigns a value to each script parameter. Example: '{\"param1\":\"val1\",\"param2\":\"val2\"}'",
 				},
 			},
 		},
@@ -152,7 +152,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "parameter_values",
-					Usage: "A map that assigns a value to each script parameter",
+					Usage: "A map that assigns a value to each script parameter. Example: '{\"param1\":\"val1\",\"param2\":\"val2\"}'",
 				},
 			},
 		},
