@@ -161,19 +161,19 @@ A template bundles the operating system to be run by a cloud server and the serv
 */
 package templates
 
-import (
-	"encoding/json"
-	"fmt"
-	//	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api/types"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
-)
-
 // TODO DELETE THIS
+
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	//	log "github.com/Sirupsen/logrus"
+// 	"github.com/codegangsta/cli"
+// 	"github.com/flexiant/concerto/api/types"
+// 	"github.com/flexiant/concerto/utils"
+// 	"github.com/flexiant/concerto/webservice"
+// 	"os"
+// 	"text/tabwriter"
+// )
 
 // func cmdListTemplateScripts(c *cli.Context) {
 // 	var templateScripts []types.TemplateScript
@@ -294,52 +294,52 @@ import (
 // 	utils.CheckReturnCode(res, mesg)
 // }
 //
-func cmdReorderTemplateScripts(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"template_id", "type", "script_ids"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	v := make(map[string]interface{})
-	v["type"] = c.String("type")
-	v["script_ids"] = c.GlobalStringSlice("script_ids")
-
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", c.String("template_id")), jsonBytes)
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-
-	var templateScripts []types.TemplateScript
-	err = json.Unmarshal(res, &templateScripts)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
-	for _, templateScript := range templateScripts {
-		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
-	}
-	w.Flush()
-}
-
-func cmdListTemplateServers(c *cli.Context) {
-	var templateServers []types.TemplateServer
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", c.String("template_id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
-
-	err = json.Unmarshal(data, &templateServers)
-	utils.CheckError(err)
-
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
-
-	for _, templateServer := range templateServers {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", templateServer.ID, templateServer.Name, templateServer.Fqdn, templateServer.State, templateServer.PublicIP, templateServer.WorkspaceID, templateServer.TemplateID, templateServer.ServerPlanID, templateServer.SSHProfileID)
-	}
-
-	w.Flush()
-}
+// func cmdReorderTemplateScripts(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"template_id", "type", "script_ids"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	v := make(map[string]interface{})
+// 	v["type"] = c.String("type")
+// 	v["script_ids"] = c.GlobalStringSlice("script_ids")
+//
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", c.String("template_id")), jsonBytes)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+//
+// 	var templateScripts []types.TemplateScript
+// 	err = json.Unmarshal(res, &templateScripts)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tTYPE\tEXECUTION ORDER\tTEMPLATE ID\tSCRIPT ID\tPARAMETER VALUES\r")
+// 	for _, templateScript := range templateScripts {
+// 		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%s\n", templateScript.ID, templateScript.Type, templateScript.ExecutionOrder, templateScript.TemplateID, templateScript.ScriptID, templateScript.ParameterValues)
+// 	}
+// 	w.Flush()
+// }
+//
+// func cmdListTemplateServers(c *cli.Context) {
+// 	var templateServers []types.TemplateServer
+//
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
+//
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", c.String("template_id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
+//
+// 	err = json.Unmarshal(data, &templateServers)
+// 	utils.CheckError(err)
+//
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tSTATE\tPUBLIC IP\tWORKSPACE ID\tTEMPLATE ID\tSERVER PLAN ID\tSSH PROFILE ID\r")
+//
+// 	for _, templateServer := range templateServers {
+// 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", templateServer.ID, templateServer.Name, templateServer.Fqdn, templateServer.State, templateServer.PublicIP, templateServer.WorkspaceID, templateServer.TemplateID, templateServer.ServerPlanID, templateServer.SSHProfileID)
+// 	}
+//
+// 	w.Flush()
+// }

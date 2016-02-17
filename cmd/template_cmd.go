@@ -172,7 +172,7 @@ func TemplateScriptUpdate(c *cli.Context) {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
-	// TODO type script_id parameter_values
+	// TODO si necessary: type script_id parameter_values ?
 	checkRequiredFlags(c, []string{"id", "template_id"}, formatter)
 
 	// parse json parameter values
@@ -208,28 +208,33 @@ func TemplateScriptReorder(c *cli.Context) {
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
 	checkRequiredFlags(c, []string{"template_id", "type", "script_ids"}, formatter)
-	templateScript, err := templateScriptSvc.ReorderTemplateScript(c.String("template_id"))
+	params, err := utils.FlagConvertParamsJSON(c, []string{"script_ids"})
+	if err != nil {
+		formatter.PrintFatal("Error parsing parameters", err)
+	}
+
+	templateScript, err := templateScriptSvc.ReorderTemplateScript(params, c.String("template_id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't reorder templateScript", err)
 	}
-	if err = formatter.PrintItem(*templateScript); err != nil {
+	if err = formatter.PrintList(*templateScript); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
 }
 
 // =========== Template Servers =============
 
-// TemplateServers subcommand function
+// TemplateServersList subcommand function
 func TemplateServersList(c *cli.Context) {
 	debugCmdFuncInfo(c)
-	templateScriptSvc, formatter := WireUpTemplate(c)
+	templateSvc, formatter := WireUpTemplate(c)
 
 	checkRequiredFlags(c, []string{"template_id"}, formatter)
-	templateScripts, err := templateScriptSvc.GetTemplateServersList(c.String("template_id"))
+	templateServers, err := templateSvc.GetTemplateServersList(c.String("template_id"))
 	if err != nil {
-		formatter.PrintFatal("Couldn't receive templateServers data", err)
+		formatter.PrintFatal("Couldn't receive template servers data", err)
 	}
-	if err = formatter.PrintList(templateScripts); err != nil {
+	if err = formatter.PrintList(*templateServers); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
 }

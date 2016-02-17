@@ -219,10 +219,10 @@ func (tp *TemplateService) DeleteTemplateScript(templateID string, ID string) (e
 }
 
 // ReorderTemplateScript returns a list of templateScript
-func (tp *TemplateService) ReorderTemplateScript(templateID string) (templateScript *types.TemplateScript, err error) {
-	log.Debug("UpdateTemplateScript")
+func (tp *TemplateService) ReorderTemplateScript(templateScriptVector *map[string]interface{}, templateID string) (templateScript *[]types.TemplateScript, err error) {
+	log.Debug("ReorderTemplateScript")
 
-	data, status, err := tp.concertoService.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", templateID), nil)
+	data, status, err := tp.concertoService.Put(fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", templateID), templateScriptVector)
 	if err != nil {
 		return nil, err
 	}
@@ -241,8 +241,8 @@ func (tp *TemplateService) ReorderTemplateScript(templateID string) (templateScr
 // ================ Template Servers =================
 
 // GetTemplateServersList returns a list of templateServers by template ID
-func (tp *TemplateService) GetTemplateServersList(templateID string) (templateScript *[]types.TemplateScript, err error) {
-	log.Debug("ListTemplateScripts")
+func (tp *TemplateService) GetTemplateServersList(templateID string) (templateServer *[]types.TemplateServer, err error) {
+	log.Debug("GetTemplateServersList")
 
 	data, status, err := tp.concertoService.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", templateID))
 	if err != nil {
@@ -253,9 +253,9 @@ func (tp *TemplateService) GetTemplateServersList(templateID string) (templateSc
 		return nil, err
 	}
 
-	if err = json.Unmarshal(data, &templateScript); err != nil {
+	if err = json.Unmarshal(data, &templateServer); err != nil {
 		return nil, err
 	}
 
-	return templateScript, nil
+	return templateServer, nil
 }

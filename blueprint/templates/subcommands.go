@@ -159,7 +159,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "reorder_template_scripts",
 			Usage:  "Reorders the scripts of the template and type specified according to the provided order, changing their execution order as corresponds.",
-			Action: cmdReorderTemplateScripts,
+			Action: cmd.TemplateScriptReorder,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
@@ -191,10 +191,9 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:  "list_template_servers",
-			Usage: "Returns information about the servers that use a specific template. ",
-			// Action: cmd.TemplateServersList,
-			Action: cmdListTemplateServers,
+			Name:   "list_template_servers",
+			Usage:  "Returns information about the servers that use a specific template. ",
+			Action: cmd.TemplateServersList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "template_id",
