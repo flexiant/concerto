@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestPrintItemDomain(t *testing.T) {
+func TestPrintItemDomainJSON(t *testing.T) {
 
 	assert := assert.New(t)
 	domainsIn := testdata.GetDomainData()
@@ -24,7 +24,7 @@ func TestPrintItemDomain(t *testing.T) {
 		f := GetFormatter()
 		assert.NotNil(f, "Formatter")
 
-		err := f.PrintItem(domainOut)
+		err := f.PrintItem(*domainOut)
 		assert.Nil(err, "JSON formatter PrintItem error")
 		mockOut.Flush()
 
@@ -33,7 +33,7 @@ func TestPrintItemDomain(t *testing.T) {
 	}
 }
 
-func TestPrintListDomains(t *testing.T) {
+func TestPrintListDomainsJSON(t *testing.T) {
 
 	assert := assert.New(t)
 	domainsIn := testdata.GetDomainData()
@@ -53,7 +53,7 @@ func TestPrintListDomains(t *testing.T) {
 	assert.Regexp("^\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON Output didn't match regular expression")
 }
 
-func TestPrintError(t *testing.T) {
+func TestPrintErrorJSON(t *testing.T) {
 
 	assert := assert.New(t)
 
