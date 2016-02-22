@@ -13,7 +13,7 @@ type ScriptService struct {
 	concertoService utils.ConcertoService
 }
 
-// NewScriptService returns a Concerto script service
+// NewScriptsService returns a Concerto script service
 func NewScriptsService(concertoService utils.ConcertoService) (*ScriptService, error) {
 	if concertoService == nil {
 		return nil, fmt.Errorf("Must initialize ConcertoService before using it")

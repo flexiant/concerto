@@ -13,6 +13,13 @@ type JSONFormatter struct {
 	output io.Writer
 }
 
+// JSONMessage hosts generic messages
+type JSONMessage struct {
+	Type    string `json:"type"`
+	Context string `json:"context,omitempty"`
+	Message string `json:"message"`
+}
+
 // NewJSONFormatter creates a new JSONFormatter
 func NewJSONFormatter(out io.Writer) *JSONFormatter {
 	log.Debug("Creating JSON formatter")
@@ -48,8 +55,21 @@ func (f *JSONFormatter) PrintList(items interface{}) error {
 
 // PrintError prints an error
 func (f *JSONFormatter) PrintError(context string, err error) {
-	// TODO JSON
-	fmt.Printf("ERROR: %s\n -> %s", context, err)
+
+	msg := JSONMessage{
+		Type:    "Error",
+		Context: context,
+		Message: err.Error(),
+	}
+
+	msgJSON, err := json.Marshal(msg)
+	if err != nil {
+		// fallback to hand made message
+		msgJSON = []byte(fmt.Sprintf("(Formatting error, cannot show JSON)\n %s -> %s \n", context, err))
+	}
+
+	f.output.Write(msgJSON)
+	fmt.Fprintf(f.output, "\n")
 }
 
 // PrintFatal prints an error and exists

@@ -3,6 +3,7 @@ package format
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"github.com/flexiant/concerto/api"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
@@ -50,4 +51,21 @@ func TestPrintListDomains(t *testing.T) {
 
 	// TODO add more accurate parsing
 	assert.Regexp("^\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON Output didn't match regular expression")
+}
+
+func TestPrintError(t *testing.T) {
+
+	assert := assert.New(t)
+
+	var b bytes.Buffer
+	mockOut := bufio.NewWriter(&b)
+
+	InitializeFormatter("json", mockOut)
+	f := GetFormatter()
+	assert.NotNil(f, "Formatter")
+
+	f.PrintError("testing errors", fmt.Errorf("this is a test error %s", "TEST"))
+	mockOut.Flush()
+
+	assert.Regexp("^\\{\\\"type\\\":\\\"Error\\\",\\\"context\\\":\\\"testing errors\\\",\\\"message\\\":\\\"this is a test error TEST\\\"\\}", b.String(), "JSON Output didn't match regular expression")
 }
