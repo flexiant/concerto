@@ -104,7 +104,7 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 
 // PrintError prints an error
 func (f *TextFormatter) PrintError(context string, err error) {
-	fmt.Printf("ERROR: %s\n -> %s\n", context, err)
+	f.output.Write([]byte(fmt.Sprintf("ERROR: %s\n -> %s\n", context, err)))
 }
 
 // PrintFatal prints an error and exists

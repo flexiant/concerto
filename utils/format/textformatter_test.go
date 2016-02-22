@@ -29,7 +29,7 @@ func TestPrintItemDomainTXT(t *testing.T) {
 		mockOut.Flush()
 
 		// TODO add more accurate parsing
-		assert.Regexp("^ID:\\ *.*\n*.\n", b.String(), "JSON Output didn't match regular expression")
+		assert.Regexp("^ID:\\ *.*\n*.\n", b.String(), "Text output didn't match regular expression")
 
 	}
 }
@@ -51,23 +51,22 @@ func TestPrintListDomainsTXT(t *testing.T) {
 	mockOut.Flush()
 
 	// TODO add more accurate parsing
-	assert.Regexp(fmt.Sprintf("^ID.*\n%s.*\n.*", (*domainOut)[0].ID), b.String(), "JSON Output didn't match regular expression")
+	assert.Regexp(fmt.Sprintf("^ID.*\n%s.*\n.*", (*domainOut)[0].ID), b.String(), "Text output didn't match regular expression")
 }
 
-//
-// func TestPrintError(t *testing.T) {
-//
-// 	assert := assert.New(t)
-//
-// 	var b bytes.Buffer
-// 	mockOut := bufio.NewWriter(&b)
-//
-// 	InitializeFormatter("json", mockOut)
-// 	f := GetFormatter()
-// 	assert.NotNil(f, "Formatter")
-//
-// 	f.PrintError("testing errors", fmt.Errorf("this is a test error %s", "TEST"))
-// 	mockOut.Flush()
-//
-// 	assert.Regexp("^\\{\\\"type\\\":\\\"Error\\\",\\\"context\\\":\\\"testing errors\\\",\\\"message\\\":\\\"this is a test error TEST\\\"\\}", b.String(), "JSON Output didn't match regular expression")
-// }
+func TestPrintError(t *testing.T) {
+
+	assert := assert.New(t)
+
+	var b bytes.Buffer
+	mockOut := bufio.NewWriter(&b)
+
+	InitializeFormatter("text", mockOut)
+	f := GetFormatter()
+	assert.NotNil(f, "Formatter")
+
+	f.PrintError("testing errors", fmt.Errorf("this is a test error %s", "TEST"))
+	mockOut.Flush()
+
+	assert.Regexp("^ERROR:.*\n -> .*\n", b.String(), "Text output didn't match regular expression")
+}

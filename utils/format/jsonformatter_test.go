@@ -29,7 +29,7 @@ func TestPrintItemDomainJSON(t *testing.T) {
 		mockOut.Flush()
 
 		// TODO add more accurate parsing
-		assert.Regexp("^\\{\\\"id\\\":.*\\}", b.String(), "JSON Output didn't match regular expression")
+		assert.Regexp("^\\{\\\"id\\\":.*\\}", b.String(), "JSON output didn't match regular expression")
 	}
 }
 
@@ -50,7 +50,7 @@ func TestPrintListDomainsJSON(t *testing.T) {
 	mockOut.Flush()
 
 	// TODO add more accurate parsing
-	assert.Regexp("^\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON Output didn't match regular expression")
+	assert.Regexp("^\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON output didn't match regular expression")
 }
 
 func TestPrintErrorJSON(t *testing.T) {
@@ -67,5 +67,5 @@ func TestPrintErrorJSON(t *testing.T) {
 	f.PrintError("testing errors", fmt.Errorf("this is a test error %s", "TEST"))
 	mockOut.Flush()
 
-	assert.Regexp("^\\{\\\"type\\\":\\\"Error\\\",\\\"context\\\":\\\"testing errors\\\",\\\"message\\\":\\\"this is a test error TEST\\\"\\}", b.String(), "JSON Output didn't match regular expression")
+	assert.Regexp("^\\{\\\"type\\\":\\\"Error\\\",\\\"context\\\":\\\"testing errors\\\",\\\"message\\\":\\\"this is a test error TEST\\\"\\}", b.String(), "JSON output didn't match regular expression")
 }
