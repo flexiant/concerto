@@ -28,31 +28,31 @@ func WireUpReport(c *cli.Context) (ns *api.ReportService, f format.Formatter) {
 	return ns, f
 }
 
-// // ReportList subcommand function
-// func AdminReportList(c *cli.Context) {
-// 	debugCmdFuncInfo(c)
-// 	reportSvc, formatter := WireUpReport(c)
+// ReportList subcommand function
+func AdminReportList(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	reportSvc, formatter := WireUpReport(c)
 
-// 	reports, err := reportSvc.GetAdminReportList()
-// 	if err != nil {
-// 		formatter.PrintFatal("Couldn't receive report data", err)
-// 	}
-// 	if err = formatter.PrintList(reports); err != nil {
-// 		formatter.PrintFatal("Couldn't print/format result", err)
-// 	}
-// }
+	reports, err := reportSvc.GetAdminReportList()
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive report data", err)
+	}
+	if err = formatter.PrintList(reports); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
 
-// // ReportShow subcommand function
-// func AdminReportShow(c *cli.Context) {
-// 	debugCmdFuncInfo(c)
-// 	reportSvc, formatter := WireUpReport(c)
+// ReportShow subcommand function
+func AdminReportShow(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	reportSvc, formatter := WireUpReport(c)
 
-// 	checkRequiredFlags(c, []string{"id"}, formatter)
-// 	report, err := reportSvc.GetAdminReport(c.String("id"))
-// 	if err != nil {
-// 		formatter.PrintFatal("Couldn't receive report data", err)
-// 	}
-// 	if err = formatter.PrintList(reports); err != nil {
-// 		formatter.PrintFatal("Couldn't print/format result", err)
-// 	}
-// }
+	checkRequiredFlags(c, []string{"id"}, formatter)
+	report, err := reportSvc.GetAdminReport(c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive report data", err)
+	}
+	if err = formatter.PrintList(report); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}

@@ -34,65 +34,66 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
-	"time"
+	// "time"
 )
 
-type Report struct {
-	Id             string       `json:"id"`
-	Year           int          `json:"year"`
-	Month          time.Month   `json:"month"`
-	Start_time     time.Time    `json:"start_time"`
-	End_time       time.Time    `json:"end_time"`
-	Server_seconds float32      `json:"server_seconds"`
-	Closed         bool         `json:"closed"`
-	Li             []Lines      `json:"lines"`
-	Account_group  AccountGroup `json:"account_group"`
-}
+// type Report struct {
+// 	Id             string       `json:"id"`
+// 	Year           int          `json:"year"`
+// 	Month          time.Month   `json:"month"`
+// 	Start_time     time.Time    `json:"start_time"`
+// 	End_time       time.Time    `json:"end_time"`
+// 	Server_seconds float32      `json:"server_seconds"`
+// 	Closed         bool         `json:"closed"`
+// 	Li             []Lines      `json:"lines"`
+// 	Account_group  AccountGroup `json:"account_group"`
+// }
 
-type Lines struct {
-	Id                string    `json:"_id"`
-	Commissioned_at   time.Time `json:"commissioned_at"`
-	Decommissioned_at time.Time `json:"decommissioned_at"`
-	Instance_id       string    `json:"instance_id"`
-	Instance_name     string    `json:"instance_name"`
-	Instance_fqdn     string    `json:"instance_fqdn"`
-	Consumption       float32   `json:"consumption"`
-}
+// type Lines struct {
+// 	Id                string    `json:"_id"`
+// 	Commissioned_at   time.Time `json:"commissioned_at"`
+// 	Decommissioned_at time.Time `json:"decommissioned_at"`
+// 	Instance_id       string    `json:"instance_id"`
+// 	Instance_name     string    `json:"instance_name"`
+// 	Instance_fqdn     string    `json:"instance_fqdn"`
+// 	Consumption       float32   `json:"consumption"`
+// }
 
-type AccountGroup struct {
-	Id   string `json:"_id"`
-	Name string `json:"name"`
-}
+// type AccountGroup struct {
+// 	Id   string `json:"_id"`
+// 	Name string `json:"name"`
+// }
 
-func cmdList(c *cli.Context) {
-	var reports []Report
+// func cmdList(c *cli.Context) {
+// 	var reports []Report
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get("/v1/admin/reports")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	err, data, res := webservice.Get("/v1/admin/reports")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	err = json.Unmarshal(data, &reports)
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &reports)
+// 	utils.CheckError(err)
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\r")
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\r")
 
-	for _, report := range reports {
-		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", report.Id, report.Year, report.Month, report.Start_time, report.End_time, report.Server_seconds, report.Closed)
-	}
+// 	for _, report := range reports {
+// 		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", report.Id, report.Year, report.Month, report.Start_time, report.End_time, report.Server_seconds, report.Closed)
+// 	}
 
-	w.Flush()
-}
+// 	w.Flush()
+// }
 
 func cmdShow(c *cli.Context) {
-	var vals Report
+	var vals types.Report
 
 	utils.FlagsRequired(c, []string{"id"})
 
