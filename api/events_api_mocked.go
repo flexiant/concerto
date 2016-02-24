@@ -52,7 +52,7 @@ func GetSysEventListMocked(t *testing.T, eventsIn *[]types.Event) *[]types.Event
 
 	// call service
 	cs.On("Get", "/v1/audit/system_events").Return(dIn, 200, nil)
-	eventsOut, err := ds.GetEventList()
+	eventsOut, err := ds.GetSysEventList()
 	assert.Nil(err, "Error getting event list")
 	assert.Equal(*eventsIn, eventsOut, "GetEventList returned different events")
 
