@@ -93,7 +93,7 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "get_domain_record",
+			Name:   "show_domain_record",
 			Usage:  "Shows information about a specific DNS record.",
 			Action: cmd.DomainRecordShow,
 			Flags: []cli.Flag{
