@@ -30,6 +30,7 @@ func NewJSONFormatter(out io.Writer) *JSONFormatter {
 
 // PrintItem prints an item
 func (f *JSONFormatter) PrintItem(item interface{}) error {
+	log.Debug("PrintItem")
 	b, err := json.Marshal(item)
 	if err != nil {
 		return err
