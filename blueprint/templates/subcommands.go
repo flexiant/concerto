@@ -91,7 +91,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "type",
-					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
+					Usage: "Must be \"operational\", \"boot\" or \"shutdown\"",
 				},
 			},
 		},
@@ -121,7 +121,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "type",
-					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
+					Usage: "Must be \"operational\", \"boot\" or \"shutdown\"",
 				},
 				cli.StringFlag{
 					Name:  "script_id",
@@ -167,7 +167,7 @@ func SubCommands() []cli.Command {
 				},
 				cli.StringFlag{
 					Name:  "type",
-					Usage: "Must be \"operational\", \"boot\", \"migration\", or \"shutdown\"",
+					Usage: "Must be \"operational\", \"boot\", or \"shutdown\"",
 				},
 				cli.StringFlag{
 					Name:  "script_ids",
