@@ -2,8 +2,8 @@ package testdata
 
 import "github.com/flexiant/concerto/api/types"
 
-// GetscriptData loads test data
-func GetscriptData() *[]types.Script {
+// GetScriptData loads test data
+func GetScriptData() *[]types.Script {
 
 	testScripts := []types.Script{
 		{

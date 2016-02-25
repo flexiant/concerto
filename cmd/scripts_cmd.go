@@ -20,7 +20,7 @@ func WireUpScript(c *cli.Context) (scs *api.ScriptService, f format.Formatter) {
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	scs, err = api.NewScriptsService(hcs)
+	scs, err = api.NewScriptService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up script service", err)
 	}
