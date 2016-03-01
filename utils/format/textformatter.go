@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -62,12 +63,19 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 	nf := header.NumField()
 
 	// avoid printing elements with 'show:nolist'  attribute
+	// special format tags
 	avoid := make([]bool, nf)
+	format := make([]string, nf)
 	for i := 0; i < nf; i++ {
-		if header.Field(i).Tag.Get("show") == "nolist" {
-			avoid[i] = true
-		} else {
-			avoid[i] = false
+		avoid[i] = false
+		showTags := strings.Split(header.Field(i).Tag.Get("show"), ",")
+		for _, showTag := range showTags {
+			if showTag == "nolist" {
+				avoid[i] = true
+			}
+			if showTag == "minifySeconds" {
+				format[i] = "minifySeconds"
+			}
 		}
 	}
 
@@ -85,13 +93,34 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 		nf := it.NumField()
 		for i := 0; i < nf; i++ {
 			if !avoid[i] {
-				switch it.Field(i).Type().String() {
-				case "json.RawMessage":
-					fmt.Fprintf(w, "%s\t", it.Field(i).Interface())
-				case "*json.RawMessage":
-					fmt.Fprintf(w, "%s\t", it.Field(i).Elem())
-				default:
-					fmt.Fprintf(w, "%+v\t", it.Field(i).Interface())
+
+				if format[i] == "minifySeconds" {
+
+					remainingSeconds := int(it.Field(i).Float())
+					s := remainingSeconds % 60
+					remainingSeconds = (remainingSeconds - s)
+					m := int(remainingSeconds/60) % 60
+					remainingSeconds = (remainingSeconds - m*60)
+					h := (remainingSeconds / 3600) % 24
+					remainingSeconds = (remainingSeconds - h*3600)
+					d := int(remainingSeconds / 86400)
+
+					if d > 0 {
+						fmt.Fprintf(w, "%dd%dh%dm\t", d, h, m)
+					} else {
+						fmt.Fprintf(w, "%dh%dm%ds\t", h, m, s)
+					}
+
+				} else {
+
+					switch it.Field(i).Type().String() {
+					case "json.RawMessage":
+						fmt.Fprintf(w, "%s\t", it.Field(i).Interface())
+					case "*json.RawMessage":
+						fmt.Fprintf(w, "%s\t", it.Field(i).Elem())
+					default:
+						fmt.Fprintf(w, "%+v\t", it.Field(i).Interface())
+					}
 				}
 			}
 		}

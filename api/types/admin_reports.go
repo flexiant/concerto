@@ -7,9 +7,9 @@ type Report struct {
 	Id             string       `json:"id" header:"REPORT ID"`
 	Year           int          `json:"year" header:"YEAR"`
 	Month          time.Month   `json:"month" header:"MONTH"`
-	Start_time     time.Time    `json:"start_time" header:"START_TIME"`
-	End_time       time.Time    `json:"end_time" header:"END_TIME"`
-	Server_seconds float32      `json:"server_seconds" header:"SERVER_SECONDS"`
+	Start_time     time.Time    `json:"start_time" header:"START TIME"`
+	End_time       time.Time    `json:"end_time" header:"END TIME"`
+	Server_seconds float32      `json:"server_seconds" header:"SERVER TIME" show:"minifySeconds"`
 	Closed         bool         `json:"closed" header:"CLOSED"`
 	Li             []Lines      `json:"lines" header:"LINES" show:"nolist"`
 	Account_group  AccountGroup `json:"account_group" header:"ACCOUNT_GROUP" show:"nolist"`
