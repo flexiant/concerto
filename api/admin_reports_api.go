@@ -25,7 +25,7 @@ func NewReportService(concertoService utils.ConcertoService) (*ReportService, er
 	}, nil
 }
 
-// GetReportList returns the list of reports as an array of Report
+// GetAdminReportList returns the list of reports as an array of Report
 func (rs *ReportService) GetAdminReportList() (reports []types.Report, err error) {
 	log.Debug("GetReportList")
 

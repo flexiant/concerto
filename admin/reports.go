@@ -86,7 +86,7 @@ import (
 // 	fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\r")
 
 // 	for _, report := range reports {
-// 		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", report.Id, report.Year, report.Month, report.Start_time, report.End_time, report.Server_seconds, report.Closed)
+// 		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\n", report.Id, report.Year, report.Month, report.StartTime, report.EndTime, report.ServerSeconds, report.Closed)
 // 	}
 
 // 	w.Flush()
@@ -110,13 +110,13 @@ func cmdShow(c *cli.Context) {
 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
 
 	fmt.Fprintln(w, "REPORT ID\tYEAR\tMONTH\tSTART TIME\tEND TIME\tSERVER SECONDS\tCLOSED\tACCOUNT GROUP ID\tACCOUNT GROUP NAME\r")
-	fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\t%s\t%s\n", vals.Id, vals.Year, vals.Month, vals.Start_time, vals.End_time, vals.Server_seconds, vals.Closed, vals.Account_group.Id, vals.Account_group.Name)
+	fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%g\t%t\t%s\t%s\n", vals.ID, vals.Year, vals.Month, vals.StartTime, vals.EndTime, vals.ServerSeconds, vals.Closed, vals.AccountGroup.ID, vals.AccountGroup.Name)
 
 	fmt.Fprintln(w, "LINES:\r")
 	fmt.Fprintln(w, "ID\tCOMMISSIONED AT\tDECOMMISSIONED AT\tINSTANCE ID\tINSTANCE NAME\tINSTANCE FQDN\tCONSUMPTION\r")
 
-	for _, l := range vals.Li {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%g\n", l.Id, l.Commissioned_at, l.Decommissioned_at, l.Instance_id, l.Instance_name, l.Instance_fqdn, l.Consumption)
+	for _, l := range vals.Lines {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%g\n", l.ID, l.CommissionedAt, l.DecommissionedAt, l.InstanceID, l.InstanceName, l.InstanceFQDN, l.Consumption)
 	}
 	w.Flush()
 

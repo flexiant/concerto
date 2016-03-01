@@ -70,3 +70,22 @@ func TestPrintError(t *testing.T) {
 
 	assert.Regexp("^ERROR:.*\n -> .*\n", b.String(), "Text output didn't match regular expression")
 }
+
+func TestPrintListReportsTXT(t *testing.T) {
+	assert := assert.New(t)
+	AdminReportsIn := testdata.GetAdminReportsData()
+	AdminReportsOut := api.GetAdminReportListMocked(t, AdminReportsIn)
+
+	var b bytes.Buffer
+	mockOut := bufio.NewWriter(&b)
+	InitializeFormatter("text", mockOut)
+	f := GetFormatter()
+	assert.NotNil(f, "Formatter")
+
+	err := f.PrintList(*AdminReportsOut)
+	assert.Nil(err, "Text formatter PrintItem error")
+	mockOut.Flush()
+
+	assert.Regexp(fmt.Sprintf("^REPORT ID.*\n%s.*\n.*", (*AdminReportsOut)[0].ID), b.String(), "Text output didn't match regular expression")
+
+}

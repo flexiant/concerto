@@ -4,28 +4,30 @@ import "time"
 
 // Report holds a report header fields
 type Report struct {
-	Id             string       `json:"id" header:"REPORT ID"`
-	Year           int          `json:"year" header:"YEAR"`
-	Month          time.Month   `json:"month" header:"MONTH"`
-	Start_time     time.Time    `json:"start_time" header:"START TIME"`
-	End_time       time.Time    `json:"end_time" header:"END TIME"`
-	Server_seconds float32      `json:"server_seconds" header:"SERVER TIME" show:"minifySeconds"`
-	Closed         bool         `json:"closed" header:"CLOSED"`
-	Li             []Lines      `json:"lines" header:"LINES" show:"nolist"`
-	Account_group  AccountGroup `json:"account_group" header:"ACCOUNT_GROUP" show:"nolist"`
+	ID            string       `json:"id" header:"REPORT ID"`
+	Year          int          `json:"year" header:"YEAR"`
+	Month         time.Month   `json:"month" header:"MONTH"`
+	StartTime     time.Time    `json:"start_time" header:"START TIME"`
+	EndTime       time.Time    `json:"end_time" header:"END TIME"`
+	ServerSeconds float32      `json:"server_seconds" header:"SERVER TIME" show:"minifySeconds"`
+	Closed        bool         `json:"closed" header:"CLOSED"`
+	Lines         []Lines      `json:"lines" header:"LINES" show:"nolist"`
+	AccountGroup  AccountGroup `json:"account_group" header:"ACCOUNT_GROUP" show:"nolist"`
 }
 
+// Lines holds data for report lines
 type Lines struct {
-	Id                string    `json:"_id" header:"ID"`
-	Commissioned_at   time.Time `json:"commissioned_at" header:"COMMISSIONED_AT"`
-	Decommissioned_at time.Time `json:"decommissioned_at" header:"DECOMMISSIONED_AT"`
-	Instance_id       string    `json:"instance_id" header:"INSTANCE_ID"`
-	Instance_name     string    `json:"instance_name" header:"INSTANCE_NAME"`
-	Instance_fqdn     string    `json:"instance_fqdn" header:"INSTANCE_FQDN"`
-	Consumption       float32   `json:"consumption" header:"CONSUMPTION"`
+	ID               string    `json:"_id" header:"ID"`
+	CommissionedAt   time.Time `json:"commissioned_at" header:"COMMISSIONED_AT"`
+	DecommissionedAt time.Time `json:"decommissioned_at" header:"DECOMMISSIONED_AT"`
+	InstanceID       string    `json:"instance_id" header:"INSTANCE_ID"`
+	InstanceName     string    `json:"instance_name" header:"INSTANCE_NAME"`
+	InstanceFQDN     string    `json:"instance_fqdn" header:"INSTANCE_FQDN"`
+	Consumption      float32   `json:"consumption" header:"CONSUMPTION"`
 }
 
+// AccountGroup hods account group data
 type AccountGroup struct {
-	Id   string `json:"_id" header:"ID"`
+	ID   string `json:"_id" header:"ID"`
 	Name string `json:"name" header:"NAME"`
 }
