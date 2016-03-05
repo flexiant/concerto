@@ -240,8 +240,8 @@ func (tp *TemplateService) ReorderTemplateScript(templateScriptVector *map[strin
 
 // ================ Template Servers =================
 
-// GetTemplateServersList returns a list of templateServers by template ID
-func (tp *TemplateService) GetTemplateServersList(templateID string) (templateServer *[]types.TemplateServer, err error) {
+// GetTemplateServerList returns a list of templateServers by template ID
+func (tp *TemplateService) GetTemplateServerList(templateID string) (templateServer *[]types.TemplateServer, err error) {
 	log.Debug("GetTemplateServersList")
 
 	data, status, err := tp.concertoService.Get(fmt.Sprintf("/v1/blueprint/templates/%s/servers", templateID))

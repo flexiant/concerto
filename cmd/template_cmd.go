@@ -230,7 +230,7 @@ func TemplateServersList(c *cli.Context) {
 	templateSvc, formatter := WireUpTemplate(c)
 
 	checkRequiredFlags(c, []string{"template_id"}, formatter)
-	templateServers, err := templateSvc.GetTemplateServersList(c.String("template_id"))
+	templateServers, err := templateSvc.GetTemplateServerList(c.String("template_id"))
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive template servers data", err)
 	}
