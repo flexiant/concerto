@@ -9,8 +9,8 @@ import (
 	"github.com/flexiant/concerto/blueprint/scripts"
 	"github.com/flexiant/concerto/blueprint/services"
 	"github.com/flexiant/concerto/blueprint/templates"
+	cl_prov "github.com/flexiant/concerto/cloud/cloud_providers"
 	"github.com/flexiant/concerto/cloud/generic_images"
-	"github.com/flexiant/concerto/cloud/providers"
 	"github.com/flexiant/concerto/cloud/saas_providers"
 	"github.com/flexiant/concerto/cloud/server_plan"
 	"github.com/flexiant/concerto/cloud/servers"
@@ -117,7 +117,7 @@ var CloudCommands = []cli.Command{
 		Name:  "cloud_providers",
 		Usage: "Provides information on cloud providers",
 		Subcommands: append(
-			providers.SubCommands(),
+			cl_prov.SubCommands(),
 		),
 	},
 	{

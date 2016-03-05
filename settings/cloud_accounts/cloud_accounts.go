@@ -60,7 +60,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/cloud/providers"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
@@ -91,7 +91,7 @@ func cmdList(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, data)
 
-	var cloudProviders []providers.CloudProvider
+	var cloudProviders []types.CloudProvider
 	err = json.Unmarshal(data, &cloudProviders)
 	utils.CheckError(err)
 
