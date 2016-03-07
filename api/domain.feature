@@ -40,10 +40,15 @@ Feature: User manage DNS using concerto
     When "automated-test5.concerto.io" domain is deleted
     Then "automated-test5.concerto.io" domain doesn't exists
 
-#  Scenario: create domain record
-#    Given "automated-test6.concerto.io" domain doesn't exists
-#    When "automated-test6.concerto.io" domain is created with contact "test@automated-test7.concerto.io"
-#    Then "automated-test6.concerto.io" domain exists
-
-#    When "automated-test6.concerto.io" domain is deleted
-#    Then "automated-test6.concerto.io" domain doesn't exists
+  Scenario: create domain record
+    Given "automated-test6.concerto.io" domain doesn't exists
+    When "automated-test6.concerto.io" domain is created with contact "test@automated-test7.concerto.io"
+    Then "automated-test6.concerto.io" domain exists
+    When records for domain "automated-test6.concerto.io" are created:
+    | type  | name                | content   | server_id | prio |
+    | A     | automated-test6-1   | 10.0.0.1  |           |      |
+    Then records for domain "automated-test6.concerto.io" contain:
+    | type  | name                | content   | server_id | prio |
+    | A     | automated-test6-1   | 10.0.0.1  |           |      |    
+    When "automated-test6.concerto.io" domain is deleted
+    Then "automated-test6.concerto.io" domain doesn't exists

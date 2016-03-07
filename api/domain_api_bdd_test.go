@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/flexiant/concerto/api/types"
 	"gopkg.in/cucumber/gherkin-go.v3"
+	"strings"
 )
 
 func domainDoesNotExists(domainName string) error {
@@ -137,11 +138,9 @@ func updateDomain(domainName string, contact string) error {
 
 func domainListShouldInclude(domains *gherkin.DataTable) error {
 	var fields []string
-	var marks []string
 	head := domains.Rows[0].Cells
 	for _, cell := range head {
 		fields = append(fields, cell.Value)
-		marks = append(marks, "?")
 	}
 
 	realDomains, err := domainService.GetDomainList()
@@ -173,6 +172,134 @@ func domainListShouldInclude(domains *gherkin.DataTable) error {
 
 		if !found {
 			return fmt.Errorf("Couldn't find domain with name '%s' and contact '%s'", name, contact)
+		}
+
+	}
+
+	return nil
+}
+
+func createDomainRecords(domainName string, domainRecords *gherkin.DataTable) error {
+
+	domain, err := lookUpDomain(domainName)
+	if err != nil {
+		return err
+	}
+	if domain == nil {
+		return fmt.Errorf("Domain %s doesn't exists.", domainName)
+	}
+
+	var fields []string
+	head := domainRecords.Rows[0].Cells
+	for _, cell := range head {
+		fields = append(fields, cell.Value)
+	}
+
+	// iterate test table
+	for i := 1; i < len(domainRecords.Rows); i++ {
+
+		v := make(map[string]interface{})
+
+		for n, cell := range domainRecords.Rows[i].Cells {
+			if cell.Value != "" {
+				v[head[n].Value] = cell.Value
+			}
+		}
+
+		domainRecord, err := domainService.CreateDomainRecord(&v, domain.ID)
+		if err != nil {
+			return fmt.Errorf("Couldn't create domain record: %s", err.Error())
+		}
+
+		if domainRecord.Type != v["type"] {
+			return fmt.Errorf("Domain record created, but we expected type to be %s and returned %s",
+				v["type"], domainRecord.Type)
+		}
+	}
+
+	// CreateDomainRecord(domainRecordVector *map[string]interface{}, domID string) (domainRecord *types.DomainRecord, err error) {
+	return nil
+}
+
+func containedInDomainRecords(domainName string, domainRecords *gherkin.DataTable) error {
+
+	domain, err := lookUpDomain(domainName)
+	if err != nil {
+		return err
+	}
+	if domain == nil {
+		return fmt.Errorf("Domain %s doesn't exists.", domainName)
+	}
+
+	var fields []string
+	head := domainRecords.Rows[0].Cells
+	for _, cell := range head {
+		fields = append(fields, cell.Value)
+	}
+
+	drs, err := domainService.GetDomainRecordList(domain.ID)
+	if err != nil {
+		return err
+	}
+
+	// iterate test table
+	for i := 1; i < len(domainRecords.Rows); i++ {
+
+		drVector := make(map[string]interface{})
+		for n, cell := range domainRecords.Rows[i].Cells {
+			if cell.Value != "" {
+				drVector[head[n].Value] = cell.Value
+			}
+		}
+
+		found := false
+
+		// look for the domain record
+		for _, dr := range *drs {
+
+			// iterate all fields, if one doesn't match go for next domain record
+			if val, ok := drVector["id"]; ok {
+				if dr.ID != val {
+					continue
+				}
+			}
+
+			if val, ok := drVector["type"]; ok {
+				if dr.Type != val {
+					continue
+				}
+			}
+
+			if val, ok := drVector["name"]; ok {
+				if !strings.HasPrefix(dr.Name, val.(string)) {
+					continue
+				}
+			}
+
+			if val, ok := drVector["content"]; ok {
+				if dr.Content != val {
+					continue
+				}
+			}
+
+			if val, ok := drVector["ttl"]; ok {
+				if string(dr.TTL) != val {
+					continue
+				}
+			}
+
+			if val, ok := drVector["prio"]; ok {
+				if string(dr.Prio) != val {
+					continue
+				}
+			}
+
+			found = true
+			break
+		}
+
+		if !found {
+			return fmt.Errorf("Domain record %+v wasn't found", drVector)
 		}
 
 	}

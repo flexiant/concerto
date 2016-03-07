@@ -63,6 +63,9 @@ func featureContext(s *godog.Suite) {
 	s.Step(`^"([^"]*)" domain is deleted if exists$`, domainIsDeletedIfExists)
 	s.Step(`^list domains should include:$`, domainListShouldInclude)
 
+	// domain records
+	s.Step(`^records for domain "([^"]*)" are created:$`, createDomainRecords)
+	s.Step(`^records for domain "([^"]*)" contain:$`, containedInDomainRecords)
 	// clusters
 
 	// services
