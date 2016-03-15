@@ -160,7 +160,6 @@ func ServerDelete(c *cli.Context) {
 }
 
 // ========= DNS ========
-
 // DNSList subcommand function
 func DNSList(c *cli.Context) {
 	debugCmdFuncInfo(c)
@@ -172,6 +171,53 @@ func DNSList(c *cli.Context) {
 		formatter.PrintFatal("Couldn't receive dns data", err)
 	}
 	if err = formatter.PrintList(dnss); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// ========= Events ========
+// EventsList subcommand function
+func EventsList(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	dnsSvc, formatter := WireUpServer(c)
+
+	checkRequiredFlags(c, []string{"id"}, formatter)
+	events, err := dnsSvc.GetEventsList(c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive event data", err)
+	}
+	if err = formatter.PrintList(events); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+//======= Operational Scripts ==========
+// OperationalScriptsList subcommand function
+func OperationalScriptsList(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	dnsSvc, formatter := WireUpServer(c)
+
+	checkRequiredFlags(c, []string{"id"}, formatter)
+	scripts, err := dnsSvc.GetOperationalScriptsList(c.String("id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't receive script data", err)
+	}
+	if err = formatter.PrintList(scripts); err != nil {
+		formatter.PrintFatal("Couldn't print/format result", err)
+	}
+}
+
+// OperationalScriptExecute subcommand function
+func OperationalScriptExecute(c *cli.Context) {
+	debugCmdFuncInfo(c)
+	serverSvc, formatter := WireUpServer(c)
+
+	checkRequiredFlags(c, []string{"server_id", "script_id"}, formatter)
+	server, err := serverSvc.ExecuteOperationalScript(utils.FlagConvertParams(c), c.String("server_id"), c.String("script_id"))
+	if err != nil {
+		formatter.PrintFatal("Couldn't execute operational script", err)
+	}
+	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
 }

@@ -201,9 +201,8 @@ func (dm *ServerService) DeleteServer(ID string) (err error) {
 }
 
 //======= DNS ==========
-
 // GetDNSList returns a list of dns by server ID
-func (dm *ServerService) GetDNSList(serverID string) (dns *[]types.Dns, err error) {
+func (dm *ServerService) GetDNSList(serverID string) (dns []types.Dns, err error) {
 	log.Debug("ListDNS")
 
 	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/cloud/servers/%s/records", serverID))
@@ -220,4 +219,66 @@ func (dm *ServerService) GetDNSList(serverID string) (dns *[]types.Dns, err erro
 	}
 
 	return dns, nil
+}
+
+//======= Events ==========
+// GetEventsList returns a list of events by server ID
+func (dm *ServerService) GetEventsList(serverID string) (events []types.Event, err error) {
+	log.Debug("ListEvents")
+
+	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/cloud/servers/%s/events", serverID))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &events); err != nil {
+		return nil, err
+	}
+
+	return events, nil
+}
+
+//======= Operational Scripts ==========
+// GetScriptsList returns a list of scripts by server ID
+func (dm *ServerService) GetOperationalScriptsList(serverID string) (scripts []types.ScriptChar, err error) {
+	log.Debug("ListScripts")
+
+	data, status, err := dm.concertoService.Get(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", serverID))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &scripts); err != nil {
+		return nil, err
+	}
+
+	return scripts, nil
+}
+
+// ExecuteOperationalScript executes an operational script by its server ID and the script id
+func (dm *ServerService) ExecuteOperationalScript(serverVector *map[string]interface{}, ID string, script_ID string) (script *types.ScriptChar, err error) {
+	log.Debug("ExecuteOperationalScript")
+
+	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", ID, script_ID), serverVector)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.CheckStandardStatus(status, data); err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(data, &script); err != nil {
+		return nil, err
+	}
+
+	return script, nil
 }

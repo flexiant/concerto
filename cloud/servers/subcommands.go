@@ -127,8 +127,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list_dns_records",
 			Usage:  "This action returns information on the DNS records associated to the server with the given id.",
-			Action: cmdListDNS,
-			// Action: cmd.DNSList,
+			Action: cmd.DNSList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -139,7 +138,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list_events",
 			Usage:  "This action returns information about the events related to the server with the given id.",
-			Action: cmdListEvents,
+			Action: cmd.EventsList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -150,7 +149,7 @@ func SubCommands() []cli.Command {
 		{
 			Name:   "list_operational_scripts",
 			Usage:  "This action returns information about the operational scripts characterisations related to the server with the given id.",
-			Action: cmdListScripts,
+			Action: cmd.OperationalScriptsList,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "id",
@@ -159,8 +158,9 @@ func SubCommands() []cli.Command {
 			},
 		},
 		{
-			Name:   "execute_script",
-			Usage:  "This action initiates the execution of the script characterisation with the given id on the server with the given id.",
+			Name:  "execute_script",
+			Usage: "This action initiates the execution of the script characterisation with the given id on the server with the given id.",
+			// Action: cmd.OperationalScriptExecute,
 			Action: cmdExecuteScript,
 			Flags: []cli.Flag{
 				cli.StringFlag{
