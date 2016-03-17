@@ -117,7 +117,11 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 					case "json.RawMessage":
 						fmt.Fprintf(w, "%s\t", it.Field(i).Interface())
 					case "*json.RawMessage":
-						fmt.Fprintf(w, "%s\t", it.Field(i).Elem())
+						if it.Field(i).IsNil() {
+							fmt.Fprintf(w, " \t")
+						} else {
+							fmt.Fprintf(w, "%s\t", it.Field(i).Elem())
+						}
 					default:
 						fmt.Fprintf(w, "%+v\t", it.Field(i).Interface())
 					}
