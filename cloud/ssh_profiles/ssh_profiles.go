@@ -1,73 +1,3 @@
-/*
-	SSH profiles represent a pair of SSH keys that are used to access a server deployed on the cloud on a secure way.
-
-	The available commands are:
-		list
-		show
-		create
-		update
-		destroy
-
-	Use "cloud ssh_profiles --help" on the commandline interface for more information about the available subcommands.
-
-	SSH Profiles list
-
-	Lists all available SSH profiles.
-
-	Usage:
-
-		ssh_profiles list
-
-	SSH Profiles show
-
-	Shows information about a specific SSH profile.
-
-	Usage:
-
-		ssh_profiles show (options)
-
-	Options:
-		--id <ssh_profile_id> 		SSH profile id
-
-
-	SSH Profiles create
-
-	This action creates an SSH profile with the given parameters.
-
-	Usage:
-
-		ssh_profiles create (options)
-
-	Options:
-		--name <name> 			Name of the SSH profile
-		--public_key <public_key> 	Public key of the SSH profile
-		--private_key <private_key> 	Private key of the SSH profile
-
-	SSH Profiles update
-
-	Updates an existing SSH profile.
-
-	Usage:
-
-		ssh_profiles update (options)
-
-	Options:
-		--id <ssh_profile_id> 		SSH profile id
-		--name <name> 			Name of the SSH profile
-		--public_key <public_key> 	Public key of the SSH profile
-		--private_key <private_key> 	Private key of the SSH profile
-
-	SSH Profiles delete
-
-	Deletes an SSH profile.
-
-	Usage:
-
-		ssh_profiles delete (options)
-
-	Options:
-		--id <ssh_profile_id> 		SSH profile id
-*/
 package ssh_profiles
 
 import (
@@ -75,21 +5,15 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
 	"os"
 	"text/tabwriter"
 )
 
-type SSHProfile struct {
-	Id          string `json:"id"`
-	Name        string `json:"name"`
-	Public_key  string `json:"public_key"`
-	Private_key string `json:"private_key"`
-}
-
 func cmdList(c *cli.Context) {
-	var sshProfiles []SSHProfile
+	var sshProfiles []types.SSHProfile
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -113,7 +37,7 @@ func cmdList(c *cli.Context) {
 
 func cmdShow(c *cli.Context) {
 	utils.FlagsRequired(c, []string{"id"})
-	var sshProfile SSHProfile
+	var sshProfile types.SSHProfile
 
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -154,7 +78,7 @@ func cmdCreate(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var sshProfile SSHProfile
+	var sshProfile types.SSHProfile
 	err = json.Unmarshal(res, &sshProfile)
 	utils.CheckError(err)
 
@@ -187,7 +111,7 @@ func cmdUpdate(c *cli.Context) {
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
 
-	var sshProfile SSHProfile
+	var sshProfile types.SSHProfile
 	err = json.Unmarshal(res, &sshProfile)
 	utils.CheckError(err)
 
@@ -206,78 +130,4 @@ func cmdDelete(c *cli.Context) {
 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/cloud/ssh_profiles/%s", c.String("id")))
 	utils.CheckError(err)
 	utils.CheckReturnCode(res, mesg)
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists all available SSH profiles.",
-			Action: cmdList,
-		},
-		{
-			Name:   "show",
-			Usage:  "Shows information about the SSH profile identified by the given id.",
-			Action: cmdShow,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "SSH profile id",
-				},
-			},
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a new SSH profile.",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the SSH profile",
-				},
-				cli.StringFlag{
-					Name:  "public_key",
-					Usage: "Public key of the SSH profile",
-				},
-				cli.StringFlag{
-					Name:  "private_key",
-					Usage: "Private key of the SSH profile",
-				},
-			},
-		},
-		{
-			Name:   "update",
-			Usage:  "Updates an existing SSH profile",
-			Action: cmdUpdate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "SSH profile id",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the SSH profile",
-				},
-				cli.StringFlag{
-					Name:  "public_key",
-					Usage: "Public key of the SSH profile",
-				},
-				cli.StringFlag{
-					Name:  "private_key",
-					Usage: "Private key of the SSH profile",
-				},
-			},
-		},
-		{
-			Name:   "destroy",
-			Usage:  "Destroys an SSH profile",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "SSH profile id",
-				},
-			},
-		},
-	}
 }
