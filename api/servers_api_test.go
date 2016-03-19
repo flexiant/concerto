@@ -85,3 +85,10 @@ func TestGetEventsList(t *testing.T) {
 }
 
 //======= Operational Scripts ==========
+func TestGetOperationalScriptList(t *testing.T) {
+	serversIn := testdata.GetServerData()
+	scriptsIn := testdata.GetScriptCharData()
+	for _, serverIn := range *serversIn {
+		GetOperationalScriptListMocked(t, scriptsIn, serverIn.Id)
+	}
+}

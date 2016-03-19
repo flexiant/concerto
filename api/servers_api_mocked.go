@@ -300,7 +300,7 @@ func GetServerEventListMocked(t *testing.T, eventsIn *[]types.Event, serverID st
 
 //======= Operational Scripts ==========
 // GetOperationalScriptListMocked test mocked function
-func GetOperationalScriptListMocked(t *testing.T, scriptsIn *[]types.ScriptChar, serverID string) *[]types.Event {
+func GetOperationalScriptListMocked(t *testing.T, scriptsIn *[]types.ScriptChar, serverID string) *[]types.ScriptChar {
 
 	assert := assert.New(t)
 
@@ -316,7 +316,7 @@ func GetOperationalScriptListMocked(t *testing.T, scriptsIn *[]types.ScriptChar,
 
 	// call service
 	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", serverID)).Return(oscIn, 200, nil)
-	scriptsOut, err := ds.GetEventsList(serverID)
+	scriptsOut, err := ds.GetOperationalScriptsList(serverID)
 	assert.Nil(err, "Error getting operational script list")
 	assert.Equal(*scriptsIn, scriptsOut, "GetOperationalScriptList returned different operational scripts")
 
