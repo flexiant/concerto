@@ -9,16 +9,16 @@ func GetSSHProfileData() *[]types.SSHProfile {
 
 	testSSHProfiles := []types.SSHProfile{
 		{
-			Id:         "fakeID0",
-			Name:       "fakeName0",
-			PublicKey:  "fakePubKey0",
-			PrivateKey: "fakePrivKey0",
+			Id:          "fakeID0",
+			Name:        "fakeName0",
+			Public_key:  "fakePubKey0",
+			Private_key: "fakePrivKey0",
 		},
 		{
-			Id:         "fakeID1",
-			Name:       "fakeName1",
-			PublicKey:  "fakePubKey1",
-			PrivateKey: "fakePrivKey1",
+			Id:          "fakeID1",
+			Name:        "fakeName1",
+			Public_key:  "fakePubKey1",
+			Private_key: "fakePrivKey1",
 		},
 	}
 
