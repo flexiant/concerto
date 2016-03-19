@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// GetAdminReportsData loads loads test data
+// GetAdminReportsData loads test data
 func GetAdminReportsData() *[]types.Report {
 
 	start, _ := time.Parse("2016-01-01T00:00:00.000Z", "2016-01-01T00:00:00.000Z")

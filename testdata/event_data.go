@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// GetEventData loads loads test data
+// GetEventData loads test data
 func GetEventData() *[]types.Event {
 
 	testEvents := []types.Event{

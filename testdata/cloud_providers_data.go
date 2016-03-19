@@ -2,7 +2,7 @@ package testdata
 
 import "github.com/flexiant/concerto/api/types"
 
-// GetCloudProviderData loads loads test data
+// GetCloudProviderData loads test data
 func GetCloudProviderData() *[]types.CloudProvider {
 
 	testCloudProviders := []types.CloudProvider{

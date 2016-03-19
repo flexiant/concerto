@@ -2,7 +2,7 @@ package testdata
 
 import "github.com/flexiant/concerto/api/types"
 
-// GetSaasProviderData loads loads test data
+// GetSaasProviderData loads test data
 func GetSaasProviderData() *[]types.SaasProvider {
 
 	testSaasProviders := []types.SaasProvider{

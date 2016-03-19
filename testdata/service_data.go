@@ -4,7 +4,7 @@ import (
 	"github.com/flexiant/concerto/api/types"
 )
 
-// GetEventData loads loads test data
+// GetServiceData loads test data
 func GetServiceData() *[]types.Service {
 
 	testServices := []types.Service{

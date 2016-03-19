@@ -2,7 +2,7 @@ package testdata
 
 import "github.com/flexiant/concerto/api/types"
 
-// GetClusterData loads loads test data
+// GetClusterData loads test data
 func GetClusterData() *[]types.Cluster {
 
 	testClusters := []types.Cluster{

@@ -2,7 +2,7 @@ package testdata
 
 import "github.com/flexiant/concerto/api/types"
 
-// GetDomainData loads loads test data
+// GetDomainData loads test data
 func GetDomainData() *[]types.Domain {
 
 	testDomains := []types.Domain{

@@ -4,7 +4,7 @@ import (
 	"github.com/flexiant/concerto/api/types"
 )
 
-// GetEventData loads loads test data
+// GetNodeData loads test data
 func GetNodeData() *[]types.Node {
 
 	testNodes := []types.Node{
