@@ -52,7 +52,7 @@ func LicenseeReportShow(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't receive report data", err)
 	}
-	if err = formatter.PrintList(report); err != nil {
+	if err = formatter.PrintItem(*report); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
 }
