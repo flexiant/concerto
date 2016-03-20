@@ -2,7 +2,7 @@ package testdata
 
 import "github.com/flexiant/concerto/api/types"
 
-// GetServerPlanData loads loads test data
+// GetServerPlanData loads test data
 func GetServerPlanData() *[]types.ServerPlan {
 
 	testServerPlans := []types.ServerPlan{

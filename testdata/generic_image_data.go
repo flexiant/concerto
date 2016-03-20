@@ -4,7 +4,7 @@ import (
 	"github.com/flexiant/concerto/api/types"
 )
 
-// GetGenericImageData loads loads test data
+// GetGenericImageData loads test data
 func GetGenericImageData() *[]types.GenericImage {
 
 	testGenericImages := []types.GenericImage{
