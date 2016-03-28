@@ -35,7 +35,7 @@ func (rs *ReportService) GetAdminReportList() (reports []types.Report, err error
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &reports); err != nil {
