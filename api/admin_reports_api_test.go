@@ -7,7 +7,6 @@ import (
 )
 
 func TestNewReportServiceNil(t *testing.T) {
-
 	assert := assert.New(t)
 	rs, err := NewReportService(nil)
 	assert.Nil(rs, "Uninitialized service should return nil")
