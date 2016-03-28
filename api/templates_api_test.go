@@ -2,9 +2,16 @@ package api
 
 import (
 	"github.com/flexiant/concerto/testdata"
-
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestNewTemplateServiceNil(t *testing.T) {
+	assert := assert.New(t)
+	rs, err := NewTemplateService(nil)
+	assert.Nil(rs, "Uninitialized service should return nil")
+	assert.NotNil(err, "Uninitialized service should return error")
+}
 
 func TestGetTemplateList(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
