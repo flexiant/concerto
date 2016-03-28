@@ -87,3 +87,12 @@ func TestListTemplateServers(t *testing.T) {
 		GetTemplateServerListMocked(t, drsIn, drIn.ID)
 	}
 }
+
+// func TestReorderTemplateScript() {
+// 	tsIn := testdata.GetTemplateScriptData()
+//
+// 	ReorderTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *[]types.TemplateScript {
+// 	ReorderTemplateScriptMocked
+// 	ReorderTemplateScript(templateScriptVector *map[string]interface{}, templateID string) (templateScript *[]types.TemplateScript, err error)
+//
+// }

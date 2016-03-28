@@ -242,32 +242,34 @@ func UpdateTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *types.T
 }
 
 // ReorderTemplateScriptMocked test mocked function
-func ReorderTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *[]types.TemplateScript {
-
-	assert := assert.New(t)
-
-	// wire up
-	cs := &utils.MockConcertoService{}
-	ds, err := NewTemplateService(cs)
-	assert.Nil(err, "Couldn't load template service")
-	assert.NotNil(ds, "Template service not instanced")
-
-	// convertMap
-	mapIn, err := utils.ItemConvertParams(*dr)
-	assert.Nil(err, "Template script test data corrupted")
-
-	// to json
-	drIn, err := json.Marshal(dr)
-	assert.Nil(err, "Template script test data corrupted")
-
-	// call service
-	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", dr.TemplateID), mapIn).Return(drIn, 200, nil)
-	drOut, err := ds.ReorderTemplateScript(mapIn, dr.TemplateID)
-	assert.Nil(err, "Error updating template list")
-	assert.Equal(*dr, *drOut, "ReorderTemplateScript returned different template scripts")
-
-	return drOut
-}
+// func ReorderTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *[]types.TemplateScript {
+//
+// 	assert := assert.New(t)
+//
+// 	// wire up
+// 	cs := &utils.MockConcertoService{}
+// 	ds, err := NewTemplateService(cs)
+// 	assert.Nil(err, "Couldn't load template service")
+// 	assert.NotNil(ds, "Template service not instanced")
+//
+// 	// convertMap
+// 	mapIn, err := utils.ItemConvertParams(*dr)
+// 	assert.Nil(err, "Template script test data corrupted")
+//
+// 	// to json
+// 	var drResponse [mapIn. ]types.TemplateScript
+//
+// 	drIn, err := json.Marshal(dr)
+// 	assert.Nil(err, "Template script test data corrupted")
+//
+// 	// call service
+// 	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", dr.TemplateID), mapIn).Return(drIn, 200, nil)
+// 	drOut, err := ds.ReorderTemplateScript(mapIn, dr.TemplateID)
+// 	assert.Nil(err, "Error updating template list")
+// 	assert.Equal(*dr, *drOut, "ReorderTemplateScript returned different template scripts")
+//
+// 	return drOut
+// }
 
 // DeleteTemplateScriptMocked test mocked function
 func DeleteTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) {
