@@ -33,6 +33,29 @@ func TestPrintItemDomainJSON(t *testing.T) {
 	}
 }
 
+func TestPrintItemTemplateJSON(t *testing.T) {
+
+	assert := assert.New(t)
+	templatesIn := testdata.GetTemplateData()
+	for _, templateIn := range *templatesIn {
+
+		templateOut := api.GetTemplateMocked(t, &templateIn)
+
+		var b bytes.Buffer
+		mockOut := bufio.NewWriter(&b)
+		InitializeFormatter("json", mockOut)
+		f := GetFormatter()
+		assert.NotNil(f, "Formatter")
+
+		err := f.PrintItem(*templateOut)
+		assert.Nil(err, "Text formatter PrintItem error")
+		mockOut.Flush()
+
+		// TODO add more accurate parsing
+		assert.Regexp("^\\{\\\"id\\\":.*\\}", b.String(), "JSON output didn't match regular expression")
+	}
+}
+
 func TestPrintListDomainsJSON(t *testing.T) {
 
 	assert := assert.New(t)
@@ -47,6 +70,26 @@ func TestPrintListDomainsJSON(t *testing.T) {
 
 	err := f.PrintList(domainOut)
 	assert.Nil(err, "JSON formatter PrintItem error")
+	mockOut.Flush()
+
+	// TODO add more accurate parsing
+	assert.Regexp("^\\[\\{\\\"id\\\":.*\\}\\]", b.String(), "JSON output didn't match regular expression")
+}
+
+func TestPrintListTemplateJSON(t *testing.T) {
+
+	assert := assert.New(t)
+	templatesIn := testdata.GetTemplateData()
+	templatesOut := api.GetTemplateListMocked(t, templatesIn)
+
+	var b bytes.Buffer
+	mockOut := bufio.NewWriter(&b)
+	InitializeFormatter("json", mockOut)
+	f := GetFormatter()
+	assert.NotNil(f, "Formatter")
+
+	err := f.PrintList(*templatesOut)
+	assert.Nil(err, "Text formatter PrintItem error")
 	mockOut.Flush()
 
 	// TODO add more accurate parsing
