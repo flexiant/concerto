@@ -34,6 +34,30 @@ func TestPrintItemDomainTXT(t *testing.T) {
 	}
 }
 
+func TestPrintItemTemplateTXT(t *testing.T) {
+
+	assert := assert.New(t)
+	templatesIn := testdata.GetTemplateData()
+	for _, templateIn := range *templatesIn {
+
+		templateOut := api.GetTemplateMocked(t, &templateIn)
+
+		var b bytes.Buffer
+		mockOut := bufio.NewWriter(&b)
+		InitializeFormatter("text", mockOut)
+		f := GetFormatter()
+		assert.NotNil(f, "Formatter")
+
+		err := f.PrintItem(*templateOut)
+		assert.Nil(err, "Text formatter PrintItem error")
+		mockOut.Flush()
+
+		// TODO add more accurate parsing
+		assert.Regexp("^ID:\\ *.*\n*.\n", b.String(), "Text output didn't match regular expression")
+
+	}
+}
+
 func TestPrintListDomainsTXT(t *testing.T) {
 
 	assert := assert.New(t)
