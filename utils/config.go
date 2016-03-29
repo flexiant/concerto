@@ -321,6 +321,7 @@ func (config *Config) readConcertoURL() error {
 
 // evaluateCertificate determines if a certificate has been issued for a host
 func (config *Config) evaluateCertificate() error {
+
 	if FileExists(config.Certificate.Cert) {
 
 		data, err := ioutil.ReadFile(config.Certificate.Cert)
