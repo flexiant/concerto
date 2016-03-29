@@ -2,9 +2,16 @@ package api
 
 import (
 	"github.com/flexiant/concerto/testdata"
-
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestNewServicesServiceNil(t *testing.T) {
+	assert := assert.New(t)
+	rs, err := NewServicesService(nil)
+	assert.Nil(rs, "Uninitialized service should return nil")
+	assert.NotNil(err, "Uninitialized service should return error")
+}
 
 func TestGetServiceList(t *testing.T) {
 	servicesIn := testdata.GetServiceData()

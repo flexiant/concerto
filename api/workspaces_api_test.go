@@ -2,9 +2,16 @@ package api
 
 import (
 	"github.com/flexiant/concerto/testdata"
-
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestNewWorkspaceServiceNil(t *testing.T) {
+	assert := assert.New(t)
+	rs, err := NewWorkspaceService(nil)
+	assert.Nil(rs, "Uninitialized service should return nil")
+	assert.NotNil(err, "Uninitialized service should return error")
+}
 
 func TestGetWorkspaceList(t *testing.T) {
 	workspacesIn := testdata.GetWorkspaceData()

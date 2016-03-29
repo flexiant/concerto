@@ -2,9 +2,16 @@ package api
 
 import (
 	"github.com/flexiant/concerto/testdata"
-
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestNewClusterServiceNil(t *testing.T) {
+	assert := assert.New(t)
+	rs, err := NewClusterService(nil)
+	assert.Nil(rs, "Uninitialized service should return nil")
+	assert.NotNil(err, "Uninitialized service should return error")
+}
 
 func TestGetClusterList(t *testing.T) {
 	clustersIn := testdata.GetClusterData()
