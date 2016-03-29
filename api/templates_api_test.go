@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -88,11 +89,22 @@ func TestListTemplateServers(t *testing.T) {
 	}
 }
 
-// func TestReorderTemplateScript() {
-// 	tsIn := testdata.GetTemplateScriptData()
-//
-// 	ReorderTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *[]types.TemplateScript {
-// 	ReorderTemplateScriptMocked
-// 	ReorderTemplateScript(templateScriptVector *map[string]interface{}, templateID string) (templateScript *[]types.TemplateScript, err error)
-//
-// }
+func TestReorderTemplateScript(t *testing.T) {
+	tsIn := testdata.GetTemplateScriptData()
+
+	// get template
+	templateID := (*tsIn)[0].TemplateID
+
+	// reorder
+	num := len(*tsIn)
+	reorder := make([]string, num, num)
+	tsOut := make([]types.TemplateScript, num, num)
+
+	num--
+	for i, ts := range *tsIn {
+		reorder[num-i] = ts.ID
+		tsOut[num-i] = ts
+	}
+
+	ReorderTemplateScriptMocked(t, &tsOut, templateID, reorder)
+}
