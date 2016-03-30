@@ -341,10 +341,10 @@ func prepareFlags(c *cli.Context) error {
 	format.InitializeFormatter(c.String("formatter"), os.Stdout)
 
 	if config.IsHost {
-		log.Info("Setting server commands to concerto")
+		log.Debug("Setting server commands to concerto")
 		c.App.Commands = ServerCommands
 	} else {
-		log.Info("Setting client commands to concerto")
+		log.Debug("Setting client commands to concerto")
 		c.App.Commands = ClientCommands
 	}
 
@@ -363,6 +363,9 @@ func main() {
 	app.Version = utils.VERSION
 
 	app.Before = prepareFlags
+
+	// set client commands by default
+	app.Commands = ClientCommands
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
