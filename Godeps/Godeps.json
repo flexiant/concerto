@@ -14,8 +14,8 @@
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
-			"Comment": "1.2.0-135-gf998261",
-			"Rev": "f9982619ccace7df963bb7f6d1de3a6f014ff709"
+			"Comment": "1.2.0-235-gbc465be",
+			"Rev": "bc465becccd1d527002fda095fc3c19d9c115029"
 		},
 		{
 			"ImportPath": "github.com/mitchellh/go-homedir",
