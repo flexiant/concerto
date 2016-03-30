@@ -348,7 +348,13 @@ func prepareFlags(c *cli.Context) error {
 		c.App.Commands = ClientCommands
 	}
 
+	// hack: substitute commands in category ... we should evaluate cobra/viper
 	cat := c.App.Categories()
+
+	for _, category := range cat {
+		category.Commands = category.Commands[:0]
+	}
+
 	for _, command := range c.App.Commands {
 		cat = cat.AddCommand(command.Category, command)
 	}
