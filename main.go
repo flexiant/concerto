@@ -341,8 +341,10 @@ func prepareFlags(c *cli.Context) error {
 	format.InitializeFormatter(c.String("formatter"), os.Stdout)
 
 	if config.IsHost {
+		log.Info("Setting server commands to concerto")
 		c.App.Commands = ServerCommands
 	} else {
+		log.Info("Setting client commands to concerto")
 		c.App.Commands = ClientCommands
 	}
 
