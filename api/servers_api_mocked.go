@@ -35,6 +35,74 @@ func GetServerListMocked(t *testing.T, serversIn *[]types.Server) *[]types.Serve
 	return &serversOut
 }
 
+// GetServerListFailErrMocked test mocked function
+func GetServerListFailErrMocked(t *testing.T, serversIn *[]types.Server) *[]types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(serversIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Get", "/v1/cloud/servers").Return(dIn, 200, fmt.Errorf("Mocked error"))
+	serversOut, err := ds.GetServerList()
+	assert.NotNil(err, "We are expecting an error")
+
+	return &serversOut
+}
+
+// GetServerListFailStatusMocked test mocked function
+func GetServerListFailStatusMocked(t *testing.T, serversIn *[]types.Server) *[]types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(serversIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Get", "/v1/cloud/servers").Return(dIn, 499, nil)
+	serversOut, err := ds.GetServerList()
+	assert.NotNil(err, "We are expecting an status code error")
+
+	return &serversOut
+}
+
+// GetServerListFailJSONMocked test mocked function
+func GetServerListFailJSONMocked(t *testing.T, serversIn *[]types.Server) *[]types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", "/v1/cloud/servers").Return(dIn, 200, nil)
+	serversOut, err := ds.GetServerList()
+	assert.NotNil(err, "We are expecting a marshalling error")
+
+	return &serversOut
+}
+
 // GetServerMocked test mocked function
 func GetServerMocked(t *testing.T, server *types.Server) *types.Server {
 

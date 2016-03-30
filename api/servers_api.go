@@ -34,7 +34,7 @@ func (dm *ServerService) GetServerList() (servers []types.Server, err error) {
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &servers); err != nil {

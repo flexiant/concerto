@@ -16,6 +16,9 @@ func TestNewServerServiceNil(t *testing.T) {
 func TestGetServerList(t *testing.T) {
 	serversIn := testdata.GetServerData()
 	GetServerListMocked(t, serversIn)
+	GetServerListFailErrMocked(t, serversIn)
+	GetServerListFailStatusMocked(t, serversIn)
+	GetServerListFailJSONMocked(t, serversIn)
 }
 
 func TestGetServer(t *testing.T) {
