@@ -348,6 +348,11 @@ func prepareFlags(c *cli.Context) error {
 		c.App.Commands = ClientCommands
 	}
 
+	cat := c.App.Categories()
+	for _, command := range c.App.Commands {
+		cat = cat.AddCommand(command.Category, command)
+	}
+
 	return nil
 }
 
@@ -364,7 +369,7 @@ func main() {
 
 	app.Before = prepareFlags
 
-	// set client commands by default
+	// set client commands by default to populate categories
 	app.Commands = ClientCommands
 
 	app.Flags = []cli.Flag{
