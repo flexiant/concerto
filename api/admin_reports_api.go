@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
@@ -45,7 +46,7 @@ func (rs *ReportService) GetAdminReportList() (reports []types.Report, err error
 	return reports, nil
 }
 
-// GetReport returns a report by its ID
+// GetAdminReport returns a report by its ID
 func (rs *ReportService) GetAdminReport(ID string) (report *types.Report, err error) {
 	log.Debug("GetReport")
 

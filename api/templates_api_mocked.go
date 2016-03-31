@@ -3,10 +3,11 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TODO exclude from release compile
@@ -31,6 +32,76 @@ func GetTemplateListMocked(t *testing.T, templatesIn *[]types.Template) *[]types
 	templatesOut, err := ds.GetTemplateList()
 	assert.Nil(err, "Error getting template list")
 	assert.Equal(*templatesIn, templatesOut, "GetTemplateList returned different templates")
+
+	return &templatesOut
+}
+
+// GetTemplateListFailErrMocked test mocked function
+func GetTemplateListFailErrMocked(t *testing.T, templatesIn *[]types.Template) *[]types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(templatesIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Get", "/v1/blueprint/templates").Return(dIn, 200, fmt.Errorf("Mocked error"))
+	templatesOut, err := ds.GetTemplateList()
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(templatesOut, "Expecting nil output")
+
+	return &templatesOut
+}
+
+// GetTemplateListFailStatusMocked test mocked function
+func GetTemplateListFailStatusMocked(t *testing.T, templatesIn *[]types.Template) *[]types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(templatesIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Get", "/v1/blueprint/templates").Return(dIn, 499, nil)
+	templatesOut, err := ds.GetTemplateList()
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(templatesOut, "Expecting nil output")
+
+	return &templatesOut
+}
+
+// GetTemplateListFailJSONMocked test mocked function
+func GetTemplateListFailJSONMocked(t *testing.T, templatesIn *[]types.Template) *[]types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", "/v1/blueprint/templates").Return(dIn, 200, nil)
+	templatesOut, err := ds.GetTemplateList()
+	assert.NotNil(err, "We are expecting a marshalling error")
 
 	return &templatesOut
 }

@@ -3,10 +3,11 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TODO exclude from release compile
@@ -317,6 +318,7 @@ func DeleteServerMocked(t *testing.T, serverIn *types.Server) {
 }
 
 //======= DNS ==========
+
 // GetDnsListMocked test mocked function
 func GetDnsListMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns) *[]types.Dns {
 

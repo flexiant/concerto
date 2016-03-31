@@ -1,10 +1,11 @@
 package api
 
 import (
+	"testing"
+
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewTemplateServiceNil(t *testing.T) {
@@ -17,6 +18,9 @@ func TestNewTemplateServiceNil(t *testing.T) {
 func TestGetTemplateList(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	GetTemplateListMocked(t, templatesIn)
+	GetTemplateListFailErrMocked(t, templatesIn)
+	GetTemplateListFailStatusMocked(t, templatesIn)
+	GetTemplateListFailJSONMocked(t, templatesIn)
 }
 
 func TestGetTemplate(t *testing.T) {

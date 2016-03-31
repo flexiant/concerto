@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
@@ -14,7 +15,7 @@ type LicenseeReportService struct {
 	concertoService utils.ConcertoService
 }
 
-// NewLicenseeLicenseeReportService returns a Concerto report service
+// NewLicenseeReportService returns a Concerto report service
 func NewLicenseeReportService(concertoService utils.ConcertoService) (*LicenseeReportService, error) {
 	if concertoService == nil {
 		return nil, fmt.Errorf("Must initialize ConcertoService before using it")
@@ -45,7 +46,7 @@ func (rs *LicenseeReportService) GetLicenseeReportList() (reports []types.Licens
 	return reports, nil
 }
 
-// GetReport returns a licensee report by its ID
+// GetLicenseeReport returns a licensee report by its ID
 func (rs *LicenseeReportService) GetLicenseeReport(ID string) (report *types.LicenseeReport, err error) {
 	log.Debug("GetReport")
 
