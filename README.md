@@ -3,6 +3,7 @@
 [![Build Status](https://drone.io/github.com/flexiant/concerto/status.png)][cli_build] [![GoDoc](https://godoc.org/github.com/flexiant/concerto?status.png)](https://godoc.org/github.com/flexiant/concerto)
 [![codecov.io](https://codecov.io/github/flexiant/concerto/coverage.svg?branch=master)](https://codecov.io/github/flexiant/concerto?branch=master)
 [//]: # ([![Build Status](https://travis-ci.org/flexiant/concerto.svg?branch=master)](https://travis-ci.org/flexiant/concerto))
+[![Coverage Status](https://coveralls.io/repos/github/flexiant/concerto/badge.svg?branch=master)](https://coveralls.io/github/flexiant/concerto?branch=master)
 
 Flexiant Concerto Command Line Interface allows you to interact with Concerto features, and build your own scripts calling Concerto's API.
 
