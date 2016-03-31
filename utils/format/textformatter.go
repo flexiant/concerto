@@ -2,13 +2,16 @@ package format
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"io"
 	"os"
 	"reflect"
 	"strings"
 	"text/tabwriter"
+
+	log "github.com/Sirupsen/logrus"
 )
+
+const minifySeconds string = "minifySeconds"
 
 // TextFormatter prints items and lists
 type TextFormatter struct {
@@ -73,8 +76,8 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 			if showTag == "nolist" {
 				avoid[i] = true
 			}
-			if showTag == "minifySeconds" {
-				format[i] = "minifySeconds"
+			if showTag == minifySeconds {
+				format[i] = minifySeconds
 			}
 		}
 	}
@@ -94,7 +97,7 @@ func (f *TextFormatter) PrintList(items interface{}) error {
 		for i := 0; i < nf; i++ {
 			if !avoid[i] {
 
-				if format[i] == "minifySeconds" {
+				if format[i] == minifySeconds {
 
 					remainingSeconds := int(it.Field(i).Float())
 					s := remainingSeconds % 60
