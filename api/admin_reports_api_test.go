@@ -1,9 +1,10 @@
 package api
 
 import (
+	"testing"
+
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewReportServiceNil(t *testing.T) {
@@ -16,11 +17,17 @@ func TestNewReportServiceNil(t *testing.T) {
 func TestGetAdminReportList(t *testing.T) {
 	adminReportsIn := testdata.GetAdminReportsData()
 	GetAdminReportListMocked(t, adminReportsIn)
+	GetAdminReportListErrMocked(t, adminReportsIn)
+	GetAdminReportListFailStatusMocked(t, adminReportsIn)
+	GetAdminReportListFailJSONMocked(t, adminReportsIn)
 }
 
 func TestGetAdminReport(t *testing.T) {
 	adminReportsIn := testdata.GetAdminReportsData()
 	for _, adminReportIn := range *adminReportsIn {
 		GetAdminReportMocked(t, &adminReportIn)
+		GetAdminReportErrMocked(t, &adminReportIn)
+		GetAdminReportFailStatusMocked(t, &adminReportIn)
+		GetAdminReportFailJSONMocked(t, &adminReportIn)
 	}
 }
