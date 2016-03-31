@@ -205,7 +205,7 @@ func GetAdminReportFailJSONMocked(t *testing.T, adminReport *types.Report) *type
 	arIn := []byte{10, 20, 30}
 
 	// call service
-	cs.On("Get", fmt.Sprintf("/v1/admin/reports/%s", adminReport.ID)).Return(arIn, 499, nil)
+	cs.On("Get", fmt.Sprintf("/v1/admin/reports/%s", adminReport.ID)).Return(arIn, 200, nil)
 	arOut, err := ars.GetAdminReport(adminReport.ID)
 	assert.NotNil(err, "We are expecting a marshalling error")
 
