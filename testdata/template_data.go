@@ -24,6 +24,13 @@ func GetTemplateData() *[]types.Template {
 			ServiceList:             []string{"fakeServiceList11", "fakeServiceList12", "fakeServiceList13"},
 			ConfigurationAttributes: &conf1,
 		},
+		{
+			ID:                      "fakeID2",
+			Name:                    "fakeName2",
+			GenericImgID:            "fakeGenericImgID2",
+			ServiceList:             []string{"fakeServiceList21", "fakeServiceList22", "fakeServiceList23"},
+			ConfigurationAttributes: nil,
+		},
 	}
 
 	return &testTemplates

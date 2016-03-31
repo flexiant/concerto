@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"testing"
+
 	"github.com/flexiant/concerto/api"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestPrintItemDomainTXT(t *testing.T) {
@@ -120,6 +121,22 @@ func TestPrintListTemplateScriptsTXT(t *testing.T) {
 		assert.Regexp(fmt.Sprintf("^ID.*\n%s.*\n.*", (*tScriptsOut)[0].ID), b.String(), "Text output didn't match regular expression")
 
 	}
+}
+
+func TestPrintListNonSliceErrorTXT(t *testing.T) {
+
+	assert := assert.New(t)
+
+	var b bytes.Buffer
+	mockOut := bufio.NewWriter(&b)
+	InitializeFormatter("text", mockOut)
+	f := GetFormatter()
+	assert.NotNil(f, "Formatter")
+
+	err := f.PrintList("string")
+	assert.Error(err, "A 'non slice' error should have arosen")
+	mockOut.Flush()
+
 }
 
 func TestPrintError(t *testing.T) {
