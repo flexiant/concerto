@@ -130,6 +130,76 @@ func GetTemplateMocked(t *testing.T, template *types.Template) *types.Template {
 	return templateOut
 }
 
+// GetTemplateFailErrMocked test mocked function
+func GetTemplateFailErrMocked(t *testing.T, template *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(template)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s", template.ID)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	templateOut, err := ds.GetTemplate(template.ID)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(templateOut, "Expecting nil output")
+
+	return templateOut
+}
+
+// GetTemplateFailStatusMocked test mocked function
+func GetTemplateFailStatusMocked(t *testing.T, template *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(template)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s", template.ID)).Return(dIn, 499, nil)
+	templateOut, err := ds.GetTemplate(template.ID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(templateOut, "Expecting nil output")
+
+	return templateOut
+}
+
+// GetTemplateFailJSONMocked test mocked function
+func GetTemplateFailJSONMocked(t *testing.T, template *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s", template.ID)).Return(dIn, 200, nil)
+	templateOut, err := ds.GetTemplate(template.ID)
+	assert.NotNil(err, "We are expecting a marshalling error")
+
+	return templateOut
+}
+
 // CreateTemplateMocked test mocked function
 func CreateTemplateMocked(t *testing.T, templateIn *types.Template) *types.Template {
 
@@ -154,6 +224,88 @@ func CreateTemplateMocked(t *testing.T, templateIn *types.Template) *types.Templ
 	templateOut, err := ds.CreateTemplate(mapIn)
 	assert.Nil(err, "Error creating template list")
 	assert.Equal(templateIn, templateOut, "CreateTemplate returned different templates")
+
+	return templateOut
+}
+
+// CreateTemplateFailErrMocked test mocked function
+func CreateTemplateFailErrMocked(t *testing.T, templateIn *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Post", "/v1/blueprint/templates/", mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	templateOut, err := ds.CreateTemplate(mapIn)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(templateOut, "Expecting nil output")
+
+	return templateOut
+}
+
+// CreateTemplateFailStatusMocked test mocked function
+func CreateTemplateFailStatusMocked(t *testing.T, templateIn *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Post", "/v1/blueprint/templates/", mapIn).Return(dOut, 499, nil)
+	templateOut, err := ds.CreateTemplate(mapIn)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(templateOut, "Expecting nil output")
+
+	return templateOut
+}
+
+// CreateTemplateFailJSONMocked test mocked function
+func CreateTemplateFailJSONMocked(t *testing.T, templateIn *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// wrong json
+	dOut := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Post", "/v1/blueprint/templates/", mapIn).Return(dOut, 200, nil)
+	templateOut, err := ds.CreateTemplate(mapIn)
+	assert.NotNil(err, "We are expecting a marshalling error")
 
 	return templateOut
 }

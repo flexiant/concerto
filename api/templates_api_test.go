@@ -27,6 +27,9 @@ func TestGetTemplate(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	for _, templateIn := range *templatesIn {
 		GetTemplateMocked(t, &templateIn)
+		GetTemplateFailErrMocked(t, &templateIn)
+		GetTemplateFailStatusMocked(t, &templateIn)
+		GetTemplateFailJSONMocked(t, &templateIn)
 	}
 }
 
@@ -34,6 +37,9 @@ func TestCreateTemplate(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	for _, templateIn := range *templatesIn {
 		CreateTemplateMocked(t, &templateIn)
+		CreateTemplateFailErrMocked(t, &templateIn)
+		CreateTemplateFailStatusMocked(t, &templateIn)
+		CreateTemplateFailJSONMocked(t, &templateIn)
 	}
 }
 
