@@ -50,7 +50,6 @@ func TestUpdateTemplate(t *testing.T) {
 		UpdateTemplateFailErrMocked(t, &templateIn)
 		UpdateTemplateFailStatusMocked(t, &templateIn)
 		UpdateTemplateFailJSONMocked(t, &templateIn)
-
 	}
 }
 
@@ -67,6 +66,9 @@ func TestListTemplateScripts(t *testing.T) {
 	drsIn := testdata.GetTemplateScriptData()
 	for _, drIn := range *drsIn {
 		GetTemplateScriptListMocked(t, drsIn, drIn.ID, drIn.Type)
+		GetTemplateScriptListFailErrMocked(t, drsIn, drIn.ID, drIn.Type)
+		GetTemplateScriptListFailStatusMocked(t, drsIn, drIn.ID, drIn.Type)
+		GetTemplateScriptListFailJSONMocked(t, drsIn, drIn.ID, drIn.Type)
 	}
 }
 
@@ -74,6 +76,9 @@ func TestGetTemplateScript(t *testing.T) {
 	drsIn := testdata.GetTemplateScriptData()
 	for _, drIn := range *drsIn {
 		GetTemplateScriptMocked(t, &drIn)
+		GetTemplateScriptFailErrMocked(t, &drIn)
+		GetTemplateScriptFailStatusMocked(t, &drIn)
+		GetTemplateScriptFailJSONMocked(t, &drIn)
 	}
 }
 

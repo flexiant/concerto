@@ -201,6 +201,7 @@ func GetTemplateFailJSONMocked(t *testing.T, template *types.Template) *types.Te
 	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s", template.ID)).Return(dIn, 200, nil)
 	templateOut, err := ds.GetTemplate(template.ID)
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(templateOut, "Expecting nil output")
 	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return templateOut
@@ -524,6 +525,80 @@ func GetTemplateScriptListMocked(t *testing.T, templateScriptsIn *[]types.Templa
 	return drsOut
 }
 
+// GetTemplateScriptListFailErrMocked test mocked function
+func GetTemplateScriptListFailErrMocked(t *testing.T, templateScriptsIn *[]types.TemplateScript, templateID string, scriptType string) *[]types.TemplateScript {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drsIn, err := json.Marshal(templateScriptsIn)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", templateID, scriptType)).Return(drsIn, 200, fmt.Errorf("Mocked error"))
+	drsOut, err := ds.GetTemplateScriptList(templateID, scriptType)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(drsOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return drsOut
+}
+
+// GetTemplateScriptListFailStatusMocked test mocked function
+func GetTemplateScriptListFailStatusMocked(t *testing.T, templateScriptsIn *[]types.TemplateScript, templateID string, scriptType string) *[]types.TemplateScript {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drsIn, err := json.Marshal(templateScriptsIn)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", templateID, scriptType)).Return(drsIn, 499, nil)
+	drsOut, err := ds.GetTemplateScriptList(templateID, scriptType)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(drsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return drsOut
+}
+
+// GetTemplateScriptListFailJSONMocked test mocked function
+func GetTemplateScriptListFailJSONMocked(t *testing.T, templateScriptsIn *[]types.TemplateScript, templateID string, scriptType string) *[]types.TemplateScript {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// wrong json
+	drsIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/scripts?type=%s", templateID, scriptType)).Return(drsIn, 200, nil)
+	drsOut, err := ds.GetTemplateScriptList(templateID, scriptType)
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(drsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return drsOut
+}
+
 // GetTemplateScriptMocked test mocked function
 func GetTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *types.TemplateScript {
 
@@ -544,6 +619,80 @@ func GetTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) *types.Temp
 	drOut, err := ds.GetTemplateScript(dr.TemplateID, dr.ID)
 	assert.Nil(err, "Error getting template")
 	assert.Equal(*dr, *drOut, "GetTemplateScript returned different template scripts")
+
+	return drOut
+}
+
+// GetTemplateScriptFailErrMocked test mocked function
+func GetTemplateScriptFailErrMocked(t *testing.T, dr *types.TemplateScript) *types.TemplateScript {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", dr.TemplateID, dr.ID)).Return(drIn, 200, fmt.Errorf("Mocked error"))
+	drOut, err := ds.GetTemplateScript(dr.TemplateID, dr.ID)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(drOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return drOut
+}
+
+// GetTemplateScriptFailStatusMocked test mocked function
+func GetTemplateScriptFailStatusMocked(t *testing.T, dr *types.TemplateScript) *types.TemplateScript {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", dr.TemplateID, dr.ID)).Return(drIn, 499, nil)
+	drOut, err := ds.GetTemplateScript(dr.TemplateID, dr.ID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(drOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return drOut
+}
+
+// GetTemplateScriptFailJSONMocked test mocked function
+func GetTemplateScriptFailJSONMocked(t *testing.T, dr *types.TemplateScript) *types.TemplateScript {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// wrong json
+	drIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", dr.TemplateID, dr.ID)).Return(drIn, 200, nil)
+	drOut, err := ds.GetTemplateScript(dr.TemplateID, dr.ID)
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(drOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return drOut
 }
