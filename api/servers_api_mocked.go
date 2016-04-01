@@ -78,6 +78,8 @@ func GetServerListFailStatusMocked(t *testing.T, serversIn *[]types.Server) *[]t
 	cs.On("Get", "/v1/cloud/servers").Return(dIn, 499, nil)
 	serversOut, err := ds.GetServerList()
 	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serversOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 
 	return &serversOut
 }
@@ -100,6 +102,7 @@ func GetServerListFailJSONMocked(t *testing.T, serversIn *[]types.Server) *[]typ
 	cs.On("Get", "/v1/cloud/servers").Return(dIn, 200, nil)
 	serversOut, err := ds.GetServerList()
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return &serversOut
 }

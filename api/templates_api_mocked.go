@@ -80,6 +80,7 @@ func GetTemplateListFailStatusMocked(t *testing.T, templatesIn *[]types.Template
 	templatesOut, err := ds.GetTemplateList()
 	assert.NotNil(err, "We are expecting an status code error")
 	assert.Nil(templatesOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 
 	return &templatesOut
 }
@@ -102,6 +103,7 @@ func GetTemplateListFailJSONMocked(t *testing.T, templatesIn *[]types.Template) 
 	cs.On("Get", "/v1/blueprint/templates").Return(dIn, 200, nil)
 	templatesOut, err := ds.GetTemplateList()
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return &templatesOut
 }
@@ -174,6 +176,7 @@ func GetTemplateFailStatusMocked(t *testing.T, template *types.Template) *types.
 	templateOut, err := ds.GetTemplate(template.ID)
 	assert.NotNil(err, "We are expecting an status code error")
 	assert.Nil(templateOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 
 	return templateOut
 }
@@ -196,6 +199,7 @@ func GetTemplateFailJSONMocked(t *testing.T, template *types.Template) *types.Te
 	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s", template.ID)).Return(dIn, 200, nil)
 	templateOut, err := ds.GetTemplate(template.ID)
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return templateOut
 }
@@ -280,6 +284,7 @@ func CreateTemplateFailStatusMocked(t *testing.T, templateIn *types.Template) *t
 	templateOut, err := ds.CreateTemplate(mapIn)
 	assert.NotNil(err, "We are expecting an status code error")
 	assert.Nil(templateOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 
 	return templateOut
 }
@@ -306,6 +311,7 @@ func CreateTemplateFailJSONMocked(t *testing.T, templateIn *types.Template) *typ
 	cs.On("Post", "/v1/blueprint/templates/", mapIn).Return(dOut, 200, nil)
 	templateOut, err := ds.CreateTemplate(mapIn)
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return templateOut
 }
@@ -334,6 +340,91 @@ func UpdateTemplateMocked(t *testing.T, templateIn *types.Template) *types.Templ
 	templateOut, err := ds.UpdateTemplate(mapIn, templateIn.ID)
 	assert.Nil(err, "Error updating template list")
 	assert.Equal(templateIn, templateOut, "UpdateTemplate returned different templates")
+
+	return templateOut
+}
+
+// UpdateTemplateFailErrMocked test mocked function
+func UpdateTemplateFailErrMocked(t *testing.T, templateIn *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	templateOut, err := ds.UpdateTemplate(mapIn, templateIn.ID)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(templateOut, "Expecting nil output")
+
+	return templateOut
+}
+
+// UpdateTemplateFailStatusMocked test mocked function
+func UpdateTemplateFailStatusMocked(t *testing.T, templateIn *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID), mapIn).Return(dOut, 499, nil)
+	templateOut, err := ds.UpdateTemplate(mapIn, templateIn.ID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(templateOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return templateOut
+}
+
+// UpdateTemplateFailJSONMocked test mocked function
+func UpdateTemplateFailJSONMocked(t *testing.T, templateIn *types.Template) *types.Template {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// wrong json
+	dOut := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID), mapIn).Return(dOut, 200, nil)
+	templateOut, err := ds.UpdateTemplate(mapIn, templateIn.ID)
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return templateOut
 }

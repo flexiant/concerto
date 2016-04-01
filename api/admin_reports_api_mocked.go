@@ -87,6 +87,7 @@ func GetAdminReportListFailStatusMocked(t *testing.T, adminReportsIn *[]types.Re
 	arOut, err := rs.GetAdminReportList()
 	assert.NotNil(err, "We are expecting an status code error")
 	assert.Nil(arOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 
 	return &arOut
 }
@@ -109,6 +110,7 @@ func GetAdminReportListFailJSONMocked(t *testing.T, adminReportsIn *[]types.Repo
 	cs.On("Get", "/v1/admin/reports").Return(arIn, 200, nil)
 	arOut, err := rs.GetAdminReportList()
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return &arOut
 }
@@ -208,6 +210,7 @@ func GetAdminReportFailJSONMocked(t *testing.T, adminReport *types.Report) *type
 	cs.On("Get", fmt.Sprintf("/v1/admin/reports/%s", adminReport.ID)).Return(arIn, 200, nil)
 	arOut, err := ars.GetAdminReport(adminReport.ID)
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return arOut
 }
