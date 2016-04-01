@@ -115,6 +115,9 @@ func TestListTemplateServers(t *testing.T) {
 	drsIn := testdata.GetTemplateServerData()
 	for _, drIn := range *drsIn {
 		GetTemplateServerListMocked(t, drsIn, drIn.ID)
+		GetTemplateServerListFailErrMocked(t, drsIn, drIn.ID)
+		GetTemplateServerListFailStatusMocked(t, drsIn, drIn.ID)
+		GetTemplateServerListFailJSONMocked(t, drsIn, drIn.ID)
 	}
 }
 

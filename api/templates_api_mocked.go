@@ -1122,3 +1122,77 @@ func GetTemplateServerListMocked(t *testing.T, templateServersIn *[]types.Templa
 
 	return drsOut
 }
+
+// GetTemplateServerListFailErrMocked test mocked function
+func GetTemplateServerListFailErrMocked(t *testing.T, templateServersIn *[]types.TemplateServer, templateID string) *[]types.TemplateServer {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drsIn, err := json.Marshal(templateServersIn)
+	assert.Nil(err, "Template server test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/servers", templateID)).Return(drsIn, 200, fmt.Errorf("Mocked error"))
+	drsOut, err := ds.GetTemplateServerList(templateID)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(drsOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return drsOut
+}
+
+// GetTemplateServerListFailStatusMocked test mocked function
+func GetTemplateServerListFailStatusMocked(t *testing.T, templateServersIn *[]types.TemplateServer, templateID string) *[]types.TemplateServer {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drsIn, err := json.Marshal(templateServersIn)
+	assert.Nil(err, "Template server test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/servers", templateID)).Return(drsIn, 499, nil)
+	drsOut, err := ds.GetTemplateServerList(templateID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(drsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return drsOut
+}
+
+// GetTemplateServerListFailJSONMocked test mocked function
+func GetTemplateServerListFailJSONMocked(t *testing.T, templateServersIn *[]types.TemplateServer, templateID string) *[]types.TemplateServer {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// wrong json
+	drsIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/blueprint/templates/%s/servers", templateID)).Return(drsIn, 200, nil)
+	drsOut, err := ds.GetTemplateServerList(templateID)
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(drsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return drsOut
+}
