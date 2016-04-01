@@ -953,6 +953,86 @@ func ReorderTemplateScriptMocked(t *testing.T, tsOut *[]types.TemplateScript, te
 	return out
 }
 
+// ReorderTemplateScriptFailErrMocked test mocked function
+func ReorderTemplateScriptFailErrMocked(t *testing.T, tsOut *[]types.TemplateScript, templateID string, reorder []string) *[]types.TemplateScript {
+
+	assert := assert.New(t)
+
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	v := make(map[string]interface{})
+	v["script_ids"] = reorder
+
+	// to json
+	tsOutJSON, err := json.Marshal(tsOut)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", templateID), &v).Return(tsOutJSON, 200, fmt.Errorf("Mocked error"))
+	out, err := ds.ReorderTemplateScript(&v, templateID)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(out, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return out
+}
+
+// ReorderTemplateScriptFailStatusMocked test mocked function
+func ReorderTemplateScriptFailStatusMocked(t *testing.T, tsOut *[]types.TemplateScript, templateID string, reorder []string) *[]types.TemplateScript {
+
+	assert := assert.New(t)
+
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	v := make(map[string]interface{})
+	v["script_ids"] = reorder
+
+	// to json
+	tsOutJSON, err := json.Marshal(tsOut)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", templateID), &v).Return(tsOutJSON, 499, nil)
+	out, err := ds.ReorderTemplateScript(&v, templateID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(out, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return out
+}
+
+// ReorderTemplateScriptFailJSONMocked test mocked function
+func ReorderTemplateScriptFailJSONMocked(t *testing.T, tsOut *[]types.TemplateScript, templateID string, reorder []string) *[]types.TemplateScript {
+
+	assert := assert.New(t)
+
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	v := make(map[string]interface{})
+	v["script_ids"] = reorder
+
+	// wrong json
+	tsOutJSON := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/reorder", templateID), &v).Return(tsOutJSON, 200, nil)
+	out, err := ds.ReorderTemplateScript(&v, templateID)
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(out, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return out
+}
+
 // DeleteTemplateScriptMocked test mocked function
 func DeleteTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) {
 

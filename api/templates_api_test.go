@@ -136,4 +136,7 @@ func TestReorderTemplateScript(t *testing.T) {
 	}
 
 	ReorderTemplateScriptMocked(t, &tsOut, templateID, reorder)
+	ReorderTemplateScriptFailErrMocked(t, &tsOut, templateID, reorder)
+	ReorderTemplateScriptFailStatusMocked(t, &tsOut, templateID, reorder)
+	ReorderTemplateScriptFailJSONMocked(t, &tsOut, templateID, reorder)
 }
