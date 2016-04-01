@@ -99,7 +99,6 @@ func TestUpdateTemplateScript(t *testing.T) {
 		UpdateTemplateScriptFailErrMocked(t, &drIn)
 		UpdateTemplateScriptFailStatusMocked(t, &drIn)
 		UpdateTemplateScriptFailJSONMocked(t, &drIn)
-
 	}
 }
 
@@ -107,6 +106,8 @@ func TestDeleteTemplateScripts(t *testing.T) {
 	drsIn := testdata.GetTemplateScriptData()
 	for _, drIn := range *drsIn {
 		DeleteTemplateScriptMocked(t, &drIn)
+		DeleteTemplateScriptFailErrMocked(t, &drIn)
+		DeleteTemplateScriptFailStatusMocked(t, &drIn)
 	}
 }
 

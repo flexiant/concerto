@@ -974,6 +974,51 @@ func DeleteTemplateScriptMocked(t *testing.T, dr *types.TemplateScript) {
 	assert.Nil(err, "Error deleting template script")
 }
 
+// DeleteTemplateScriptFailErrMocked test mocked function
+func DeleteTemplateScriptFailErrMocked(t *testing.T, dr *types.TemplateScript) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", dr.TemplateID, dr.ID)).Return(drIn, 200, fmt.Errorf("Mocked error"))
+	err = ds.DeleteTemplateScript(dr.TemplateID, dr.ID)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+}
+
+// DeleteTemplateScriptFailStatusMocked test mocked function
+func DeleteTemplateScriptFailStatusMocked(t *testing.T, dr *types.TemplateScript) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	drIn, err := json.Marshal(dr)
+	assert.Nil(err, "Template script test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/blueprint/templates/%s/scripts/%s", dr.TemplateID, dr.ID)).Return(drIn, 499, nil)
+	err = ds.DeleteTemplateScript(dr.TemplateID, dr.ID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+}
+
 // GetTemplateServerListMocked test mocked function
 func GetTemplateServerListMocked(t *testing.T, templateServersIn *[]types.TemplateServer, templateID string) *[]types.TemplateServer {
 
