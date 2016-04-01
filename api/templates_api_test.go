@@ -86,6 +86,9 @@ func TestCreateTemplateScript(t *testing.T) {
 	drsIn := testdata.GetTemplateScriptData()
 	for _, drIn := range *drsIn {
 		CreateTemplateScriptMocked(t, &drIn)
+		CreateTemplateScriptFailErrMocked(t, &drIn)
+		CreateTemplateScriptFailStatusMocked(t, &drIn)
+		CreateTemplateScriptFailJSONMocked(t, &drIn)
 	}
 }
 
@@ -93,6 +96,10 @@ func TestUpdateTemplateScript(t *testing.T) {
 	drsIn := testdata.GetTemplateScriptData()
 	for _, drIn := range *drsIn {
 		UpdateTemplateScriptMocked(t, &drIn)
+		UpdateTemplateScriptFailErrMocked(t, &drIn)
+		UpdateTemplateScriptFailStatusMocked(t, &drIn)
+		UpdateTemplateScriptFailJSONMocked(t, &drIn)
+
 	}
 }
 
