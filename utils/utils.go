@@ -3,12 +3,13 @@ package utils
 import (
 	"archive/zip"
 	"fmt"
-	"github.com/codegangsta/cli"
 	"io"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/codegangsta/cli"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -115,7 +116,7 @@ func CheckReturnCode(res int, mesg []byte) {
 		message = re.ReplaceAllString(message, "Node")
 
 		// if it's not a web page or json-formatted message, return the raw message
-		log.Fatal(fmt.Sprintf("HTTP request failed: [%s]", message))
+		log.Fatal(fmt.Sprintf("HTTP request failed: (%d) [%s]", res, message))
 	}
 }
 
@@ -160,7 +161,7 @@ func CheckStandardStatus(status int, mesg []byte) error {
 	message = re.ReplaceAllString(message, "Node")
 
 	// if it's not a web page or json-formatted message, return the raw message
-	return fmt.Errorf("HTTP request failed: [%s]", message)
+	return fmt.Errorf("HTTP request failed: (%d) [%s]", status, message)
 
 }
 
