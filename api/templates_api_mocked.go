@@ -56,6 +56,7 @@ func GetTemplateListFailErrMocked(t *testing.T, templatesIn *[]types.Template) *
 	templatesOut, err := ds.GetTemplateList()
 	assert.NotNil(err, "We are expecting an error")
 	assert.Nil(templatesOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return &templatesOut
 }
@@ -152,6 +153,7 @@ func GetTemplateFailErrMocked(t *testing.T, template *types.Template) *types.Tem
 	templateOut, err := ds.GetTemplate(template.ID)
 	assert.NotNil(err, "We are expecting an error")
 	assert.Nil(templateOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return templateOut
 }
@@ -256,6 +258,7 @@ func CreateTemplateFailErrMocked(t *testing.T, templateIn *types.Template) *type
 	templateOut, err := ds.CreateTemplate(mapIn)
 	assert.NotNil(err, "We are expecting an error")
 	assert.Nil(templateOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return templateOut
 }
@@ -366,9 +369,9 @@ func UpdateTemplateFailErrMocked(t *testing.T, templateIn *types.Template) *type
 	// call service
 	cs.On("Put", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
 	templateOut, err := ds.UpdateTemplate(mapIn, templateIn.ID)
-
 	assert.NotNil(err, "We are expecting an error")
 	assert.Nil(templateOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return templateOut
 }
@@ -448,6 +451,52 @@ func DeleteTemplateMocked(t *testing.T, templateIn *types.Template) {
 	cs.On("Delete", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID)).Return(dIn, 200, nil)
 	err = ds.DeleteTemplate(templateIn.ID)
 	assert.Nil(err, "Error deleting template")
+
+}
+
+// DeleteTemplateFailErrMocked test mocked function
+func DeleteTemplateFailErrMocked(t *testing.T, templateIn *types.Template) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	err = ds.DeleteTemplate(templateIn.ID)
+	assert.NotNil(err, "We are expecting an error")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+}
+
+// DeleteTemplateFailStatusMocked test mocked function
+func DeleteTemplateFailStatusMocked(t *testing.T, templateIn *types.Template) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewTemplateService(cs)
+	assert.Nil(err, "Couldn't load template service")
+	assert.NotNil(ds, "Template service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(templateIn)
+	assert.Nil(err, "Template test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/blueprint/templates/%s", templateIn.ID)).Return(dIn, 499, nil)
+	err = ds.DeleteTemplate(templateIn.ID)
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 
 }
 

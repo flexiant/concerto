@@ -47,7 +47,6 @@ func TestUpdateTemplate(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	for _, templateIn := range *templatesIn {
 		UpdateTemplateMocked(t, &templateIn)
-		// TODO
 		UpdateTemplateFailErrMocked(t, &templateIn)
 		UpdateTemplateFailStatusMocked(t, &templateIn)
 		UpdateTemplateFailJSONMocked(t, &templateIn)
@@ -59,10 +58,8 @@ func TestDeleteTemplate(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	for _, templateIn := range *templatesIn {
 		DeleteTemplateMocked(t, &templateIn)
-		// TODO
-		// DeleteTemplateFailErrMocked(t, &templateIn)
-		// DeleteTemplateFailStatusMocked(t, &templateIn)
-		// DeleteTemplateFailJSONMocked(t, &templateIn)
+		DeleteTemplateFailErrMocked(t, &templateIn)
+		DeleteTemplateFailStatusMocked(t, &templateIn)
 	}
 }
 
