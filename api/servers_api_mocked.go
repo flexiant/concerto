@@ -55,6 +55,8 @@ func GetServerListFailErrMocked(t *testing.T, serversIn *[]types.Server) *[]type
 	cs.On("Get", "/v1/cloud/servers").Return(dIn, 200, fmt.Errorf("Mocked error"))
 	serversOut, err := ds.GetServerList()
 	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serversOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return &serversOut
 }

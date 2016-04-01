@@ -63,6 +63,7 @@ func GetAdminReportListErrMocked(t *testing.T, adminReportsIn *[]types.Report) *
 	arOut, err := rs.GetAdminReportList()
 	assert.NotNil(err, "We are expecting an error")
 	assert.Nil(arOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return &arOut
 }
@@ -164,6 +165,7 @@ func GetAdminReportErrMocked(t *testing.T, adminReport *types.Report) *types.Rep
 	arOut, err := ars.GetAdminReport(adminReport.ID)
 	assert.NotNil(err, "We are expecting an error")
 	assert.Nil(arOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
 
 	return arOut
 }
