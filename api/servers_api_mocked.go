@@ -933,6 +933,52 @@ func DeleteServerMocked(t *testing.T, serverIn *types.Server) {
 	assert.Nil(err, "Error deleting server")
 }
 
+// DeleteServerFailErrMocked test mocked function
+func DeleteServerFailErrMocked(t *testing.T, serverIn *types.Server) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/cloud/servers/%s", serverIn.Id)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	err = ds.DeleteServer(serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+}
+
+// DeleteServerFailStatusMocked test mocked function
+func DeleteServerFailStatusMocked(t *testing.T, serverIn *types.Server) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/cloud/servers/%s", serverIn.Id)).Return(dIn, 499, nil)
+	err = ds.DeleteServer(serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+}
+
 //======= DNS ==========
 
 // GetDnsListMocked test mocked function

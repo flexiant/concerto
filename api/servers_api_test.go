@@ -97,6 +97,8 @@ func TestDeleteServer(t *testing.T) {
 	serversIn := testdata.GetServerData()
 	for _, serverIn := range *serversIn {
 		DeleteServerMocked(t, &serverIn)
+		DeleteServerFailErrMocked(t, &serverIn)
+		DeleteServerFailStatusMocked(t, &serverIn)
 	}
 }
 
