@@ -26,5 +26,8 @@ func TestGetService(t *testing.T) {
 	servicesIn := testdata.GetServiceData()
 	for _, serviceIn := range *servicesIn {
 		GetServiceMocked(t, &serviceIn)
+		GetServiceFailErrMocked(t, &serviceIn)
+		GetServiceFailStatusMocked(t, &serviceIn)
+		GetServiceFailJSONMocked(t, &serviceIn)
 	}
 }
