@@ -1,9 +1,10 @@
 package api
 
 import (
+	"testing"
+
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewServicesServiceNil(t *testing.T) {
@@ -16,6 +17,9 @@ func TestNewServicesServiceNil(t *testing.T) {
 func TestGetServiceList(t *testing.T) {
 	servicesIn := testdata.GetServiceData()
 	GetServiceListMocked(t, servicesIn)
+	GetServiceListFailErrMocked(t, servicesIn)
+	GetServiceListFailStatusMocked(t, servicesIn)
+	GetServiceListFailJSONMocked(t, servicesIn)
 }
 
 func TestGetService(t *testing.T) {

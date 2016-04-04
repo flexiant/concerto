@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
@@ -34,7 +35,7 @@ func (ss *ServicesService) GetServiceList() (services []types.Service, err error
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &services); err != nil {
