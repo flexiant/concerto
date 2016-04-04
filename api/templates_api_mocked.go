@@ -104,6 +104,7 @@ func GetTemplateListFailJSONMocked(t *testing.T, templatesIn *[]types.Template) 
 	cs.On("Get", "/v1/blueprint/templates").Return(dIn, 200, nil)
 	templatesOut, err := ds.GetTemplateList()
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(templatesOut, "Expecting nil output")
 	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return &templatesOut
