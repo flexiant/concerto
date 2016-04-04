@@ -104,6 +104,7 @@ func GetServerListFailJSONMocked(t *testing.T, serversIn *[]types.Server) *[]typ
 	cs.On("Get", "/v1/cloud/servers").Return(dIn, 200, nil)
 	serversOut, err := ds.GetServerList()
 	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serversOut, "Expecting nil output")
 	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return &serversOut
@@ -129,6 +130,82 @@ func GetServerMocked(t *testing.T, server *types.Server) *types.Server {
 	serverOut, err := ds.GetServer(server.Id)
 	assert.Nil(err, "Error getting server")
 	assert.Equal(*server, *serverOut, "GetServer returned different servers")
+
+	return serverOut
+}
+
+// GetServerFailErrMocked test mocked function
+func GetServerFailErrMocked(t *testing.T, server *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(server)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s", server.Id)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.GetServer(server.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// GetServerFailStatusMocked test mocked function
+func GetServerFailStatusMocked(t *testing.T, server *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(server)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s", server.Id)).Return(dIn, 499, nil)
+	serverOut, err := ds.GetServer(server.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// GetServerFailJSONMocked test mocked function
+func GetServerFailJSONMocked(t *testing.T, server *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s", server.Id)).Return(dIn, 200, nil)
+	serverOut, err := ds.GetServer(server.Id)
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return serverOut
 }
@@ -161,6 +238,95 @@ func CreateServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 	return serverOut
 }
 
+// CreateServerFailErrMocked test mocked function
+func CreateServerFailErrMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Post", "/v1/cloud/servers/", mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.CreateServer(mapIn)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// CreateServerFailStatusMocked test mocked function
+func CreateServerFailStatusMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Post", "/v1/cloud/servers/", mapIn).Return(dOut, 499, nil)
+	serverOut, err := ds.CreateServer(mapIn)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// CreateServerFailJSONMocked test mocked function
+func CreateServerFailJSONMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Post", "/v1/cloud/servers/", mapIn).Return(dIn, 200, nil)
+	serverOut, err := ds.CreateServer(mapIn)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return serverOut
+}
+
 // UpdateServerMocked test mocked function
 func UpdateServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 
@@ -185,6 +351,95 @@ func UpdateServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 	serverOut, err := ds.UpdateServer(mapIn, serverIn.Id)
 	assert.Nil(err, "Error updating server list")
 	assert.Equal(serverIn, serverOut, "UpdateServer returned different servers")
+
+	return serverOut
+}
+
+// UpdateServerFailErrMocked test mocked function
+func UpdateServerFailErrMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s", serverIn.Id), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.UpdateServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// UpdateServerFailStatusMocked test mocked function
+func UpdateServerFailStatusMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s", serverIn.Id), mapIn).Return(dOut, 499, nil)
+	serverOut, err := ds.UpdateServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// UpdateServerFailJSONMocked test mocked function
+func UpdateServerFailJSONMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s", serverIn.Id), mapIn).Return(dIn, 200, nil)
+	serverOut, err := ds.UpdateServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return serverOut
 }
@@ -217,6 +472,95 @@ func BootServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 	return serverOut
 }
 
+// BootServerFailErrMocked test mocked function
+func BootServerFailErrMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/boot", serverIn.Id), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.BootServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// BootServerFailStatusMocked test mocked function
+func BootServerFailStatusMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/boot", serverIn.Id), mapIn).Return(dOut, 499, nil)
+	serverOut, err := ds.BootServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// BootServerFailJSONMocked test mocked function
+func BootServerFailJSONMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/boot", serverIn.Id), mapIn).Return(dIn, 200, nil)
+	serverOut, err := ds.BootServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return serverOut
+}
+
 // RebootServerMocked test mocked function
 func RebootServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 
@@ -241,6 +585,95 @@ func RebootServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 	serverOut, err := ds.RebootServer(mapIn, serverIn.Id)
 	assert.Nil(err, "Error updating server list")
 	assert.Equal(serverIn, serverOut, "RebootServer returned different servers")
+
+	return serverOut
+}
+
+// RebootServerFailErrMocked test mocked function
+func RebootServerFailErrMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/reboot", serverIn.Id), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.RebootServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// RebootServerFailStatusMocked test mocked function
+func RebootServerFailStatusMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/reboot", serverIn.Id), mapIn).Return(dOut, 499, nil)
+	serverOut, err := ds.RebootServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// RebootServerFailJSONMocked test mocked function
+func RebootServerFailJSONMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/reboot", serverIn.Id), mapIn).Return(dIn, 200, nil)
+	serverOut, err := ds.RebootServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return serverOut
 }
@@ -273,6 +706,95 @@ func ShutdownServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 	return serverOut
 }
 
+// ShutdownServerFailErrMocked test mocked function
+func ShutdownServerFailErrMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/shutdown", serverIn.Id), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.ShutdownServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// ShutdownServerFailStatusMocked test mocked function
+func ShutdownServerFailStatusMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/shutdown", serverIn.Id), mapIn).Return(dOut, 499, nil)
+	serverOut, err := ds.ShutdownServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// ShutdownServerFailJSONMocked test mocked function
+func ShutdownServerFailJSONMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/shutdown", serverIn.Id), mapIn).Return(dIn, 200, nil)
+	serverOut, err := ds.ShutdownServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return serverOut
+}
+
 // OverrideServerMocked test mocked function
 func OverrideServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 
@@ -297,6 +819,95 @@ func OverrideServerMocked(t *testing.T, serverIn *types.Server) *types.Server {
 	serverOut, err := ds.OverrideServer(mapIn, serverIn.Id)
 	assert.Nil(err, "Error updating server list")
 	assert.Equal(serverIn, serverOut, "OverrideServer returned different servers")
+
+	return serverOut
+}
+
+// OverrideServerFailErrMocked test mocked function
+func OverrideServerFailErrMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/override", serverIn.Id), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	serverOut, err := ds.OverrideServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return serverOut
+}
+
+// OverrideServerFailStatusMocked test mocked function
+func OverrideServerFailStatusMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/override", serverIn.Id), mapIn).Return(dOut, 499, nil)
+	serverOut, err := ds.OverrideServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return serverOut
+}
+
+// OverrideServerFailJSONMocked test mocked function
+func OverrideServerFailJSONMocked(t *testing.T, serverIn *types.Server) *types.Server {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*serverIn)
+	assert.Nil(err, "Server test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/override", serverIn.Id), mapIn).Return(dIn, 200, nil)
+	serverOut, err := ds.OverrideServer(mapIn, serverIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(serverOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return serverOut
 }
