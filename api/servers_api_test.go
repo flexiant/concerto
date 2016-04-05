@@ -137,3 +137,16 @@ func TestGetOperationalScriptList(t *testing.T) {
 		GetOperationalScriptFailJSONMocked(t, scriptsIn, serverIn.Id)
 	}
 }
+
+func TestExecuteOperationalScript(t *testing.T) {
+	serversIn := testdata.GetServerData()
+	scriptsIn := testdata.GetScriptCharData()
+	for _, serverIn := range *serversIn {
+		for _, scriptIn := range *scriptsIn {
+			ExecuteOperationalScriptListMocked(t, &scriptIn, serverIn.Id)
+			ExecuteOperationalScriptFailErrMocked(t, &scriptIn, serverIn.Id)
+			ExecuteOperationalScriptFailStatusMocked(t, &scriptIn, serverIn.Id)
+			ExecuteOperationalScriptFailJSONMocked(t, &scriptIn, serverIn.Id)
+		}
+	}
+}

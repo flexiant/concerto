@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"

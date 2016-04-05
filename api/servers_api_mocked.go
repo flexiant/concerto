@@ -1283,3 +1283,114 @@ func GetOperationalScriptFailJSONMocked(t *testing.T, scriptsIn *[]types.ScriptC
 
 	return &scriptsOut
 }
+
+// ExecuteOperationalScriptListMocked test mocked function
+func ExecuteOperationalScriptListMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	oscIn, err := json.Marshal(scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 200, nil)
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.Nil(err, "Error executing operational script")
+	assert.Equal(scriptIn, scriptOut, "ExecuteOperationalScriptList returned different outputs")
+
+	return scriptOut
+}
+
+// ExecuteOperationalScriptFailErrMocked test mocked function
+func ExecuteOperationalScriptFailErrMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	oscIn, err := json.Marshal(scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 200, fmt.Errorf("Mocked error"))
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(scriptOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return scriptOut
+}
+
+// ExecuteOperationalScriptFailStatusMocked test mocked function
+func ExecuteOperationalScriptFailStatusMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	oscIn, err := json.Marshal(scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 499, nil)
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(scriptOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return scriptOut
+}
+
+// ExecuteOperationalScriptFailJSONMocked test mocked function
+func ExecuteOperationalScriptFailJSONMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	// wrong json
+	oscIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 200, nil)
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(scriptOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return scriptOut
+}
