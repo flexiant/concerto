@@ -3,10 +3,11 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TODO exclude from release compile
@@ -31,6 +32,83 @@ func GetDomainListMocked(t *testing.T, domainsIn *[]types.Domain) *[]types.Domai
 	domainsOut, err := ds.GetDomainList()
 	assert.Nil(err, "Error getting domain list")
 	assert.Equal(*domainsIn, domainsOut, "GetDomainList returned different domains")
+
+	return &domainsOut
+}
+
+// GetDomainListFailErrMocked test mocked function
+func GetDomainListFailErrMocked(t *testing.T, domainsIn *[]types.Domain) *[]types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domainsIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Get", "/v1/dns/domains").Return(dIn, 200, fmt.Errorf("Mocked error"))
+	domainsOut, err := ds.GetDomainList()
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(domainsOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return &domainsOut
+}
+
+// GetDomainListFailStatusMocked test mocked function
+func GetDomainListFailStatusMocked(t *testing.T, domainsIn *[]types.Domain) *[]types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domainsIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Get", "/v1/dns/domains").Return(dIn, 499, nil)
+	domainsOut, err := ds.GetDomainList()
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(domainsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return &domainsOut
+}
+
+// GetDomainListFailJSONMocked test mocked function
+func GetDomainListFailJSONMocked(t *testing.T, domainsIn *[]types.Domain) *[]types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", "/v1/dns/domains").Return(dIn, 200, nil)
+	domainsOut, err := ds.GetDomainList()
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(domainsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
 
 	return &domainsOut
 }

@@ -1,9 +1,10 @@
 package api
 
 import (
+	"testing"
+
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewDomainServiceNil(t *testing.T) {
@@ -16,6 +17,10 @@ func TestNewDomainServiceNil(t *testing.T) {
 func TestGetDomainList(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	GetDomainListMocked(t, domainsIn)
+	GetDomainListFailErrMocked(t, domainsIn)
+	GetDomainListFailStatusMocked(t, domainsIn)
+	GetDomainListFailJSONMocked(t, domainsIn)
+
 }
 
 func TestGetDomain(t *testing.T) {

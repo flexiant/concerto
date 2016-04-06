@@ -1381,6 +1381,7 @@ func ExecuteOperationalScriptFailJSONMocked(t *testing.T, scriptIn *types.Script
 	// to json
 	params, err := utils.ItemConvertParams(*scriptIn)
 	assert.Nil(err, "Server operational scripts test data corrupted")
+
 	// wrong json
 	oscIn := []byte{10, 20, 30}
 
