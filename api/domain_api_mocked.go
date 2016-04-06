@@ -359,6 +359,94 @@ func UpdateDomainMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
 	return domainOut
 }
 
+// UpdateDomainFailErrMocked test mocked function
+func UpdateDomainFailErrMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID), mapIn).Return(dOut, 200, fmt.Errorf("Mocked error"))
+	domainOut, err := ds.UpdateDomain(mapIn, domainIn.ID)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(domainOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return domainOut
+}
+
+// UpdateDomainFailStatusMocked test mocked function
+func UpdateDomainFailStatusMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// to json
+	dOut, err := json.Marshal(domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID), mapIn).Return(dOut, 499, nil)
+	domainOut, err := ds.UpdateDomain(mapIn, domainIn.ID)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(domainOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+	return domainOut
+}
+
+// UpdateDomainFailJSONMocked test mocked function
+func UpdateDomainFailJSONMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// convertMap
+	mapIn, err := utils.ItemConvertParams(*domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID), mapIn).Return(dIn, 200, nil)
+	domainOut, err := ds.UpdateDomain(mapIn, domainIn.ID)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(domainOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return domainOut
+}
+
 // DeleteDomainMocked test mocked function
 func DeleteDomainMocked(t *testing.T, domainIn *types.Domain) {
 
@@ -378,7 +466,52 @@ func DeleteDomainMocked(t *testing.T, domainIn *types.Domain) {
 	cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 200, nil)
 	err = ds.DeleteDomain(domainIn.ID)
 	assert.Nil(err, "Error deleting domain")
+}
 
+// DeleteDomainFailErrMocked test mocked function
+func DeleteDomainFailErrMocked(t *testing.T, domainIn *types.Domain) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	err = ds.DeleteDomain(domainIn.ID)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+}
+
+// DeleteDomainFailStatusMocked test mocked function
+func DeleteDomainFailStatusMocked(t *testing.T, domainIn *types.Domain) {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domainIn)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Delete", fmt.Sprintf("/v1/dns/domains/%s", domainIn.ID)).Return(dIn, 499, nil)
+	err = ds.DeleteDomain(domainIn.ID)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 }
 
 // GetDomainRecordListMocked test mocked function

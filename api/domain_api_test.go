@@ -46,6 +46,9 @@ func TestUpdateDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		UpdateDomainMocked(t, &domainIn)
+		UpdateDomainFailErrMocked(t, &domainIn)
+		UpdateDomainFailStatusMocked(t, &domainIn)
+		UpdateDomainFailJSONMocked(t, &domainIn)
 	}
 }
 
@@ -53,6 +56,8 @@ func TestDeleteDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		DeleteDomainMocked(t, &domainIn)
+		DeleteDomainFailErrMocked(t, &domainIn)
+		DeleteDomainFailStatusMocked(t, &domainIn)
 	}
 }
 
