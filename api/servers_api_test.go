@@ -103,11 +103,14 @@ func TestDeleteServer(t *testing.T) {
 }
 
 //======= DNS ==========v
-func TestGetDnsList(t *testing.T) {
+func TestGetDNSList(t *testing.T) {
 	serversIn := testdata.GetServerData()
-	dnssIn := testdata.GetDnsData()
+	dnssIn := testdata.GetDNSData()
 	for _, serverIn := range *serversIn {
-		GetDnsListMocked(t, &serverIn, dnssIn)
+		GetDNSListMocked(t, &serverIn, dnssIn)
+		GetDNSListFailErrMocked(t, &serverIn, dnssIn)
+		GetDNSListFailStatusMocked(t, &serverIn, dnssIn)
+		GetDNSListFailJSONMocked(t, &serverIn, dnssIn)
 	}
 }
 
@@ -117,6 +120,9 @@ func TestGetEventsList(t *testing.T) {
 	eventsIn := testdata.GetEventData()
 	for _, serverIn := range *serversIn {
 		GetServerEventListMocked(t, eventsIn, serverIn.Id)
+		GetServerEventListFailErrMocked(t, eventsIn, serverIn.Id)
+		GetServerEventListFailStatusMocked(t, eventsIn, serverIn.Id)
+		GetServerEventListFailJSONMocked(t, eventsIn, serverIn.Id)
 	}
 }
 
@@ -126,5 +132,21 @@ func TestGetOperationalScriptList(t *testing.T) {
 	scriptsIn := testdata.GetScriptCharData()
 	for _, serverIn := range *serversIn {
 		GetOperationalScriptListMocked(t, scriptsIn, serverIn.Id)
+		GetOperationalScriptFailErrMocked(t, scriptsIn, serverIn.Id)
+		GetOperationalScriptFailStatusMocked(t, scriptsIn, serverIn.Id)
+		GetOperationalScriptFailJSONMocked(t, scriptsIn, serverIn.Id)
+	}
+}
+
+func TestExecuteOperationalScript(t *testing.T) {
+	serversIn := testdata.GetServerData()
+	scriptsIn := testdata.GetScriptCharData()
+	for _, serverIn := range *serversIn {
+		for _, scriptIn := range *scriptsIn {
+			ExecuteOperationalScriptListMocked(t, &scriptIn, serverIn.Id)
+			ExecuteOperationalScriptFailErrMocked(t, &scriptIn, serverIn.Id)
+			ExecuteOperationalScriptFailStatusMocked(t, &scriptIn, serverIn.Id)
+			ExecuteOperationalScriptFailJSONMocked(t, &scriptIn, serverIn.Id)
+		}
 	}
 }

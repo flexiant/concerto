@@ -35,8 +35,8 @@ func GetServerData() *[]types.Server {
 	return &testServers
 }
 
-// GetDnsData loads test data
-func GetDnsData() *[]types.Dns {
+// GetDNSData loads test data
+func GetDNSData() *[]types.Dns {
 
 	testDnss := []types.Dns{
 		{

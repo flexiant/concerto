@@ -1,9 +1,10 @@
 package api
 
 import (
+	"testing"
+
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewDomainServiceNil(t *testing.T) {
@@ -16,12 +17,18 @@ func TestNewDomainServiceNil(t *testing.T) {
 func TestGetDomainList(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	GetDomainListMocked(t, domainsIn)
+	GetDomainListFailErrMocked(t, domainsIn)
+	GetDomainListFailStatusMocked(t, domainsIn)
+	GetDomainListFailJSONMocked(t, domainsIn)
 }
 
 func TestGetDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		GetDomainMocked(t, &domainIn)
+		GetDomainFailErrMocked(t, &domainIn)
+		GetDomainFailStatusMocked(t, &domainIn)
+		GetDomainFailJSONMocked(t, &domainIn)
 	}
 }
 
@@ -29,6 +36,9 @@ func TestCreateDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		CreateDomainMocked(t, &domainIn)
+		CreateDomainFailErrMocked(t, &domainIn)
+		CreateDomainFailStatusMocked(t, &domainIn)
+		CreateDomainFailJSONMocked(t, &domainIn)
 	}
 }
 
@@ -36,6 +46,9 @@ func TestUpdateDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		UpdateDomainMocked(t, &domainIn)
+		UpdateDomainFailErrMocked(t, &domainIn)
+		UpdateDomainFailStatusMocked(t, &domainIn)
+		UpdateDomainFailJSONMocked(t, &domainIn)
 	}
 }
 
@@ -43,6 +56,8 @@ func TestDeleteDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		DeleteDomainMocked(t, &domainIn)
+		DeleteDomainFailErrMocked(t, &domainIn)
+		DeleteDomainFailStatusMocked(t, &domainIn)
 	}
 }
 

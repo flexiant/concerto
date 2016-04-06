@@ -981,8 +981,8 @@ func DeleteServerFailStatusMocked(t *testing.T, serverIn *types.Server) {
 
 //======= DNS ==========
 
-// GetDnsListMocked test mocked function
-func GetDnsListMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns) *[]types.Dns {
+// GetDNSListMocked test mocked function
+func GetDNSListMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns) *[]types.Dns {
 
 	assert := assert.New(t)
 
@@ -1005,7 +1005,83 @@ func GetDnsListMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns)
 	return &dnssOut
 }
 
-//======= Events ==========
+// GetDNSListFailErrMocked test mocked function
+func GetDNSListFailErrMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns) *[]types.Dns {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load dns service")
+	assert.NotNil(ds, "Dns service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(dnssIn)
+	assert.Nil(err, "Dns test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/records", serverIn.Id)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	dnssOut, err := ds.GetDNSList(serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(dnssOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return &dnssOut
+}
+
+// GetDNSListFailStatusMocked test mocked function
+func GetDNSListFailStatusMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns) *[]types.Dns {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load dns service")
+	assert.NotNil(ds, "Dns service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(dnssIn)
+	assert.Nil(err, "Dns test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/records", serverIn.Id)).Return(dIn, 499, nil)
+	dnssOut, err := ds.GetDNSList(serverIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(dnssOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return &dnssOut
+}
+
+// GetDNSListFailJSONMocked test mocked function
+func GetDNSListFailJSONMocked(t *testing.T, serverIn *types.Server, dnssIn *[]types.Dns) *[]types.Dns {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load dns service")
+	assert.NotNil(ds, "Dns service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/records", serverIn.Id)).Return(dIn, 200, nil)
+	dnssOut, err := ds.GetDNSList(serverIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(dnssOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return &dnssOut
+}
+
 // GetServerEventListMocked test mocked function
 func GetServerEventListMocked(t *testing.T, eventsIn *[]types.Event, serverID string) *[]types.Event {
 
@@ -1030,7 +1106,83 @@ func GetServerEventListMocked(t *testing.T, eventsIn *[]types.Event, serverID st
 	return &evOut
 }
 
-//======= Operational Scripts ==========
+// GetServerEventListFailErrMocked test mocked function
+func GetServerEventListFailErrMocked(t *testing.T, eventsIn *[]types.Event, serverID string) *[]types.Event {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	evIn, err := json.Marshal(eventsIn)
+	assert.Nil(err, "Server event test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/events", serverID)).Return(evIn, 200, fmt.Errorf("Mocked error"))
+	evOut, err := ds.GetEventsList(serverID)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(evOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return &evOut
+}
+
+// GetServerEventListFailStatusMocked test mocked function
+func GetServerEventListFailStatusMocked(t *testing.T, eventsIn *[]types.Event, serverID string) *[]types.Event {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	evIn, err := json.Marshal(eventsIn)
+	assert.Nil(err, "Server event test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/events", serverID)).Return(evIn, 499, nil)
+	evOut, err := ds.GetEventsList(serverID)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(evOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return &evOut
+}
+
+// GetServerEventListFailJSONMocked test mocked function
+func GetServerEventListFailJSONMocked(t *testing.T, eventsIn *[]types.Event, serverID string) *[]types.Event {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// wrong json
+	evIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/events", serverID)).Return(evIn, 200, nil)
+	evOut, err := ds.GetEventsList(serverID)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(evOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return &evOut
+}
+
 // GetOperationalScriptListMocked test mocked function
 func GetOperationalScriptListMocked(t *testing.T, scriptsIn *[]types.ScriptChar, serverID string) *[]types.ScriptChar {
 
@@ -1053,4 +1205,193 @@ func GetOperationalScriptListMocked(t *testing.T, scriptsIn *[]types.ScriptChar,
 	assert.Equal(*scriptsIn, scriptsOut, "GetOperationalScriptList returned different operational scripts")
 
 	return &scriptsOut
+}
+
+// GetOperationalScriptFailErrMocked test mocked function
+func GetOperationalScriptFailErrMocked(t *testing.T, scriptsIn *[]types.ScriptChar, serverID string) *[]types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	oscIn, err := json.Marshal(scriptsIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", serverID)).Return(oscIn, 200, fmt.Errorf("Mocked error"))
+	scriptsOut, err := ds.GetOperationalScriptsList(serverID)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(scriptsOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return &scriptsOut
+}
+
+// GetOperationalScriptFailStatusMocked test mocked function
+func GetOperationalScriptFailStatusMocked(t *testing.T, scriptsIn *[]types.ScriptChar, serverID string) *[]types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	oscIn, err := json.Marshal(scriptsIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", serverID)).Return(oscIn, 499, nil)
+	scriptsOut, err := ds.GetOperationalScriptsList(serverID)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(scriptsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return &scriptsOut
+}
+
+// GetOperationalScriptFailJSONMocked test mocked function
+func GetOperationalScriptFailJSONMocked(t *testing.T, scriptsIn *[]types.ScriptChar, serverID string) *[]types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// wrong json
+	oscIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts", serverID)).Return(oscIn, 200, nil)
+	scriptsOut, err := ds.GetOperationalScriptsList(serverID)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(scriptsOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return &scriptsOut
+}
+
+// ExecuteOperationalScriptListMocked test mocked function
+func ExecuteOperationalScriptListMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	oscIn, err := json.Marshal(scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 200, nil)
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.Nil(err, "Error executing operational script")
+	assert.Equal(scriptIn, scriptOut, "ExecuteOperationalScriptList returned different outputs")
+
+	return scriptOut
+}
+
+// ExecuteOperationalScriptFailErrMocked test mocked function
+func ExecuteOperationalScriptFailErrMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	oscIn, err := json.Marshal(scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 200, fmt.Errorf("Mocked error"))
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(scriptOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return scriptOut
+}
+
+// ExecuteOperationalScriptFailStatusMocked test mocked function
+func ExecuteOperationalScriptFailStatusMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+	oscIn, err := json.Marshal(scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 499, nil)
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(scriptOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return scriptOut
+}
+
+// ExecuteOperationalScriptFailJSONMocked test mocked function
+func ExecuteOperationalScriptFailJSONMocked(t *testing.T, scriptIn *types.ScriptChar, serverID string) *types.ScriptChar {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewServerService(cs)
+	assert.Nil(err, "Couldn't load server service")
+	assert.NotNil(ds, "Server service not instanced")
+
+	// to json
+	params, err := utils.ItemConvertParams(*scriptIn)
+	assert.Nil(err, "Server operational scripts test data corrupted")
+
+	// wrong json
+	oscIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Put", fmt.Sprintf("/v1/cloud/servers/%s/operational_scripts/%s/execute", serverID, scriptIn.Id), params).Return(oscIn, 200, nil)
+	scriptOut, err := ds.ExecuteOperationalScript(params, serverID, scriptIn.Id)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(scriptOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return scriptOut
 }
