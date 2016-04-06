@@ -36,6 +36,9 @@ func TestCreateDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		CreateDomainMocked(t, &domainIn)
+		CreateDomainFailErrMocked(t, &domainIn)
+		CreateDomainFailStatusMocked(t, &domainIn)
+		CreateDomainFailJSONMocked(t, &domainIn)
 	}
 }
 
