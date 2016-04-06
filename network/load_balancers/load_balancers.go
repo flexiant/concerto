@@ -1,527 +1,229 @@
-/*
-	Load balancers allow the distribution of a service load between a set of servers.
-
-	The available commands are:
-		list
-		show
-		create
-		update
-		delete
-		list_balancer_nodes
-		add_balancer_node
-		remove_balancer_node
-
-	Use "network load_balancers --help" on the commandline interface for more information about the available subcommands.
-
-	Load balancers list
-
-	This action provides information about the existing load balancers.
-
-	Usage:
-
-		load_balancers list
-
-	Load balancer show
-
-	This action provides information about the load balancer identified by the given id.
-
-	Usage:
-
-		load_balancers show (options)
-
-	Options:
-		--id <load_balancer_id> 		load balancer id
-
-
-	Load balancer create
-
-	This action creates an load balancer with the given parameters.
-
-	Usage:
-
-		load_balancers create (options)
-
-	Options:
-		--name <name> 			Logical name of the load balancer
-		--fqdn <fqdn> 	Fully qualified domain name of the load balancer
-		--protocol <protocol> 	Protocol of balanced traffic, either HTTP or HTTPS
-		--port	<value>	Port where the load balancer listens for traffic
-		--algorithm	<algorithm>	Algorithm used by the load balancer to balance incoming connections between servers. It can be either roundrobin, static-rr or leastconn.
-		--ssl_certificate	<ssl_certificate>	SSL certificate to use, when protocol is HTTPS (SSL termination).
-		--ssl_certificate_private_key	<ssl_certificate_private_key>	Private key of SSL certificate to use, when protocol is HTTPS (SSL termination).
-		--domain_id	<domain_id>	Identifier of the DNS domain to which the FQDN of the load balancer belongs
-		--cloud_provider_id	<cloud_provider_id>	Identifier of the cloud provider (that provides the load_balancer service) which shall deploy the load balancer
-
-	Load balancer update
-
-	Updates an existing load balancer.
-
-	Usage:
-
-		load_balancers update (options)
-
-	Options:
-		--id <load_balancer_id> 		load balancer id
-		--name <name> 			Logical name of the load balancer
-		--fqdn <fqdn> 	Fully qualified domain name of the load balancer
-		--protocol <protocol> 	Protocol of balanced traffic, either HTTP or HTTPS
-		--port	<value>	Port where the load balancer listens for traffic
-		--algorithm	<algorithm>	Algorithm used by the load balancer to balance incoming connections between servers. It can be either roundrobin, static-rr or leastconn.
-		--ssl_certificate	<ssl_certificate>	SSL certificate to use, when protocol is HTTPS (SSL termination).
-		--ssl_certificate_private_key	<ssl_certificate_private_key>	Private key of SSL certificate to use, when protocol is HTTPS (SSL termination).
-
-	Load balancer destroy
-
-	Deletes a load balancer.
-
-	Usage:
-
-		load_balancers delete (options)
-
-	Options:
-		--id <load_balancer_id> 		load balancer id
-
-	List load balancer nodes
-
-	This action provides information about the nodes of the load balancer identified by the given id.
-
-	Usage:
-
-		load_balancers list_balancer_nodes --id <load_balancer_id>
-
-	Add a node to a load balancer
-
-	This action adds a node to the load balancer identified by the given id.
-
-	Usage:
-
-		load_balancers add_balancer_node	(options)
-
-	Options:
-		--id <load_balancer_id>	Load balancer id
-		--server_id	<server_id>	Identifier of the node's server
-		--port	<value>	Port where the node listens for requests
-
-	Remove node from a load balancer
-
-	This action removes the node identified by the given id from the load balancer.
-
-	Usage:
-
-		load_balancers remove_balancer_node (options)
-
-	Options:
-		--load_balancer_id <load_balancer_id>	Load balancer id
-		--node_id <node_id>	Node id
-*/
 package load_balancers
 
-import (
-	"encoding/json"
-	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
-	"os"
-	"strings"
-	"text/tabwriter"
-)
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	log "github.com/Sirupsen/logrus"
+// 	"github.com/codegangsta/cli"
+// 	"github.com/flexiant/concerto/api/types"
+// 	"github.com/flexiant/concerto/utils"
+// 	"github.com/flexiant/concerto/webservice"
+// 	"os"
+// 	"strings"
+// 	"text/tabwriter"
+// )
 
-type LoadBalancer struct {
-	Id                          string `json:"id"`
-	Name                        string `json:"name"`
-	Fqdn                        string `json:"fqdn"`
-	Protocol                    string `json:"protocol"`
-	Port                        int    `json:"port"`
-	Algorithm                   string `json:"algorithm"`
-	SslCertificate              string `json:"ssl_certificate"`
-	Ssl_certificate_private_key string `json:"ssl_certificate_private_key"`
-	Domain_id                   string `json:"domain_id"`
-	Cloud_provider_id           string `json:"cloud_provider_id"`
-	Traffic_in                  int    `json:"traffic_in"`
-	Traffic_out                 int    `json:"traffic_out"`
-}
+// func cmdList(c *cli.Context) {
+// 	var loadBalancers []LoadBalancer
 
-type Node struct {
-	Id       string `json:"id"`
-	Name     string `json:"name"`
-	PublicIp string `json:"public_ip"`
-	State    string `json:"state"`
-	ServerId string `json:"server_id"`
-	Port     int    `json:"port"`
-}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdList(c *cli.Context) {
-	var loadBalancers []LoadBalancer
+// 	err, data, res := webservice.Get("/v1/network/load_balancers")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &loadBalancers)
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get("/v1/network/load_balancers")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
 
-	err = json.Unmarshal(data, &loadBalancers)
-	utils.CheckError(err)
+// 	for _, lb := range loadBalancers {
+// 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+// 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
+// 	w.Flush()
+// }
 
-	for _, lb := range loadBalancers {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
-	}
+// func cmdShow(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+// 	var lb LoadBalancer
 
-	w.Flush()
-}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdShow(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-	var lb LoadBalancer
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &lb)
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
 
-	err = json.Unmarshal(data, &lb)
-	utils.CheckError(err)
+// 	w.Flush()
+// }
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+// func cmdCreate(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"protocol"})
+// 	if c.String("protocol") == "https" {
+// 		utils.FlagsRequired(c, []string{"name", "fqdn", "protocol", "domain_id", "cloud_provider_id", "ssl_certificate", "ssl_certificate_private_key"})
+// 	} else {
+// 		utils.FlagsRequired(c, []string{"name", "fqdn", "protocol", "domain_id", "cloud_provider_id"})
+// 	}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	w.Flush()
-}
+// 	v := make(map[string]string)
 
-func cmdCreate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"protocol"})
-	if c.String("protocol") == "https" {
-		utils.FlagsRequired(c, []string{"name", "fqdn", "protocol", "domain_id", "cloud_provider_id", "ssl_certificate", "ssl_certificate_private_key"})
-	} else {
-		utils.FlagsRequired(c, []string{"name", "fqdn", "protocol", "domain_id", "cloud_provider_id"})
-	}
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	v["name"] = c.String("name")
+// 	v["fqdn"] = c.String("fqdn")
+// 	v["protocol"] = strings.ToLower(c.String("protocol"))
+// 	v["domain_id"] = c.String("domain_id")
+// 	v["cloud_provider_id"] = c.String("cloud_provider_id")
+// 	if c.IsSet("ssl_certificate") {
+// 		v["ssl_certificate"] = c.String("ssl_certificate")
+// 	}
+// 	if c.IsSet("ssl_certificate_private_key") {
+// 		v["ssl_certificate_private_key"] = c.String("ssl_certificate_private_key")
+// 	}
+// 	if c.IsSet("port") {
+// 		v["port"] = c.String("port")
+// 	}
+// 	if c.IsSet("algorithm") {
+// 		v["algorithm"] = c.String("algorithm")
+// 	}
 
-	v := make(map[string]string)
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post("/v1/network/load_balancers", jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
 
-	v["name"] = c.String("name")
-	v["fqdn"] = c.String("fqdn")
-	v["protocol"] = strings.ToLower(c.String("protocol"))
-	v["domain_id"] = c.String("domain_id")
-	v["cloud_provider_id"] = c.String("cloud_provider_id")
-	if c.IsSet("ssl_certificate") {
-		v["ssl_certificate"] = c.String("ssl_certificate")
-	}
-	if c.IsSet("ssl_certificate_private_key") {
-		v["ssl_certificate_private_key"] = c.String("ssl_certificate_private_key")
-	}
-	if c.IsSet("port") {
-		v["port"] = c.String("port")
-	}
-	if c.IsSet("algorithm") {
-		v["algorithm"] = c.String("algorithm")
-	}
+// 	var lb types.LoadBalancer
 
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Post("/v1/network/load_balancers", jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
+// 	err = json.Unmarshal(res, &lb)
+// 	utils.CheckError(err)
 
-	var lb LoadBalancer
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
 
-	err = json.Unmarshal(res, &lb)
-	utils.CheckError(err)
+// 	w.Flush()
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+// }
 
-	w.Flush()
+// func cmdUpdate(c *cli.Context) {
+// 	if c.String("protocol") == "HTTPS" {
+// 		utils.FlagsRequired(c, []string{"id", "name", "fqdn", "protocol", "ssl_certificate", "ssl_certificate_private_key"})
+// 	} else {
+// 		utils.FlagsRequired(c, []string{"id", "name", "fqdn", "protocol"})
+// 	}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-}
+// 	v := make(map[string]string)
 
-func cmdUpdate(c *cli.Context) {
-	if c.String("protocol") == "HTTPS" {
-		utils.FlagsRequired(c, []string{"id", "name", "fqdn", "protocol", "ssl_certificate", "ssl_certificate_private_key"})
-	} else {
-		utils.FlagsRequired(c, []string{"id", "name", "fqdn", "protocol"})
-	}
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	v["name"] = c.String("name")
+// 	v["fqdn"] = c.String("fqdn")
+// 	v["protocol"] = strings.ToLower(c.String("protocol"))
+// 	if c.IsSet("ssl_certificate") {
+// 		v["ssl_certificate"] = c.String("ssl_certificate")
+// 	}
+// 	if c.IsSet("ssl_certificate_private_key") {
+// 		v["ssl_certificate_private_key"] = c.String("ssl_certificate_private_key")
+// 	}
 
-	v := make(map[string]string)
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")), jsonBytes)
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
 
-	v["name"] = c.String("name")
-	v["fqdn"] = c.String("fqdn")
-	v["protocol"] = strings.ToLower(c.String("protocol"))
-	if c.IsSet("ssl_certificate") {
-		v["ssl_certificate"] = c.String("ssl_certificate")
-	}
-	if c.IsSet("ssl_certificate_private_key") {
-		v["ssl_certificate_private_key"] = c.String("ssl_certificate_private_key")
-	}
+// 	var lb LoadBalancer
 
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")), jsonBytes)
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
+// 	err = json.Unmarshal(res, &lb)
+// 	utils.CheckError(err)
 
-	var lb LoadBalancer
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
 
-	err = json.Unmarshal(res, &lb)
-	utils.CheckError(err)
+// 	w.Flush()
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tFQDN\tPROTOCOL\tPORT\tALGORITHM\tSSL CERTIFICATE\tSSL CERTIFICATE PRIVATE KEY\tDOMAIN ID\tCLOUD PROVIDER ID\tTRAFFIC IN\tTRAFFIC OUT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n", lb.Id, lb.Name, lb.Fqdn, lb.Protocol, lb.Port, lb.Algorithm, lb.SslCertificate, lb.Ssl_certificate_private_key, lb.Domain_id, lb.Cloud_provider_id, lb.Traffic_in, lb.Traffic_out)
+// }
 
-	w.Flush()
+// func cmdDelete(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+// }
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// func cmdListNodes(c *cli.Context) {
+// 	var nodes []Node
 
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdListNodes(c *cli.Context) {
-	var nodes []Node
+// 	err, data, res := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &nodes)
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tPUBLIC IP\tSTATE\tSERVER ID\tPORT\r")
 
-	err = json.Unmarshal(data, &nodes)
-	utils.CheckError(err)
+// 	for _, n := range nodes {
+// 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%d\n", n.Id, n.Name, n.PublicIp, n.State, n.ServerId, n.Port)
+// 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tPUBLIC IP\tSTATE\tSERVER ID\tPORT\r")
+// 	w.Flush()
+// }
 
-	for _, n := range nodes {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%d\n", n.Id, n.Name, n.PublicIp, n.State, n.ServerId, n.Port)
-	}
+// func cmdAddNode(c *cli.Context) {
 
-	w.Flush()
-}
+// 	utils.FlagsRequired(c, []string{"balancer_id", "server_id", "port"})
 
-func cmdAddNode(c *cli.Context) {
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	utils.FlagsRequired(c, []string{"balancer_id", "server_id", "port"})
+// 	v := make(map[string]string)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	v["server_id"] = c.String("server_id")
+// 	v["port"] = c.String("port")
 
-	v := make(map[string]string)
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")), jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
 
-	v["server_id"] = c.String("server_id")
-	v["port"] = c.String("port")
+// 	var n Node
 
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Post(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", c.String("balancer_id")), jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
+// 	err = json.Unmarshal(res, &n)
+// 	utils.CheckError(err)
 
-	var n Node
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tNAME\tPUBLIC IP\tSTATE\tSERVER ID\tPORT\r")
+// 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%d\n", n.Id, n.Name, n.PublicIp, n.State, n.ServerId, n.Port)
 
-	err = json.Unmarshal(res, &n)
-	utils.CheckError(err)
+// 	w.Flush()
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tPUBLIC IP\tSTATE\tSERVER ID\tPORT\r")
-	fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%d\n", n.Id, n.Name, n.PublicIp, n.State, n.ServerId, n.Port)
+// }
 
-	w.Flush()
+// func cmdDelNode(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"balancer_id", "node_id"})
 
-}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdDelNode(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"balancer_id", "node_id"})
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", c.String("balancer_id"), c.String("node_id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists all available load balancers",
-			Action: cmdList,
-		},
-		{
-			Name:   "show",
-			Usage:  "Shows information about a specific load balancer",
-			Action: cmdShow,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Load balancer Id",
-				},
-			},
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a new load balancer.",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Logical name of the load balancer",
-				},
-				cli.StringFlag{
-					Name:  "fqdn",
-					Usage: "Fully qualified domain name of the load balancer",
-				},
-				cli.StringFlag{
-					Name:  "protocol",
-					Usage: "Protocol of balanced traffic, either HTTP or HTTPS",
-				},
-				cli.StringFlag{
-					Name:  "port",
-					Usage: "Port where the load balancer listens for traffic ",
-				},
-				cli.StringFlag{
-					Name:  "algorithm",
-					Usage: "Algorithm used by the load balancer to balance incoming connections between servers. It can be either roundrobin, static-rr or leastconn.",
-				},
-				cli.StringFlag{
-					Name:  "ssl_certificate",
-					Usage: "SSL certificate to use, when protocol is HTTPS (SSL termination). ",
-				},
-				cli.StringFlag{
-					Name:  "ssl_certificate_private_key",
-					Usage: "Private key of SSL certificate to use, when protocol is HTTPS (SSL termination).",
-				},
-				cli.StringFlag{
-					Name:  "domain_id",
-					Usage: "Identifier of the DNS domain to which the FQDN of the load balancer belongs ",
-				},
-				cli.StringFlag{
-					Name:  "cloud_provider_id",
-					Usage: "Identifier of the cloud provider (that provides the load_balancer service) which shall deploy the load balancer",
-				},
-			},
-		},
-		{
-			Name:   "update",
-			Usage:  "Updates an existing load balancer",
-			Action: cmdUpdate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Load balancer Id",
-				},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Logical name of the load balancer",
-				},
-				cli.StringFlag{
-					Name:  "fqdn",
-					Usage: "Fully qualified domain name of the load balancer",
-				},
-				cli.StringFlag{
-					Name:  "protocol",
-					Usage: "Protocol of balanced traffic, either HTTP or HTTPS",
-				},
-				cli.StringFlag{
-					Name:  "port",
-					Usage: "Port where the load balancer listens for traffic ",
-				},
-				cli.StringFlag{
-					Name:  "algorithm",
-					Usage: "Algorithm used by the load balancer to balance incoming connections between servers. It can be either roundrobin, static-rr or leastconn.",
-				},
-				cli.StringFlag{
-					Name:  "ssl_certificate",
-					Usage: "SSL certificate to use, when protocol is HTTPS (SSL termination). ",
-				},
-				cli.StringFlag{
-					Name:  "ssl_certificate_private_key",
-					Usage: "Private key of SSL certificate to use, when protocol is HTTPS (SSL termination).",
-				},
-			},
-		},
-		{
-			Name:   "destroy",
-			Usage:  "Destroys a load balancer",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Load balancer Id",
-				},
-			},
-		},
-		{
-			Name:   "list_balancer_nodes",
-			Usage:  "This action provides information about the nodes of the load balancer identified by the given id.",
-			Action: cmdListNodes,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "balancer_id",
-					Usage: "Load balancer Id",
-				},
-			},
-		},
-		{
-			Name:   "add_balancer_node",
-			Usage:  "This action adds a node to the load balancer identified by the given id.",
-			Action: cmdAddNode,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "balancer_id",
-					Usage: "Load balancer Id",
-				},
-				cli.StringFlag{
-					Name:  "server_id",
-					Usage: "Identifier of the node's server",
-				},
-				cli.StringFlag{
-					Name:  "port",
-					Usage: "Port where the node listens for requests",
-				},
-			},
-		},
-		{
-			Name:   "remove_balancer_node",
-			Usage:  "This action removes the node identified by the given id from the load balancer identified by the given id. ",
-			Action: cmdDelNode,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "balancer_id",
-					Usage: "Load balancer Id",
-				},
-				cli.StringFlag{
-					Name:  "node_id",
-					Usage: "Identifier of the node",
-				},
-			},
-		},
-	}
-}
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", c.String("balancer_id"), c.String("node_id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+// }
