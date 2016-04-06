@@ -137,6 +137,83 @@ func GetDomainMocked(t *testing.T, domain *types.Domain) *types.Domain {
 	return domainOut
 }
 
+// GetDomainFailErrMocked test mocked function
+func GetDomainFailErrMocked(t *testing.T, domain *types.Domain) *types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domain)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s", domain.ID)).Return(dIn, 200, fmt.Errorf("Mocked error"))
+	domainOut, err := ds.GetDomain(domain.ID)
+
+	assert.NotNil(err, "We are expecting an error")
+	assert.Nil(domainOut, "Expecting nil output")
+	assert.Equal(err.Error(), "Mocked error", "Error should be 'Mocked error'")
+
+	return domainOut
+}
+
+// GetDomainFailStatusMocked test mocked function
+func GetDomainFailStatusMocked(t *testing.T, domain *types.Domain) *types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// to json
+	dIn, err := json.Marshal(domain)
+	assert.Nil(err, "Domain test data corrupted")
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s", domain.ID)).Return(dIn, 499, nil)
+	domainOut, err := ds.GetDomain(domain.ID)
+
+	assert.NotNil(err, "We are expecting an status code error")
+	assert.Nil(domainOut, "Expecting nil output")
+	assert.Contains(err.Error(), "499", "Error should contain http code 499")
+
+	return domainOut
+}
+
+// GetDomainFailJSONMocked test mocked function
+func GetDomainFailJSONMocked(t *testing.T, domain *types.Domain) *types.Domain {
+
+	assert := assert.New(t)
+
+	// wire up
+	cs := &utils.MockConcertoService{}
+	ds, err := NewDomainService(cs)
+	assert.Nil(err, "Couldn't load domain service")
+	assert.NotNil(ds, "Domain service not instanced")
+
+	// wrong json
+	dIn := []byte{10, 20, 30}
+
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/dns/domains/%s", domain.ID)).Return(dIn, 200, nil)
+	domainOut, err := ds.GetDomain(domain.ID)
+
+	assert.NotNil(err, "We are expecting a marshalling error")
+	assert.Nil(domainOut, "Expecting nil output")
+	assert.Contains(err.Error(), "invalid character", "Error message should include the string 'invalid character'")
+
+	return domainOut
+}
+
 // CreateDomainMocked test mocked function
 func CreateDomainMocked(t *testing.T, domainIn *types.Domain) *types.Domain {
 

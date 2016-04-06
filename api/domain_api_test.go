@@ -20,13 +20,15 @@ func TestGetDomainList(t *testing.T) {
 	GetDomainListFailErrMocked(t, domainsIn)
 	GetDomainListFailStatusMocked(t, domainsIn)
 	GetDomainListFailJSONMocked(t, domainsIn)
-
 }
 
 func TestGetDomain(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 		GetDomainMocked(t, &domainIn)
+		GetDomainFailErrMocked(t, &domainIn)
+		GetDomainFailStatusMocked(t, &domainIn)
+		GetDomainFailJSONMocked(t, &domainIn)
 	}
 }
 
