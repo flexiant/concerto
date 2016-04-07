@@ -34,7 +34,7 @@ func (lb *LoadBalancerService) GetLoadBalancerList() (loadBalancers []types.Load
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &loadBalancers); err != nil {
@@ -141,10 +141,10 @@ func (lb *LoadBalancerService) GetLBNodeList(loadBalancerID string) (lBNode *[]t
 }
 
 // CreateLBNode returns a list of lBNode
-func (lb *LoadBalancerService) CreateLBNode(lBNodeVector *map[string]interface{}, domID string) (lBNode *types.LBNode, err error) {
+func (lb *LoadBalancerService) CreateLBNode(lBNodeVector *map[string]interface{}, lbID string) (lBNode *types.LBNode, err error) {
 	log.Debug("CreateLBNode")
 
-	data, status, err := lb.concertoService.Post(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", domID), lBNodeVector)
+	data, status, err := lb.concertoService.Post(fmt.Sprintf("/v1/network/load_balancers/%s/nodes", lbID), lBNodeVector)
 	if err != nil {
 		return nil, err
 	}
@@ -161,10 +161,10 @@ func (lb *LoadBalancerService) CreateLBNode(lBNodeVector *map[string]interface{}
 }
 
 // DeleteLBNode deletes a loadBalancer node
-func (lb *LoadBalancerService) DeleteLBNode(domID string, ID string) (err error) {
+func (lb *LoadBalancerService) DeleteLBNode(lbID string, ID string) (err error) {
 	log.Debug("DeleteLBNode")
 
-	data, status, err := lb.concertoService.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", domID, ID))
+	data, status, err := lb.concertoService.Delete(fmt.Sprintf("/v1/network/load_balancers/%s/nodes/%s", lbID, ID))
 	if err != nil {
 		return err
 	}
