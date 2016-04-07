@@ -514,29 +514,29 @@ func DeleteLoadBalancerFailStatusMocked(t *testing.T, loadBalancerIn *types.Load
 	assert.Contains(err.Error(), "499", "Error should contain http code 499")
 }
 
-// // GetLBNodeListMocked test mocked function
-// func GetLBNodeListMocked(t *testing.T, lbnodesIn *[]types.LoadBalancer, lbID string) *[]types.LBNode {
+// GetLBNodeListMocked test mocked function
+func GetLBNodeListMocked(t *testing.T, lbnodesIn *[]types.LoadBalancer, lbID string) *[]types.LBNode {
 
-// 	assert := assert.New(t)
+	assert := assert.New(t)
 
-// 	// wire up
-// 	cs := &utils.MockConcertoService{}
-// 	lbs, err := NewLoadBalancerService(cs)
-// 	assert.Nil(err, "Couldn't load loadBalancer service")
-// 	assert.NotNil(lbs, "LoadBalancer service not instanced")
+	// wire up
+	cs := &utils.MockConcertoService{}
+	lbs, err := NewLoadBalancerService(cs)
+	assert.Nil(err, "Couldn't load loadBalancer service")
+	assert.NotNil(lbs, "LoadBalancer service not instanced")
 
-// 	// to json
-// 	lbnsIn, err := json.Marshal(lbnodesIn)
-// 	assert.Nil(err, "lbNode test data corrupted")
+	// to json
+	lbnsIn, err := json.Marshal(lbnodesIn)
+	assert.Nil(err, "lbNode test data corrupted")
 
-// 	// call service
-// 	cs.On("Get", fmt.Sprintf("/v1/network/load_balancers/%s/nodes", lbID)).Return(lbnodesIn, 200, nil)
-// 	lbnsOut, err := lbs.GetLBNodeList(lbID)
-// 	assert.Nil(err, "Error getting lbNode list")
-// 	assert.Equal(*lbnsIn, *lbnsOut, "GetLBNodeList returned different lbNodes")
+	// call service
+	cs.On("Get", fmt.Sprintf("/v1/network/load_balancers/%s/nodes", lbID)).Return(lbnsIn, 200, nil)
+	lbnsOut, err := lbs.GetLBNodeList(lbID)
+	assert.Nil(err, "Error getting lbNode list")
+	assert.Equal(*lbnodesIn, *lbnsOut, "GetLBNodeList returned different lbNodes")
 
-// 	return lbnsOut
-// }
+	return lbnsOut
+}
 
 // // CreateLBNodeMocked test mocked function
 // func CreateLBNodeMocked(t *testing.T, lbn *types.LBNode, lbID string) *types.LBNode {

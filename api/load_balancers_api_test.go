@@ -2,9 +2,10 @@ package api
 
 import (
 	// "fmt"
+	"testing"
+
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewLoadBalancerServiceNil(t *testing.T) {
@@ -61,12 +62,12 @@ func TestDeleteLoadBalancer(t *testing.T) {
 	}
 }
 
-// func TestListLBNodes(t *testing.T) {
-// 	loadBalancersIn := testdata.GetLoadBalancerData()
-// 	for _, loadBalancerIn := range *loadBalancersIn {
-// 		GetLBNodeListMocked(t, loadBalancersIn, loadBalancerIn.Id)
-// 	}
-// }
+func TestListLBNodes(t *testing.T) {
+	loadBalancersIn := testdata.GetLoadBalancerData()
+	for _, loadBalancerIn := range *loadBalancersIn {
+		GetLBNodeListMocked(t, loadBalancersIn, loadBalancerIn.Id)
+	}
+}
 
 // func TestCreateLBNode(t *testing.T) {
 // 	fmt.Printf("in testCreateLBNode")
