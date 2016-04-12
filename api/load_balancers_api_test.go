@@ -64,30 +64,30 @@ func TestDeleteLoadBalancer(t *testing.T) {
 
 func TestListLBNodes(t *testing.T) {
 	loadBalancersIn := testdata.GetLoadBalancerData()
+	lbNodesIn := testdata.GetLBNodeData()
 	for _, loadBalancerIn := range *loadBalancersIn {
-		GetLBNodeListMocked(t, loadBalancersIn, loadBalancerIn.Id)
+		GetLBNodeListMocked(t, lbNodesIn, loadBalancerIn.Id)
 	}
 }
 
-// func TestCreateLBNode(t *testing.T) {
-// 	fmt.Printf("in testCreateLBNode")
-// 	lbnsIn := testdata.GetLBNodeData()
+func TestCreateLBNode(t *testing.T) {
+	lbnsIn := testdata.GetLBNodeData()
 
-// 	loadBalancersIn := testdata.GetLoadBalancerData()
-// 	loadBalancerIn := (*loadBalancersIn)[0]
-// 	fmt.Printf("%+v", lbnsIn)
-// 	for _, lbnIn := range *lbnsIn {
-// 		CreateLBNodeMocked(t, &lbnIn, loadBalancerIn.Id)
-// 	}
-// }
+	loadBalancersIn := testdata.GetLoadBalancerData()
+	loadBalancerIn := (*loadBalancersIn)[0]
 
-// func TestDeleteLBNodes(t *testing.T) {
-// 	lbnsIn := testdata.GetLBNodeData()
+	for _, lbnIn := range *lbnsIn {
+		CreateLBNodeMocked(t, &lbnIn, loadBalancerIn.Id)
+	}
+}
 
-// 	loadBalancersIn := testdata.GetLoadBalancerData()
-// 	loadBalancerIn := (*loadBalancersIn)[0]
+func TestDeleteLBNodes(t *testing.T) {
+	lbnsIn := testdata.GetLBNodeData()
 
-// 	for _, lbnIn := range *lbnsIn {
-// 		DeleteLBNodeMocked(t, &lbnIn, loadBalancerIn.Id)
-// 	}
-// }
+	loadBalancersIn := testdata.GetLoadBalancerData()
+	loadBalancerIn := (*loadBalancersIn)[0]
+
+	for _, lbnIn := range *lbnsIn {
+		DeleteLBNodeMocked(t, &lbnIn, loadBalancerIn.Id)
+	}
+}
