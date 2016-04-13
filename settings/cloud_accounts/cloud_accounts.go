@@ -55,169 +55,111 @@
 */
 package cloud_accounts
 
-import (
-	"encoding/json"
-	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api/types"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
-)
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	log "github.com/Sirupsen/logrus"
+// 	"github.com/codegangsta/cli"
+// 	"github.com/flexiant/concerto/api/types"
+// 	"github.com/flexiant/concerto/utils"
+// 	"github.com/flexiant/concerto/webservice"
+// 	"os"
+// 	"text/tabwriter"
+// )
 
-type Account struct {
-	Id          string `json:"id"`
-	CloudProvId string `json:"cloud_provider_id"`
-}
+// func cmdList(c *cli.Context) {
+// 	var accounts []Account
 
-type RequiredCredentials interface{}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdList(c *cli.Context) {
-	var accounts []Account
+// 	err, data, res := webservice.Get("/v1/settings/cloud_accounts")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	err = json.Unmarshal(data, &accounts)
+// 	utils.CheckError(err)
 
-	err, data, res := webservice.Get("/v1/settings/cloud_accounts")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	err, data, res = webservice.Get("/v1/cloud/cloud_providers")
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, data)
 
-	err = json.Unmarshal(data, &accounts)
-	utils.CheckError(err)
+// 	var cloudProviders []types.CloudProvider
+// 	err = json.Unmarshal(data, &cloudProviders)
+// 	utils.CheckError(err)
 
-	err, data, res = webservice.Get("/v1/cloud/cloud_providers")
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, data)
+// 	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
+// 	fmt.Fprintln(w, "ID\tCLOUD PROVIDER ID\tNAME\r")
 
-	var cloudProviders []types.CloudProvider
-	err = json.Unmarshal(data, &cloudProviders)
-	utils.CheckError(err)
+// 	for _, ac := range accounts {
+// 		acName := ""
+// 		for _, cp := range cloudProviders {
+// 			if ac.CloudProvId == cp.Id {
+// 				acName = cp.Name
+// 				break
+// 			}
+// 		}
 
-	w := tabwriter.NewWriter(os.Stdout, 15, 1, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tCLOUD PROVIDER ID\tNAME\r")
+// 		fmt.Fprintf(w, "%s\t%s\t%s\n", ac.Id, ac.CloudProvId, acName)
+// 	}
 
-	for _, ac := range accounts {
-		acName := ""
-		for _, cp := range cloudProviders {
-			if ac.CloudProvId == cp.Id {
-				acName = cp.Name
-				break
-			}
-		}
+// 	w.Flush()
+// }
 
-		fmt.Fprintf(w, "%s\t%s\t%s\n", ac.Id, ac.CloudProvId, acName)
-	}
+// func cmdCreate(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"cloud_provider_id", "credentials"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-	w.Flush()
-}
+// 	credentialsString := []byte(c.String("credentials"))
 
-func cmdCreate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"cloud_provider_id", "credentials"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	var jsonCredentials RequiredCredentials
+// 	err = json.Unmarshal(credentialsString, &jsonCredentials)
 
-	credentialsString := []byte(c.String("credentials"))
+// 	v := make(map[string]interface{})
+// 	v["cloud_provider_id"] = c.String("cloud_provider_id")
+// 	v["credentials"] = jsonCredentials
 
-	var jsonCredentials RequiredCredentials
-	err = json.Unmarshal(credentialsString, &jsonCredentials)
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Post("/v1/settings/cloud_accounts", jsonBytes)
+// 	if res == nil {
+// 		log.Fatal(err)
+// 	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
 
-	v := make(map[string]interface{})
-	v["cloud_provider_id"] = c.String("cloud_provider_id")
-	v["credentials"] = jsonCredentials
+// }
 
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Post("/v1/settings/cloud_accounts", jsonBytes)
-	if res == nil {
-		log.Fatal(err)
-	}
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
+// func cmdUpdate(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-}
+// 	v := make(map[string]interface{})
 
-func cmdUpdate(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
+// 	if c.IsSet("credentials") {
+// 		credentialsString := []byte(c.String("credentials"))
+// 		var jsonCredentials RequiredCredentials
+// 		err = json.Unmarshal(credentialsString, &jsonCredentials)
+// 		v["credentials"] = jsonCredentials
+// 	}
 
-	v := make(map[string]interface{})
+// 	jsonBytes, err := json.Marshal(v)
+// 	utils.CheckError(err)
+// 	err, res, code := webservice.Put(fmt.Sprintf("/v1/settings/cloud_accounts/%s", c.String("id")), jsonBytes)
 
-	if c.IsSet("credentials") {
-		credentialsString := []byte(c.String("credentials"))
-		var jsonCredentials RequiredCredentials
-		err = json.Unmarshal(credentialsString, &jsonCredentials)
-		v["credentials"] = jsonCredentials
-	}
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(code, res)
+// }
 
-	jsonBytes, err := json.Marshal(v)
-	utils.CheckError(err)
-	err, res, code := webservice.Put(fmt.Sprintf("/v1/settings/cloud_accounts/%s", c.String("id")), jsonBytes)
+// func cmdDelete(c *cli.Context) {
+// 	utils.FlagsRequired(c, []string{"id"})
 
-	utils.CheckError(err)
-	utils.CheckReturnCode(code, res)
-}
+// 	webservice, err := webservice.NewWebService()
+// 	utils.CheckError(err)
 
-func cmdDelete(c *cli.Context) {
-	utils.FlagsRequired(c, []string{"id"})
-
-	webservice, err := webservice.NewWebService()
-	utils.CheckError(err)
-
-	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/settings/cloud_accounts/%s", c.String("id")))
-	utils.CheckError(err)
-	utils.CheckReturnCode(res, mesg)
-}
-
-func SubCommands() []cli.Command {
-	return []cli.Command{
-		{
-			Name:   "list",
-			Usage:  "Lists the cloud accounts of the account group.",
-			Action: cmdList,
-		},
-		{
-			Name:   "create",
-			Usage:  "Creates a new cloud account.",
-			Action: cmdCreate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "cloud_provider_id",
-					Usage: "Identifier of the cloud provider",
-				},
-				cli.StringFlag{
-					Name:  "credentials",
-					Usage: "A mapping assigning a value to each of the required yes credentials of the cloud provider (JSON String)",
-				},
-			},
-		},
-		{
-			Name:   "update",
-			Usage:  "Updates an existing cloud account.",
-			Action: cmdUpdate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Account Id",
-				},
-				cli.StringFlag{
-					Name:  "credentials",
-					Usage: "A mapping assigning a value to each of the required yes credentials of the cloud provider (JSON String)",
-				},
-			},
-		},
-		{
-			Name:   "delete",
-			Usage:  "Deletes a cloud account",
-			Action: cmdDelete,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id",
-					Usage: "Account Id",
-				},
-			},
-		},
-	}
-}
+// 	err, mesg, res := webservice.Delete(fmt.Sprintf("/v1/settings/cloud_accounts/%s", c.String("id")))
+// 	utils.CheckError(err)
+// 	utils.CheckReturnCode(res, mesg)
+// }
