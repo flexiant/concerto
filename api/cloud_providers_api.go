@@ -34,7 +34,7 @@ func (cl *CloudProviderService) GetCloudProviderList() (cloudProviders []types.C
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &cloudProviders); err != nil {

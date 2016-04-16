@@ -16,4 +16,7 @@ func TestNewCloudProviderServiceNil(t *testing.T) {
 func TestGetCloudProviderList(t *testing.T) {
 	cloudProvidersIn := testdata.GetCloudProviderData()
 	GetCloudProviderListMocked(t, cloudProvidersIn)
+	GetCloudProviderListFailErrMocked(t, cloudProvidersIn)
+	GetCloudProviderListFailStatusMocked(t, cloudProvidersIn)
+	GetCloudProviderListFailJSONMocked(t, cloudProvidersIn)
 }
