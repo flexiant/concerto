@@ -1,3 +1,3 @@
 package utils
 
-const VERSION = "0.3.94"
+const VERSION = "0.3.95"
