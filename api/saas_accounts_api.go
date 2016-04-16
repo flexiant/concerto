@@ -49,7 +49,7 @@ func (dm *SaasAccountService) GetSaasAccountList() (saasAccounts []types.SaasAcc
 func (dm *SaasAccountService) CreateSaasAccount(saasAccountVector *map[string]interface{}) (saasAccount *types.SaasAccount, err error) {
 	log.Debug("CreateSaasAccount")
 
-	data, status, err := dm.concertoService.Post("/v1/settings/saas_accounts", saasAccountVector)
+	data, status, err := dm.concertoService.Post("/v1/settings/saas_accounts/", saasAccountVector)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (dm *SaasAccountService) CreateSaasAccount(saasAccountVector *map[string]in
 func (dm *SaasAccountService) UpdateSaasAccount(saasAccountVector *map[string]interface{}, ID string) (saasAccount *types.SaasAccount, err error) {
 	log.Debug("UpdateSaasAccount")
 
-	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/settings/saas_accounts%s", ID), saasAccountVector)
+	data, status, err := dm.concertoService.Put(fmt.Sprintf("/v1/settings/saas_accounts/%s", ID), saasAccountVector)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (dm *SaasAccountService) UpdateSaasAccount(saasAccountVector *map[string]in
 func (dm *SaasAccountService) DeleteSaasAccount(ID string) (err error) {
 	log.Debug("DeleteSaasAccount")
 
-	data, status, err := dm.concertoService.Delete(fmt.Sprintf("/v1/settings/saas_accounts%s", ID))
+	data, status, err := dm.concertoService.Delete(fmt.Sprintf("/v1/settings/saas_accounts/%s", ID))
 	if err != nil {
 		return err
 	}
