@@ -34,7 +34,7 @@ func (cl *ClusterService) GetClusterList() (clusters []types.Cluster, err error)
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &clusters); err != nil {
