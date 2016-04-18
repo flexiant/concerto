@@ -65,6 +65,10 @@ func TestListDomainRecords(t *testing.T) {
 	drsIn := testdata.GetDomainRecordData()
 	for _, drIn := range *drsIn {
 		GetDomainRecordListMocked(t, drsIn, drIn.ID)
+		GetDomainRecordListFailErrMocked(t, drsIn, drIn.ID)
+		GetDomainRecordListFailStatusMocked(t, drsIn, drIn.ID)
+		GetDomainRecordListFailJSONMocked(t, drsIn, drIn.ID)
+
 	}
 }
 
@@ -72,6 +76,9 @@ func TestGetDomainRecord(t *testing.T) {
 	drsIn := testdata.GetDomainRecordData()
 	for _, drIn := range *drsIn {
 		GetDomainRecordMocked(t, &drIn)
+		GetDomainRecordFailErrMocked(t, &drIn)
+		GetDomainRecordFailStatusMocked(t, &drIn)
+		GetDomainRecordFailJSONMocked(t, &drIn)
 	}
 }
 
@@ -79,6 +86,9 @@ func TestCreateDomainRecord(t *testing.T) {
 	drsIn := testdata.GetDomainRecordData()
 	for _, drIn := range *drsIn {
 		CreateDomainRecordMocked(t, &drIn)
+		CreateDomainRecordFailErrMocked(t, &drIn)
+		CreateDomainRecordFailStatusMocked(t, &drIn)
+		CreateDomainRecordFailJSONMocked(t, &drIn)
 	}
 }
 
@@ -86,6 +96,9 @@ func TestUpdateDomainRecord(t *testing.T) {
 	drsIn := testdata.GetDomainRecordData()
 	for _, drIn := range *drsIn {
 		UpdateDomainRecordMocked(t, &drIn)
+		UpdateDomainRecordFailErrMocked(t, &drIn)
+		UpdateDomainRecordFailStatusMocked(t, &drIn)
+		UpdateDomainRecordFailJSONMocked(t, &drIn)
 	}
 }
 
@@ -93,5 +106,7 @@ func TestDeleteDomainRecords(t *testing.T) {
 	drsIn := testdata.GetDomainRecordData()
 	for _, drIn := range *drsIn {
 		DeleteDomainRecordMocked(t, &drIn)
+		DeleteDomainRecordFailErrMocked(t, &drIn)
+		DeleteDomainRecordFailStatusMocked(t, &drIn)
 	}
 }
