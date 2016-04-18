@@ -14,14 +14,20 @@ func TestNewNodeServiceNil(t *testing.T) {
 }
 
 func TestGetNodeList(t *testing.T) {
-	eventsIn := testdata.GetNodeData()
-	GetNodeListMocked(t, eventsIn)
+	nodesIn := testdata.GetNodeData()
+	GetNodeListMocked(t, nodesIn)
+	GetNodeListFailErrMocked(t, nodesIn)
+	GetNodeListFailStatusMocked(t, nodesIn)
+	GetNodeListFailJSONMocked(t, nodesIn)
 }
 
 func TestCreateNode(t *testing.T) {
 	nodesIn := testdata.GetNodeData()
 	for _, nodeIn := range *nodesIn {
 		CreateNodeMocked(t, &nodeIn)
+		CreateNodeFailErrMocked(t, &nodeIn)
+		CreateNodeFailStatusMocked(t, &nodeIn)
+		CreateNodeFailErrMocked(t, &nodeIn)
 	}
 }
 
@@ -29,6 +35,8 @@ func TestDeleteNode(t *testing.T) {
 	nodesIn := testdata.GetNodeData()
 	for _, nodeIn := range *nodesIn {
 		DeleteNodeMocked(t, &nodeIn)
+		DeleteNodeFailErrMocked(t, &nodeIn)
+		DeleteNodeFailStatusMocked(t, &nodeIn)
 	}
 }
 
@@ -36,6 +44,8 @@ func TestStartNode(t *testing.T) {
 	nodesIn := testdata.GetNodeData()
 	for _, nodeIn := range *nodesIn {
 		StartNodeMocked(t, &nodeIn)
+		StartNodeFailErrMocked(t, &nodeIn)
+		StartNodeFailStatusMocked(t, &nodeIn)
 	}
 }
 
@@ -43,6 +53,8 @@ func TestStopNode(t *testing.T) {
 	nodesIn := testdata.GetNodeData()
 	for _, nodeIn := range *nodesIn {
 		StopNodeMocked(t, &nodeIn)
+		StopNodeFailErrMocked(t, &nodeIn)
+		StopNodeFailStatusMocked(t, &nodeIn)
 	}
 }
 
@@ -50,5 +62,7 @@ func TestRestartNode(t *testing.T) {
 	nodesIn := testdata.GetNodeData()
 	for _, nodeIn := range *nodesIn {
 		RestartNodeMocked(t, &nodeIn)
+		RestartNodeFailErrMocked(t, &nodeIn)
+		RestartNodeFailStatusMocked(t, &nodeIn)
 	}
 }

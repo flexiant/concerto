@@ -46,7 +46,6 @@ func TestStartCluster(t *testing.T) {
 		StartClusterMocked(t, &clusterIn)
 		StartClusterFailErrMocked(t, &clusterIn)
 		StartClusterFailStatusMocked(t, &clusterIn)
-		// StartClusterFailJSONMocked(t, &clusterIn)
 	}
 }
 
@@ -56,7 +55,6 @@ func TestStopCluster(t *testing.T) {
 		StopClusterMocked(t, &clusterIn)
 		StopClusterFailErrMocked(t, &clusterIn)
 		StopClusterFailStatusMocked(t, &clusterIn)
-		// StopClusterFailJSONMocked(t, &clusterIn)
 	}
 }
 
@@ -66,6 +64,5 @@ func TestEmptyCluster(t *testing.T) {
 		EmptyClusterMocked(t, &clusterIn)
 		EmptyClusterFailErrMocked(t, &clusterIn)
 		EmptyClusterFailStatusMocked(t, &clusterIn)
-		// EmptyClusterFailJSONMocked(t, &clusterIn)
 	}
 }

@@ -34,7 +34,7 @@ func (cl *NodeService) GetNodeList() (nodes []types.Node, err error) {
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &nodes); err != nil {
