@@ -27,7 +27,7 @@ func TestCreateNode(t *testing.T) {
 		CreateNodeMocked(t, &nodeIn)
 		CreateNodeFailErrMocked(t, &nodeIn)
 		CreateNodeFailStatusMocked(t, &nodeIn)
-		CreateNodeFailErrMocked(t, &nodeIn)
+		CreateNodeFailJSONMocked(t, &nodeIn)
 	}
 }
 

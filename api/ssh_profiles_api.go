@@ -34,7 +34,7 @@ func (dm *SSHProfileService) GetSSHProfileList() (sshProfiles []types.SSHProfile
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &sshProfiles); err != nil {
