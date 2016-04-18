@@ -34,7 +34,7 @@ func (dm *ServerPlanService) GetServerPlanList(ProviderID string) (serverPlans [
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &serverPlans); err != nil {
