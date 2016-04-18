@@ -34,7 +34,7 @@ func (cl *GenericImageService) GetGenericImageList() (genericImages []types.Gene
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &genericImages); err != nil {

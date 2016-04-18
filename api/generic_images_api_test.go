@@ -16,4 +16,7 @@ func TestNewGenericImageServiceNil(t *testing.T) {
 func TestGetGenericImageList(t *testing.T) {
 	genericImagesIn := testdata.GetGenericImageData()
 	GetGenericImageListMocked(t, genericImagesIn)
+	GetGenericImageListFailErrMocked(t, genericImagesIn)
+	GetGenericImageListFailStatusMocked(t, genericImagesIn)
+	GetGenericImageListFailJSONMocked(t, genericImagesIn)
 }
