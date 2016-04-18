@@ -16,4 +16,7 @@ func TestNewSaasProviderServiceNil(t *testing.T) {
 func TestGetSaasProviderList(t *testing.T) {
 	saasProvidersIn := testdata.GetSaasProviderData()
 	GetSaasProviderListMocked(t, saasProvidersIn)
+	GetSaasProviderListFailErrMocked(t, saasProvidersIn)
+	GetSaasProviderListFailStatusMocked(t, saasProvidersIn)
+	GetSaasProviderListFailJSONMocked(t, saasProvidersIn)
 }

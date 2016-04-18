@@ -34,7 +34,7 @@ func (cl *SaasProviderService) GetSaasProviderList() (saasProviders []types.Saas
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &saasProviders); err != nil {
