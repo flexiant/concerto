@@ -34,7 +34,7 @@ func (dm *FirewallProfileService) GetFirewallProfileList() (firewallProfiles []t
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &firewallProfiles); err != nil {
