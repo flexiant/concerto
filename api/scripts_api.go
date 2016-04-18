@@ -25,7 +25,7 @@ func NewScriptService(concertoService utils.ConcertoService) (*ScriptService, er
 }
 
 // GetScriptsList returns the list of scripts as an array of Scripts
-func (sc *ScriptService) GetScriptsList() (scripts []types.Script, err error) {
+func (sc *ScriptService) GetScriptList() (scripts []types.Script, err error) {
 	log.Debug("GetScriptsList")
 
 	data, status, err := sc.concertoService.Get("/v1/blueprint/scripts")
@@ -34,7 +34,7 @@ func (sc *ScriptService) GetScriptsList() (scripts []types.Script, err error) {
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &scripts); err != nil {
