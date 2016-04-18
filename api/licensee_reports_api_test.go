@@ -16,11 +16,17 @@ func TestNewLicenseeReportServiceNil(t *testing.T) {
 func TestGetLicenseeReportList(t *testing.T) {
 	licenseeReportsIn := testdata.GetLicenseeReportsData()
 	GetLicenseeReportListMocked(t, licenseeReportsIn)
+	GetLicenseeReportListFailErrMocked(t, licenseeReportsIn)
+	GetLicenseeReportListFailStatusMocked(t, licenseeReportsIn)
+	GetLicenseeReportListFailJSONMocked(t, licenseeReportsIn)
 }
 
 func TestGetLicenseeReport(t *testing.T) {
 	licenseeReportsIn := testdata.GetLicenseeReportsData()
 	for _, licenseeReportIn := range *licenseeReportsIn {
 		GetLicenseeReportMocked(t, &licenseeReportIn)
+		GetLicenseeReportFailErrMocked(t, &licenseeReportIn)
+		GetLicenseeReportFailStatusMocked(t, &licenseeReportIn)
+		GetLicenseeReportFailJSONMocked(t, &licenseeReportIn)
 	}
 }

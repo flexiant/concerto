@@ -36,7 +36,7 @@ func (rs *LicenseeReportService) GetLicenseeReportList() (reports []types.Licens
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &reports); err != nil {
