@@ -34,7 +34,7 @@ func (cl *EventService) GetEventList() (events []types.Event, err error) {
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &events); err != nil {
@@ -54,7 +54,7 @@ func (cl *EventService) GetSysEventList() (events []types.Event, err error) {
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &events); err != nil {

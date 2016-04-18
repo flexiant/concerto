@@ -16,9 +16,15 @@ func TestNewEventServiceNil(t *testing.T) {
 func TestGetEventList(t *testing.T) {
 	eventsIn := testdata.GetEventData()
 	GetEventListMocked(t, eventsIn)
+	GetEventListFailErrMocked(t, eventsIn)
+	GetEventListFailStatusMocked(t, eventsIn)
+	GetEventListFailJSONMocked(t, eventsIn)
 }
 
 func TestGetSysEventList(t *testing.T) {
 	eventsIn := testdata.GetEventData()
 	GetSysEventListMocked(t, eventsIn)
+	GetSysEventListFailErrMocked(t, eventsIn)
+	GetSysEventListFailStatusMocked(t, eventsIn)
+	GetSysEventListFailJSONMocked(t, eventsIn)
 }
