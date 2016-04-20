@@ -19,4 +19,7 @@ func TestGetWizServerPlanList(t *testing.T) {
 	ProviderID := "fakeProviderID"
 	serverPlansIn := testdata.GetServerPlanData()
 	GetWizServerPlanListMocked(t, serverPlansIn, AppID, LocID, ProviderID)
+	GetWizServerPlanListFailErrMocked(t, serverPlansIn, AppID, LocID, ProviderID)
+	GetWizServerPlanListFailStatusMocked(t, serverPlansIn, AppID, LocID, ProviderID)
+	GetWizServerPlanListFailJSONMocked(t, serverPlansIn, AppID, LocID, ProviderID)
 }
