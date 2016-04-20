@@ -34,7 +34,7 @@ func (dm *WorkspaceService) GetWorkspaceList() (workspaces []types.Workspace, er
 	}
 
 	if err = utils.CheckStandardStatus(status, data); err != nil {
-
+		return nil, err
 	}
 
 	if err = json.Unmarshal(data, &workspaces); err != nil {
