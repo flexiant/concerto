@@ -18,4 +18,7 @@ func TestGetWizCloudProviderList(t *testing.T) {
 	LocID := "fakeLocID"
 	cloudProvidersIn := testdata.GetCloudProviderData()
 	GetWizCloudProviderListMocked(t, cloudProvidersIn, AppID, LocID)
+	GetWizCloudProviderListFailErrMocked(t, cloudProvidersIn, AppID, LocID)
+	GetWizCloudProviderListFailStatusMocked(t, cloudProvidersIn, AppID, LocID)
+	GetWizCloudProviderListFailJSONMocked(t, cloudProvidersIn, AppID, LocID)
 }
