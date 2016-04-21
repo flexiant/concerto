@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/settings"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpSaasAccount prepares common resources to send request to Concerto API
-func WireUpSaasAccount(c *cli.Context) (ds *api.SaasAccountService, f format.Formatter) {
+func WireUpSaasAccount(c *cli.Context) (ds *settings.SaasAccountService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpSaasAccount(c *cli.Context) (ds *api.SaasAccountService, f format.For
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewSaasAccountService(hcs)
+	ds, err = settings.NewSaasAccountService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up saasAccount service", err)
 	}

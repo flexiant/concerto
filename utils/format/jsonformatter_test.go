@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/blueprint"
+	"github.com/flexiant/concerto/api/dns"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +18,7 @@ func TestPrintItemDomainJSON(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 
-		domainOut := api.GetDomainMocked(t, &domainIn)
+		domainOut := dns.GetDomainMocked(t, &domainIn)
 
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
@@ -40,7 +41,7 @@ func TestPrintItemTemplateJSON(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	for _, templateIn := range *templatesIn {
 
-		templateOut := api.GetTemplateMocked(t, &templateIn)
+		templateOut := blueprint.GetTemplateMocked(t, &templateIn)
 
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
@@ -61,7 +62,7 @@ func TestPrintListDomainsJSON(t *testing.T) {
 
 	assert := assert.New(t)
 	domainsIn := testdata.GetDomainData()
-	domainOut := api.GetDomainListMocked(t, domainsIn)
+	domainOut := dns.GetDomainListMocked(t, domainsIn)
 
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)
@@ -81,7 +82,7 @@ func TestPrintListTemplateJSON(t *testing.T) {
 
 	assert := assert.New(t)
 	templatesIn := testdata.GetTemplateData()
-	templatesOut := api.GetTemplateListMocked(t, templatesIn)
+	templatesOut := blueprint.GetTemplateListMocked(t, templatesIn)
 
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)

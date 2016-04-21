@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/dns"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpDomain prepares common resources to send request to Concerto API
-func WireUpDomain(c *cli.Context) (ds *api.DomainService, f format.Formatter) {
+func WireUpDomain(c *cli.Context) (ds *dns.DomainService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpDomain(c *cli.Context) (ds *api.DomainService, f format.Formatter) {
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewDomainService(hcs)
+	ds, err = dns.NewDomainService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up domain service", err)
 	}

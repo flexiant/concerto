@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/licensee"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpLicenseeReport prepares common resources to send request to Concerto API
-func WireUpLicenseeReport(c *cli.Context) (ns *api.LicenseeReportService, f format.Formatter) {
+func WireUpLicenseeReport(c *cli.Context) (ns *licensee.LicenseeReportService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpLicenseeReport(c *cli.Context) (ns *api.LicenseeReportService, f form
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ns, err = api.NewLicenseeReportService(hcs)
+	ns, err = licensee.NewLicenseeReportService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up report service", err)
 	}

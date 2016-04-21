@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/blueprint"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpScript prepares common resources to send request to Concerto API
-func WireUpScript(c *cli.Context) (scs *api.ScriptService, f format.Formatter) {
+func WireUpScript(c *cli.Context) (scs *blueprint.ScriptService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpScript(c *cli.Context) (scs *api.ScriptService, f format.Formatter) {
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	scs, err = api.NewScriptService(hcs)
+	scs, err = blueprint.NewScriptService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up script service", err)
 	}

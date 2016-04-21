@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/cloud"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpServer prepares common resources to send request to Concerto API
-func WireUpServer(c *cli.Context) (ds *api.ServerService, f format.Formatter) {
+func WireUpServer(c *cli.Context) (ds *cloud.ServerService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpServer(c *cli.Context) (ds *api.ServerService, f format.Formatter) {
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewServerService(hcs)
+	ds, err = cloud.NewServerService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up server service", err)
 	}

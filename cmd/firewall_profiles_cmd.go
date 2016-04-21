@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/network"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpFirewallProfile prepares common resources to send request to Concerto API
-func WireUpFirewallProfile(c *cli.Context) (ds *api.FirewallProfileService, f format.Formatter) {
+func WireUpFirewallProfile(c *cli.Context) (ds *network.FirewallProfileService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpFirewallProfile(c *cli.Context) (ds *api.FirewallProfileService, f fo
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewFirewallProfileService(hcs)
+	ds, err = network.NewFirewallProfileService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up firewallProfile service", err)
 	}

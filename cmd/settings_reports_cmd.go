@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/settings"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpSettingsReport prepares common resources to send request to Concerto API
-func WireUpSettingsReport(c *cli.Context) (ns *api.SettingsReportService, f format.Formatter) {
+func WireUpSettingsReport(c *cli.Context) (ns *settings.SettingsReportService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpSettingsReport(c *cli.Context) (ns *api.SettingsReportService, f form
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ns, err = api.NewSettingsReportService(hcs)
+	ns, err = settings.NewSettingsReportService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up report service", err)
 	}

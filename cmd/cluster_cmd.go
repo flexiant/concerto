@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/cluster"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpCluster prepares common resources to send request to Concerto API
-func WireUpCluster(c *cli.Context) (cs *api.ClusterService, f format.Formatter) {
+func WireUpCluster(c *cli.Context) (cs *cluster.ClusterService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpCluster(c *cli.Context) (cs *api.ClusterService, f format.Formatter) 
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	cs, err = api.NewClusterService(hcs)
+	cs, err = cluster.NewClusterService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up cluster service", err)
 	}

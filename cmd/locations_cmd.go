@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/wizard"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpLocation prepares common resources to send request to Concerto API
-func WireUpLocation(c *cli.Context) (ds *api.LocationService, f format.Formatter) {
+func WireUpLocation(c *cli.Context) (ds *wizard.LocationService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpLocation(c *cli.Context) (ds *api.LocationService, f format.Formatter
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewLocationService(hcs)
+	ds, err = wizard.NewLocationService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up location service", err)
 	}

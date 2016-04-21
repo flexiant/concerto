@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/network"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpLoadBalancer prepares common resources to send request to Concerto API
-func WireUpLoadBalancer(c *cli.Context) (ds *api.LoadBalancerService, f format.Formatter) {
+func WireUpLoadBalancer(c *cli.Context) (ds *network.LoadBalancerService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpLoadBalancer(c *cli.Context) (ds *api.LoadBalancerService, f format.F
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewLoadBalancerService(hcs)
+	ds, err = network.NewLoadBalancerService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up loadBalancer service", err)
 	}

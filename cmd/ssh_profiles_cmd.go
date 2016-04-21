@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/cloud"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpSSHProfile prepares common resources to send request to Concerto API
-func WireUpSSHProfile(c *cli.Context) (ds *api.SSHProfileService, f format.Formatter) {
+func WireUpSSHProfile(c *cli.Context) (ds *cloud.SSHProfileService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpSSHProfile(c *cli.Context) (ds *api.SSHProfileService, f format.Forma
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ds, err = api.NewSSHProfileService(hcs)
+	ds, err = cloud.NewSSHProfileService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up sshProfile service", err)
 	}

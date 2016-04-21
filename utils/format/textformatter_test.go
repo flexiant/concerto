@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/admin"
+	"github.com/flexiant/concerto/api/blueprint"
+	"github.com/flexiant/concerto/api/dns"
 	"github.com/flexiant/concerto/testdata"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +19,7 @@ func TestPrintItemDomainTXT(t *testing.T) {
 	domainsIn := testdata.GetDomainData()
 	for _, domainIn := range *domainsIn {
 
-		domainOut := api.GetDomainMocked(t, &domainIn)
+		domainOut := dns.GetDomainMocked(t, &domainIn)
 
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
@@ -41,7 +43,7 @@ func TestPrintItemTemplateTXT(t *testing.T) {
 	templatesIn := testdata.GetTemplateData()
 	for _, templateIn := range *templatesIn {
 
-		templateOut := api.GetTemplateMocked(t, &templateIn)
+		templateOut := blueprint.GetTemplateMocked(t, &templateIn)
 
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
@@ -63,7 +65,7 @@ func TestPrintListDomainsTXT(t *testing.T) {
 
 	assert := assert.New(t)
 	domainsIn := testdata.GetDomainData()
-	domainOut := api.GetDomainListMocked(t, domainsIn)
+	domainOut := dns.GetDomainListMocked(t, domainsIn)
 
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)
@@ -83,7 +85,7 @@ func TestPrintListTemplateTXT(t *testing.T) {
 
 	assert := assert.New(t)
 	templatesIn := testdata.GetTemplateData()
-	templatesOut := api.GetTemplateListMocked(t, templatesIn)
+	templatesOut := blueprint.GetTemplateListMocked(t, templatesIn)
 
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)
@@ -105,7 +107,7 @@ func TestPrintListTemplateScriptsTXT(t *testing.T) {
 	tScriptsIn := testdata.GetTemplateScriptData()
 
 	for _, tsIn := range *tScriptsIn {
-		tScriptsOut := api.GetTemplateScriptListMocked(t, tScriptsIn, tsIn.ID, tsIn.Type)
+		tScriptsOut := blueprint.GetTemplateScriptListMocked(t, tScriptsIn, tsIn.ID, tsIn.Type)
 
 		var b bytes.Buffer
 		mockOut := bufio.NewWriter(&b)
@@ -159,7 +161,7 @@ func TestPrintError(t *testing.T) {
 func TestPrintListReportsTXT(t *testing.T) {
 	assert := assert.New(t)
 	AdminReportsIn := testdata.GetAdminReportsData()
-	AdminReportsOut := api.GetAdminReportListMocked(t, AdminReportsIn)
+	AdminReportsOut := admin.GetAdminReportListMocked(t, AdminReportsIn)
 
 	var b bytes.Buffer
 	mockOut := bufio.NewWriter(&b)

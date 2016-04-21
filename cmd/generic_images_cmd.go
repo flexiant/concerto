@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api"
+	"github.com/flexiant/concerto/api/cloud"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/utils/format"
 )
 
 // WireUpGenericImage prepares common resources to send request to Concerto API
-func WireUpGenericImage(c *cli.Context) (ns *api.GenericImageService, f format.Formatter) {
+func WireUpGenericImage(c *cli.Context) (ns *cloud.GenericImageService, f format.Formatter) {
 
 	f = format.GetFormatter()
 
@@ -20,7 +20,7 @@ func WireUpGenericImage(c *cli.Context) (ns *api.GenericImageService, f format.F
 	if err != nil {
 		f.PrintFatal("Couldn't wire up concerto service", err)
 	}
-	ns, err = api.NewGenericImageService(hcs)
+	ns, err = cloud.NewGenericImageService(hcs)
 	if err != nil {
 		f.PrintFatal("Couldn't wire up genericImage service", err)
 	}
