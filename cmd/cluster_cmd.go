@@ -29,7 +29,7 @@ func WireUpCluster(c *cli.Context) (cs *cluster.ClusterService, f format.Formatt
 }
 
 // ClusterList subcommand function
-func ClusterList(c *cli.Context) {
+func ClusterList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	clusterSvc, formatter := WireUpCluster(c)
 
@@ -40,6 +40,7 @@ func ClusterList(c *cli.Context) {
 	if err = formatter.PrintList(clusters); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ClusterCreate subcommand function

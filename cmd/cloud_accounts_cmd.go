@@ -29,7 +29,7 @@ func WireUpCloudAccount(c *cli.Context) (ds *settings.CloudAccountService, f for
 }
 
 // CloudAccountList subcommand function
-func CloudAccountList(c *cli.Context) {
+func CloudAccountList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	cloudAccountSvc, formatter := WireUpCloudAccount(c)
 
@@ -40,10 +40,12 @@ func CloudAccountList(c *cli.Context) {
 	if err = formatter.PrintList(cloudAccounts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+
+	return nil
 }
 
 // CloudAccountCreate subcommand function
-func CloudAccountCreate(c *cli.Context) {
+func CloudAccountCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	cloudAccountSvc, formatter := WireUpCloudAccount(c)
 
@@ -65,10 +67,12 @@ func CloudAccountCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*cloudAccount); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+
+	return nil
 }
 
 // CloudAccountUpdate subcommand function
-func CloudAccountUpdate(c *cli.Context) {
+func CloudAccountUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	cloudAccountSvc, formatter := WireUpCloudAccount(c)
 
@@ -80,10 +84,12 @@ func CloudAccountUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*cloudAccount); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+
+	return nil
 }
 
 // CloudAccountDelete subcommand function
-func CloudAccountDelete(c *cli.Context) {
+func CloudAccountDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	cloudAccountSvc, formatter := WireUpCloudAccount(c)
 
@@ -92,4 +98,6 @@ func CloudAccountDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete cloudAccount", err)
 	}
+
+	return nil
 }
