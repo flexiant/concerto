@@ -29,7 +29,7 @@ func WireUpLoadBalancer(c *cli.Context) (ds *network.LoadBalancerService, f form
 }
 
 // LoadBalancerList subcommand function
-func LoadBalancerList(c *cli.Context) {
+func LoadBalancerList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -40,10 +40,11 @@ func LoadBalancerList(c *cli.Context) {
 	if err = formatter.PrintList(loadBalancers); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // LoadBalancerShow subcommand function
-func LoadBalancerShow(c *cli.Context) {
+func LoadBalancerShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -55,10 +56,11 @@ func LoadBalancerShow(c *cli.Context) {
 	if err = formatter.PrintItem(*loadBalancer); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // LoadBalancerCreate subcommand function
-func LoadBalancerCreate(c *cli.Context) {
+func LoadBalancerCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -77,10 +79,11 @@ func LoadBalancerCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*loadBalancer); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // LoadBalancerUpdate subcommand function
-func LoadBalancerUpdate(c *cli.Context) {
+func LoadBalancerUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -92,10 +95,11 @@ func LoadBalancerUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*loadBalancer); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // LoadBalancerDelete subcommand function
-func LoadBalancerDelete(c *cli.Context) {
+func LoadBalancerDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -104,10 +108,11 @@ func LoadBalancerDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete loadBalancer", err)
 	}
+	return nil
 }
 
 // LBNodeList subcommand function
-func LBNodeList(c *cli.Context) {
+func LBNodeList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -119,10 +124,11 @@ func LBNodeList(c *cli.Context) {
 	if err = formatter.PrintList(*loadBalancerRecords); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // LBNodeCreate subcommand function
-func LBNodeCreate(c *cli.Context) {
+func LBNodeCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -134,10 +140,11 @@ func LBNodeCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*loadBalancer); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // LBNodeDelete subcommand function
-func LBNodeDelete(c *cli.Context) {
+func LBNodeDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	loadBalancerSvc, formatter := WireUpLoadBalancer(c)
 
@@ -146,4 +153,5 @@ func LBNodeDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete loadBalancer node", err)
 	}
+	return nil
 }

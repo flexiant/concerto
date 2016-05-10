@@ -29,7 +29,7 @@ func WireUpSaasAccount(c *cli.Context) (ds *settings.SaasAccountService, f forma
 }
 
 // SaasAccountList subcommand function
-func SaasAccountList(c *cli.Context) {
+func SaasAccountList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	saasAccountSvc, formatter := WireUpSaasAccount(c)
 
@@ -40,10 +40,11 @@ func SaasAccountList(c *cli.Context) {
 	if err = formatter.PrintList(saasAccounts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SaasAccountCreate subcommand function
-func SaasAccountCreate(c *cli.Context) {
+func SaasAccountCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	saasAccountSvc, formatter := WireUpSaasAccount(c)
 
@@ -55,10 +56,11 @@ func SaasAccountCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*saasAccount); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SaasAccountUpdate subcommand function
-func SaasAccountUpdate(c *cli.Context) {
+func SaasAccountUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	saasAccountSvc, formatter := WireUpSaasAccount(c)
 
@@ -70,10 +72,11 @@ func SaasAccountUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*saasAccount); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SaasAccountDelete subcommand function
-func SaasAccountDelete(c *cli.Context) {
+func SaasAccountDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	saasAccountSvc, formatter := WireUpSaasAccount(c)
 
@@ -82,4 +85,5 @@ func SaasAccountDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete saasAccount", err)
 	}
+	return nil
 }

@@ -28,8 +28,8 @@ func WireUpReport(c *cli.Context) (ns *admin.ReportService, f format.Formatter) 
 	return ns, f
 }
 
-// ReportList subcommand function
-func AdminReportList(c *cli.Context) {
+// AdminReportList subcommand function
+func AdminReportList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	reportSvc, formatter := WireUpReport(c)
 
@@ -40,10 +40,11 @@ func AdminReportList(c *cli.Context) {
 	if err = formatter.PrintList(reports); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
-// ReportShow subcommand function
-func AdminReportShow(c *cli.Context) {
+// AdminReportShow subcommand function
+func AdminReportShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	reportSvc, formatter := WireUpReport(c)
 
@@ -55,4 +56,5 @@ func AdminReportShow(c *cli.Context) {
 	if err = formatter.PrintList(report); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

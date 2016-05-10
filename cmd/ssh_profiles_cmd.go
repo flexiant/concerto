@@ -29,7 +29,7 @@ func WireUpSSHProfile(c *cli.Context) (ds *cloud.SSHProfileService, f format.For
 }
 
 // SSHProfileList subcommand function
-func SSHProfileList(c *cli.Context) {
+func SSHProfileList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	sshProfileSvc, formatter := WireUpSSHProfile(c)
 
@@ -40,10 +40,11 @@ func SSHProfileList(c *cli.Context) {
 	if err = formatter.PrintList(sshProfiles); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SSHProfileShow subcommand function
-func SSHProfileShow(c *cli.Context) {
+func SSHProfileShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	sshProfileSvc, formatter := WireUpSSHProfile(c)
 
@@ -55,10 +56,11 @@ func SSHProfileShow(c *cli.Context) {
 	if err = formatter.PrintItem(*sshProfile); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SSHProfileCreate subcommand function
-func SSHProfileCreate(c *cli.Context) {
+func SSHProfileCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	sshProfileSvc, formatter := WireUpSSHProfile(c)
 
@@ -70,10 +72,11 @@ func SSHProfileCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*sshProfile); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SSHProfileUpdate subcommand function
-func SSHProfileUpdate(c *cli.Context) {
+func SSHProfileUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	sshProfileSvc, formatter := WireUpSSHProfile(c)
 
@@ -85,10 +88,11 @@ func SSHProfileUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*sshProfile); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SSHProfileDelete subcommand function
-func SSHProfileDelete(c *cli.Context) {
+func SSHProfileDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	sshProfileSvc, formatter := WireUpSSHProfile(c)
 
@@ -97,4 +101,5 @@ func SSHProfileDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete sshProfile", err)
 	}
+	return nil
 }

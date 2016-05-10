@@ -29,7 +29,7 @@ func WireUpLocation(c *cli.Context) (ds *wizard.LocationService, f format.Format
 }
 
 // LocationList subcommand function
-func LocationList(c *cli.Context) {
+func LocationList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	locationSvc, formatter := WireUpLocation(c)
 
@@ -40,4 +40,5 @@ func LocationList(c *cli.Context) {
 	if err = formatter.PrintList(locations); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

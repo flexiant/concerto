@@ -29,7 +29,7 @@ func WireUpCloudProvider(c *cli.Context) (cs *cloud.CloudProviderService, f form
 }
 
 // CloudProviderList subcommand function
-func CloudProviderList(c *cli.Context) {
+func CloudProviderList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	cloudProviderSvc, formatter := WireUpCloudProvider(c)
 
@@ -40,4 +40,5 @@ func CloudProviderList(c *cli.Context) {
 	if err = formatter.PrintList(cloudProviders); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

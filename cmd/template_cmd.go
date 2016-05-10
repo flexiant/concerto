@@ -29,7 +29,7 @@ func WireUpTemplate(c *cli.Context) (ts *blueprint.TemplateService, f format.For
 }
 
 // TemplateList subcommand function
-func TemplateList(c *cli.Context) {
+func TemplateList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateSvc, formatter := WireUpTemplate(c)
 
@@ -40,10 +40,11 @@ func TemplateList(c *cli.Context) {
 	if err = formatter.PrintList(templates); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateShow subcommand function
-func TemplateShow(c *cli.Context) {
+func TemplateShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateSvc, formatter := WireUpTemplate(c)
 
@@ -55,10 +56,11 @@ func TemplateShow(c *cli.Context) {
 	if err = formatter.PrintItem(*template); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateCreate subcommand function
-func TemplateCreate(c *cli.Context) {
+func TemplateCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateSvc, formatter := WireUpTemplate(c)
 
@@ -77,10 +79,11 @@ func TemplateCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*template); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateUpdate subcommand function
-func TemplateUpdate(c *cli.Context) {
+func TemplateUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateSvc, formatter := WireUpTemplate(c)
 
@@ -99,10 +102,11 @@ func TemplateUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*template); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateDelete subcommand function
-func TemplateDelete(c *cli.Context) {
+func TemplateDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateSvc, formatter := WireUpTemplate(c)
 
@@ -111,12 +115,13 @@ func TemplateDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete template", err)
 	}
+	return nil
 }
 
 // =========== Template Scripts =============
 
 // TemplateScriptList subcommand function
-func TemplateScriptList(c *cli.Context) {
+func TemplateScriptList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
@@ -128,10 +133,11 @@ func TemplateScriptList(c *cli.Context) {
 	if err = formatter.PrintList(*templateScripts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateScriptShow subcommand function
-func TemplateScriptShow(c *cli.Context) {
+func TemplateScriptShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
@@ -143,10 +149,11 @@ func TemplateScriptShow(c *cli.Context) {
 	if err = formatter.PrintItem(*templateScript); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateScriptCreate subcommand function
-func TemplateScriptCreate(c *cli.Context) {
+func TemplateScriptCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
@@ -165,10 +172,11 @@ func TemplateScriptCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*templateScript); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateScriptUpdate subcommand function
-func TemplateScriptUpdate(c *cli.Context) {
+func TemplateScriptUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
@@ -188,10 +196,11 @@ func TemplateScriptUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*templateScript); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // TemplateScriptDelete subcommand function
-func TemplateScriptDelete(c *cli.Context) {
+func TemplateScriptDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
@@ -200,10 +209,11 @@ func TemplateScriptDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete templateScript", err)
 	}
+	return nil
 }
 
 // TemplateScriptReorder subcommand function
-func TemplateScriptReorder(c *cli.Context) {
+func TemplateScriptReorder(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateScriptSvc, formatter := WireUpTemplate(c)
 
@@ -220,12 +230,13 @@ func TemplateScriptReorder(c *cli.Context) {
 	if err = formatter.PrintList(*templateScript); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // =========== Template Servers =============
 
 // TemplateServersList subcommand function
-func TemplateServersList(c *cli.Context) {
+func TemplateServersList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	templateSvc, formatter := WireUpTemplate(c)
 
@@ -237,4 +248,5 @@ func TemplateServersList(c *cli.Context) {
 	if err = formatter.PrintList(*templateServers); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

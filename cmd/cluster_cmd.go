@@ -44,7 +44,7 @@ func ClusterList(c *cli.Context) error {
 }
 
 // ClusterCreate subcommand function
-func ClusterCreate(c *cli.Context) {
+func ClusterCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	clusterSvc, formatter := WireUpCluster(c)
 
@@ -56,10 +56,11 @@ func ClusterCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*cluster); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ClusterDelete subcommand function
-func ClusterDelete(c *cli.Context) {
+func ClusterDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	clusterSvc, formatter := WireUpCluster(c)
 
@@ -68,10 +69,11 @@ func ClusterDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete cluster", err)
 	}
+	return nil
 }
 
 // ClusterStart subcommand function
-func ClusterStart(c *cli.Context) {
+func ClusterStart(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	clusterSvc, formatter := WireUpCluster(c)
 
@@ -80,10 +82,11 @@ func ClusterStart(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't start cluster", err)
 	}
+	return nil
 }
 
 // ClusterStop subcommand function
-func ClusterStop(c *cli.Context) {
+func ClusterStop(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	clusterSvc, formatter := WireUpCluster(c)
 
@@ -92,10 +95,11 @@ func ClusterStop(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't stop cluster", err)
 	}
+	return nil
 }
 
 // ClusterEmpty subcommand function
-func ClusterEmpty(c *cli.Context) {
+func ClusterEmpty(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	clusterSvc, formatter := WireUpCluster(c)
 
@@ -104,4 +108,5 @@ func ClusterEmpty(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't empty cluster", err)
 	}
+	return nil
 }

@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/utils/format"
 	"os"
 	"runtime"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/utils/format"
 )
 
 // debugCmdFuncInfo writes context info about the calling function

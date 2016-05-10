@@ -29,7 +29,7 @@ func WireUpScript(c *cli.Context) (scs *blueprint.ScriptService, f format.Format
 }
 
 // ScriptsList subcommand function
-func ScriptsList(c *cli.Context) {
+func ScriptsList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	scriptSvc, formatter := WireUpScript(c)
 
@@ -40,10 +40,11 @@ func ScriptsList(c *cli.Context) {
 	if err = formatter.PrintList(scripts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ScriptShow subcommand function
-func ScriptShow(c *cli.Context) {
+func ScriptShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	scriptSvc, formatter := WireUpScript(c)
 
@@ -55,10 +56,11 @@ func ScriptShow(c *cli.Context) {
 	if err = formatter.PrintItem(*script); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ScriptCreate subcommand function
-func ScriptCreate(c *cli.Context) {
+func ScriptCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	scriptSvc, formatter := WireUpScript(c)
 
@@ -70,10 +72,11 @@ func ScriptCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*script); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ScriptUpdate subcommand function
-func ScriptUpdate(c *cli.Context) {
+func ScriptUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	scriptSvc, formatter := WireUpScript(c)
 
@@ -85,10 +88,11 @@ func ScriptUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*script); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ScriptDelete subcommand function
-func ScriptDelete(c *cli.Context) {
+func ScriptDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	scriptSvc, formatter := WireUpScript(c)
 
@@ -97,4 +101,5 @@ func ScriptDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete script", err)
 	}
+	return nil
 }

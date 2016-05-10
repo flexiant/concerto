@@ -29,7 +29,7 @@ func WireUpSaasProvider(c *cli.Context) (cs *cloud.SaasProviderService, f format
 }
 
 // SaasProviderList subcommand function
-func SaasProviderList(c *cli.Context) {
+func SaasProviderList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	saasProviderSvc, formatter := WireUpSaasProvider(c)
 
@@ -40,4 +40,5 @@ func SaasProviderList(c *cli.Context) {
 	if err = formatter.PrintList(saasProviders); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

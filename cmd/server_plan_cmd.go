@@ -29,7 +29,7 @@ func WireUpServerPlan(c *cli.Context) (ds *cloud.ServerPlanService, f format.For
 }
 
 // ServerPlanList subcommand function
-func ServerPlanList(c *cli.Context) {
+func ServerPlanList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverPlanSvc, formatter := WireUpServerPlan(c)
 
@@ -40,10 +40,11 @@ func ServerPlanList(c *cli.Context) {
 	if err = formatter.PrintList(serverPlans); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerPlanShow subcommand function
-func ServerPlanShow(c *cli.Context) {
+func ServerPlanShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverPlanSvc, formatter := WireUpServerPlan(c)
 
@@ -55,4 +56,5 @@ func ServerPlanShow(c *cli.Context) {
 	if err = formatter.PrintItem(*serverPlan); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

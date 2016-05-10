@@ -29,7 +29,7 @@ func WireUpEvent(c *cli.Context) (ns *audit.EventService, f format.Formatter) {
 }
 
 // EventList subcommand function
-func EventList(c *cli.Context) {
+func EventList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	eventSvc, formatter := WireUpEvent(c)
 
@@ -40,10 +40,11 @@ func EventList(c *cli.Context) {
 	if err = formatter.PrintList(events); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // SysEventList subcommand function
-func SysEventList(c *cli.Context) {
+func SysEventList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	eventSvc, formatter := WireUpEvent(c)
 
@@ -54,4 +55,5 @@ func SysEventList(c *cli.Context) {
 	if err = formatter.PrintList(events); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

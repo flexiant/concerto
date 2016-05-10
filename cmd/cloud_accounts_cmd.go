@@ -40,7 +40,6 @@ func CloudAccountList(c *cli.Context) error {
 	if err = formatter.PrintList(cloudAccounts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
-
 	return nil
 }
 
@@ -67,7 +66,6 @@ func CloudAccountCreate(c *cli.Context) error {
 	if err = formatter.PrintItem(*cloudAccount); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
-
 	return nil
 }
 
@@ -84,7 +82,6 @@ func CloudAccountUpdate(c *cli.Context) error {
 	if err = formatter.PrintItem(*cloudAccount); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
-
 	return nil
 }
 
@@ -98,6 +95,5 @@ func CloudAccountDelete(c *cli.Context) error {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete cloudAccount", err)
 	}
-
 	return nil
 }

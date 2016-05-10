@@ -29,7 +29,7 @@ func WireUpWorkspace(c *cli.Context) (ds *cloud.WorkspaceService, f format.Forma
 }
 
 // WorkspaceList subcommand function
-func WorkspaceList(c *cli.Context) {
+func WorkspaceList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	workspaceSvc, formatter := WireUpWorkspace(c)
 
@@ -40,10 +40,11 @@ func WorkspaceList(c *cli.Context) {
 	if err = formatter.PrintList(workspaces); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // WorkspaceShow subcommand function
-func WorkspaceShow(c *cli.Context) {
+func WorkspaceShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	workspaceSvc, formatter := WireUpWorkspace(c)
 
@@ -55,10 +56,11 @@ func WorkspaceShow(c *cli.Context) {
 	if err = formatter.PrintItem(*workspace); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // WorkspaceCreate subcommand function
-func WorkspaceCreate(c *cli.Context) {
+func WorkspaceCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	workspaceSvc, formatter := WireUpWorkspace(c)
 
@@ -70,10 +72,11 @@ func WorkspaceCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*workspace); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // WorkspaceUpdate subcommand function
-func WorkspaceUpdate(c *cli.Context) {
+func WorkspaceUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	workspaceSvc, formatter := WireUpWorkspace(c)
 
@@ -85,10 +88,11 @@ func WorkspaceUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*workspace); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // WorkspaceDelete subcommand function
-func WorkspaceDelete(c *cli.Context) {
+func WorkspaceDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	workspaceSvc, formatter := WireUpWorkspace(c)
 
@@ -97,10 +101,11 @@ func WorkspaceDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete workspace", err)
 	}
+	return nil
 }
 
 // WorkspaceServerList subcommand function
-func WorkspaceServerList(c *cli.Context) {
+func WorkspaceServerList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	workspaceSvc, formatter := WireUpWorkspace(c)
 
@@ -112,4 +117,5 @@ func WorkspaceServerList(c *cli.Context) {
 	if err = formatter.PrintList(*workspaceServers); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

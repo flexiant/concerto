@@ -29,7 +29,7 @@ func WireUpLicenseeReport(c *cli.Context) (ns *licensee.LicenseeReportService, f
 }
 
 // ReportList subcommand function
-func LicenseeReportList(c *cli.Context) {
+func LicenseeReportList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	reportSvc, formatter := WireUpLicenseeReport(c)
 
@@ -40,10 +40,11 @@ func LicenseeReportList(c *cli.Context) {
 	if err = formatter.PrintList(reports); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ReportShow subcommand function
-func LicenseeReportShow(c *cli.Context) {
+func LicenseeReportShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	reportSvc, formatter := WireUpLicenseeReport(c)
 
@@ -55,4 +56,5 @@ func LicenseeReportShow(c *cli.Context) {
 	if err = formatter.PrintItem(*report); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

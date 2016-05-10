@@ -29,7 +29,7 @@ func WireUpDomain(c *cli.Context) (ds *dns.DomainService, f format.Formatter) {
 }
 
 // DomainList subcommand function
-func DomainList(c *cli.Context) {
+func DomainList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -40,10 +40,11 @@ func DomainList(c *cli.Context) {
 	if err = formatter.PrintList(domains); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainShow subcommand function
-func DomainShow(c *cli.Context) {
+func DomainShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -55,10 +56,11 @@ func DomainShow(c *cli.Context) {
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainCreate subcommand function
-func DomainCreate(c *cli.Context) {
+func DomainCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -70,10 +72,11 @@ func DomainCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainUpdate subcommand function
-func DomainUpdate(c *cli.Context) {
+func DomainUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -85,10 +88,11 @@ func DomainUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainDelete subcommand function
-func DomainDelete(c *cli.Context) {
+func DomainDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -97,10 +101,11 @@ func DomainDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete domain", err)
 	}
+	return nil
 }
 
 // DomainRecordList subcommand function
-func DomainRecordList(c *cli.Context) {
+func DomainRecordList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -112,10 +117,11 @@ func DomainRecordList(c *cli.Context) {
 	if err = formatter.PrintList(*domainRecords); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainRecordShow subcommand function
-func DomainRecordShow(c *cli.Context) {
+func DomainRecordShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -127,10 +133,11 @@ func DomainRecordShow(c *cli.Context) {
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainRecordCreate subcommand function
-func DomainRecordCreate(c *cli.Context) {
+func DomainRecordCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -152,10 +159,11 @@ func DomainRecordCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainRecordUpdate subcommand function
-func DomainRecordUpdate(c *cli.Context) {
+func DomainRecordUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -168,10 +176,11 @@ func DomainRecordUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*domain); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // DomainRecordDelete subcommand function
-func DomainRecordDelete(c *cli.Context) {
+func DomainRecordDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	domainSvc, formatter := WireUpDomain(c)
 
@@ -180,4 +189,5 @@ func DomainRecordDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete domain record", err)
 	}
+	return nil
 }

@@ -29,7 +29,7 @@ func WireUpApp(c *cli.Context) (ds *wizard.AppService, f format.Formatter) {
 }
 
 // AppList subcommand function
-func AppList(c *cli.Context) {
+func AppList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	appSvc, formatter := WireUpApp(c)
 
@@ -40,10 +40,11 @@ func AppList(c *cli.Context) {
 	if err = formatter.PrintList(apps); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // AppDeploy subcommand function
-func AppDeploy(c *cli.Context) {
+func AppDeploy(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	appSvc, formatter := WireUpApp(c)
 
@@ -55,4 +56,5 @@ func AppDeploy(c *cli.Context) {
 	if err = formatter.PrintItem(*app); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

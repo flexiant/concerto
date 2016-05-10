@@ -29,7 +29,7 @@ func WireUpWizCloudProvider(c *cli.Context) (cs *wizard.WizCloudProvidersService
 }
 
 // WizCloudProviderList subcommand function
-func WizCloudProviderList(c *cli.Context) {
+func WizCloudProviderList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	cloudProviderSvc, formatter := WireUpWizCloudProvider(c)
 
@@ -42,4 +42,5 @@ func WizCloudProviderList(c *cli.Context) {
 	if err = formatter.PrintList(cloudProviders); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

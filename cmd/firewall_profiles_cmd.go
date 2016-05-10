@@ -29,7 +29,7 @@ func WireUpFirewallProfile(c *cli.Context) (ds *network.FirewallProfileService, 
 }
 
 // FirewallProfileList subcommand function
-func FirewallProfileList(c *cli.Context) {
+func FirewallProfileList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	firewallProfileSvc, formatter := WireUpFirewallProfile(c)
 
@@ -40,10 +40,11 @@ func FirewallProfileList(c *cli.Context) {
 	if err = formatter.PrintList(firewallProfiles); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // FirewallProfileShow subcommand function
-func FirewallProfileShow(c *cli.Context) {
+func FirewallProfileShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	firewallProfileSvc, formatter := WireUpFirewallProfile(c)
 
@@ -55,10 +56,11 @@ func FirewallProfileShow(c *cli.Context) {
 	if err = formatter.PrintItem(*firewallProfile); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // FirewallProfileCreate subcommand function
-func FirewallProfileCreate(c *cli.Context) {
+func FirewallProfileCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	firewallProfileSvc, formatter := WireUpFirewallProfile(c)
 
@@ -70,10 +72,11 @@ func FirewallProfileCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*firewallProfile); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // FirewallProfileUpdate subcommand function
-func FirewallProfileUpdate(c *cli.Context) {
+func FirewallProfileUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	firewallProfileSvc, formatter := WireUpFirewallProfile(c)
 
@@ -85,10 +88,11 @@ func FirewallProfileUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*firewallProfile); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // FirewallProfileDelete subcommand function
-func FirewallProfileDelete(c *cli.Context) {
+func FirewallProfileDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	firewallProfileSvc, formatter := WireUpFirewallProfile(c)
 
@@ -97,4 +101,5 @@ func FirewallProfileDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete firewallProfile", err)
 	}
+	return nil
 }

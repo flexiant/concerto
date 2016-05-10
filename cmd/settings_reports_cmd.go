@@ -28,8 +28,8 @@ func WireUpSettingsReport(c *cli.Context) (ns *settings.SettingsReportService, f
 	return ns, f
 }
 
-// ReportList subcommand function
-func SettingsReportList(c *cli.Context) {
+// SettingsReportList subcommand function
+func SettingsReportList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	reportSvc, formatter := WireUpSettingsReport(c)
 
@@ -40,10 +40,11 @@ func SettingsReportList(c *cli.Context) {
 	if err = formatter.PrintList(reports); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
-// ReportShow subcommand function
-func SettingsReportShow(c *cli.Context) {
+// SettingsReportShow subcommand function
+func SettingsReportShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	reportSvc, formatter := WireUpSettingsReport(c)
 
@@ -55,4 +56,5 @@ func SettingsReportShow(c *cli.Context) {
 	if err = formatter.PrintList(report); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

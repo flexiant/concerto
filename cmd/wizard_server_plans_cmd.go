@@ -29,7 +29,7 @@ func WireUpWizServerPlan(c *cli.Context) (ds *wizard.WizServerPlanService, f for
 }
 
 // WizServerPlanList subcommand function
-func WizServerPlanList(c *cli.Context) {
+func WizServerPlanList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverPlanSvc, formatter := WireUpWizServerPlan(c)
 
@@ -42,4 +42,5 @@ func WizServerPlanList(c *cli.Context) {
 	if err = formatter.PrintList(serverPlans); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

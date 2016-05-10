@@ -29,7 +29,7 @@ func WireUpServer(c *cli.Context) (ds *cloud.ServerService, f format.Formatter) 
 }
 
 // ServerList subcommand function
-func ServerList(c *cli.Context) {
+func ServerList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -40,10 +40,11 @@ func ServerList(c *cli.Context) {
 	if err = formatter.PrintList(servers); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerShow subcommand function
-func ServerShow(c *cli.Context) {
+func ServerShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -55,10 +56,11 @@ func ServerShow(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerCreate subcommand function
-func ServerCreate(c *cli.Context) {
+func ServerCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -70,10 +72,11 @@ func ServerCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerUpdate subcommand function
-func ServerUpdate(c *cli.Context) {
+func ServerUpdate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -85,10 +88,11 @@ func ServerUpdate(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerBoot subcommand function
-func ServerBoot(c *cli.Context) {
+func ServerBoot(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -100,10 +104,11 @@ func ServerBoot(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerReboot subcommand function
-func ServerReboot(c *cli.Context) {
+func ServerReboot(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -115,10 +120,11 @@ func ServerReboot(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerShutdown subcommand function
-func ServerShutdown(c *cli.Context) {
+func ServerShutdown(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -130,10 +136,11 @@ func ServerShutdown(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerOverride subcommand function
-func ServerOverride(c *cli.Context) {
+func ServerOverride(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -145,10 +152,11 @@ func ServerOverride(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServerDelete subcommand function
-func ServerDelete(c *cli.Context) {
+func ServerDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -157,11 +165,12 @@ func ServerDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete server", err)
 	}
+	return nil
 }
 
 // ========= DNS ========
 // DNSList subcommand function
-func DNSList(c *cli.Context) {
+func DNSList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	dnsSvc, formatter := WireUpServer(c)
 
@@ -173,11 +182,13 @@ func DNSList(c *cli.Context) {
 	if err = formatter.PrintList(dnss); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ========= Events ========
+
 // EventsList subcommand function
-func EventsList(c *cli.Context) {
+func EventsList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	dnsSvc, formatter := WireUpServer(c)
 
@@ -189,11 +200,13 @@ func EventsList(c *cli.Context) {
 	if err = formatter.PrintList(events); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 //======= Operational Scripts ==========
+
 // OperationalScriptsList subcommand function
-func OperationalScriptsList(c *cli.Context) {
+func OperationalScriptsList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	dnsSvc, formatter := WireUpServer(c)
 
@@ -205,10 +218,11 @@ func OperationalScriptsList(c *cli.Context) {
 	if err = formatter.PrintList(scripts); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // OperationalScriptExecute subcommand function
-func OperationalScriptExecute(c *cli.Context) {
+func OperationalScriptExecute(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serverSvc, formatter := WireUpServer(c)
 
@@ -220,4 +234,5 @@ func OperationalScriptExecute(c *cli.Context) {
 	if err = formatter.PrintItem(*server); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

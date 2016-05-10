@@ -29,7 +29,7 @@ func WireUpNode(c *cli.Context) (ns *node.NodeService, f format.Formatter) {
 }
 
 // NodeList subcommand function
-func NodeList(c *cli.Context) {
+func NodeList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	nodeSvc, formatter := WireUpNode(c)
 
@@ -40,10 +40,11 @@ func NodeList(c *cli.Context) {
 	if err = formatter.PrintList(nodes); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // NodeCreate subcommand function
-func NodeCreate(c *cli.Context) {
+func NodeCreate(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	nodeSvc, formatter := WireUpNode(c)
 
@@ -55,10 +56,11 @@ func NodeCreate(c *cli.Context) {
 	if err = formatter.PrintItem(*node); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // NodeDelete subcommand function
-func NodeDelete(c *cli.Context) {
+func NodeDelete(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	nodeSvc, formatter := WireUpNode(c)
 
@@ -67,10 +69,11 @@ func NodeDelete(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't delete node", err)
 	}
+	return nil
 }
 
 // NodeStart subcommand function
-func NodeStart(c *cli.Context) {
+func NodeStart(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	nodeSvc, formatter := WireUpNode(c)
 
@@ -79,10 +82,11 @@ func NodeStart(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't start node", err)
 	}
+	return nil
 }
 
 // NodeStop subcommand function
-func NodeStop(c *cli.Context) {
+func NodeStop(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	nodeSvc, formatter := WireUpNode(c)
 
@@ -91,10 +95,11 @@ func NodeStop(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't stop node", err)
 	}
+	return nil
 }
 
 // NodeRestart subcommand function
-func NodeRestart(c *cli.Context) {
+func NodeRestart(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	nodeSvc, formatter := WireUpNode(c)
 
@@ -103,4 +108,5 @@ func NodeRestart(c *cli.Context) {
 	if err != nil {
 		formatter.PrintFatal("Couldn't restart node", err)
 	}
+	return nil
 }

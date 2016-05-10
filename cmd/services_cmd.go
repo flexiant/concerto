@@ -29,7 +29,7 @@ func WireUpService(c *cli.Context) (sv *blueprint.ServicesService, f format.Form
 }
 
 // ServiceList subcommand function
-func ServiceList(c *cli.Context) {
+func ServiceList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serviceSvc, formatter := WireUpService(c)
 
@@ -40,10 +40,11 @@ func ServiceList(c *cli.Context) {
 	if err = formatter.PrintList(services); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
 
 // ServiceShow subcommand function
-func ServiceShow(c *cli.Context) {
+func ServiceShow(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	serviceSvc, formatter := WireUpService(c)
 
@@ -55,4 +56,5 @@ func ServiceShow(c *cli.Context) {
 	if err = formatter.PrintItem(*service); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }

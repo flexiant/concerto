@@ -29,7 +29,7 @@ func WireUpGenericImage(c *cli.Context) (ns *cloud.GenericImageService, f format
 }
 
 // GenericImageList subcommand function
-func GenericImageList(c *cli.Context) {
+func GenericImageList(c *cli.Context) error {
 	debugCmdFuncInfo(c)
 	genericImageSvc, formatter := WireUpGenericImage(c)
 
@@ -40,4 +40,5 @@ func GenericImageList(c *cli.Context) {
 	if err = formatter.PrintList(genericImages); err != nil {
 		formatter.PrintFatal("Couldn't print/format result", err)
 	}
+	return nil
 }
