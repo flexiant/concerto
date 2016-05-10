@@ -14,7 +14,7 @@ import (
 	"github.com/flexiant/concerto/webservice"
 )
 
-func cmdExecuteScript(c *cli.Context) {
+func cmdExecuteScript(c *cli.Context) error {
 	utils.FlagsRequired(c, []string{"server_id", "script_id"})
 	webservice, err := webservice.NewWebService()
 	utils.CheckError(err)
@@ -32,4 +32,5 @@ func cmdExecuteScript(c *cli.Context) {
 	fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%t\n", event.Id, event.Timestamp, event.Level, event.Header, event.Description)
 
 	w.Flush()
+	return nil
 }

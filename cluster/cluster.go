@@ -5,19 +5,20 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/api/types"
-	"github.com/flexiant/concerto/utils"
-	"github.com/flexiant/concerto/webservice"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/api/types"
+	"github.com/flexiant/concerto/utils"
+	"github.com/flexiant/concerto/webservice"
 )
 
-func cmdKubectlHijack(c *cli.Context) {
+func cmdKubectlHijack(c *cli.Context) error {
 	var clusters []types.Cluster
 	var cluster types.Cluster
 
@@ -122,10 +123,10 @@ func cmdKubectlHijack(c *cli.Context) {
 			log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", clusterParameters))
 		}()
 
-		return
+		return nil
 	} else {
 		log.Warn(fmt.Sprintf("Cluster \"%s\" is not in your account please create it. Thank you.", clusterName))
 		os.Exit(1)
 	}
-
+	return nil
 }

@@ -33,12 +33,13 @@ package admin
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"text/tabwriter"
+
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/api/types"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
-	"os"
-	"text/tabwriter"
 	// "time"
 )
 
@@ -92,7 +93,7 @@ import (
 // 	w.Flush()
 // }
 
-func cmdShow(c *cli.Context) {
+func cmdShow(c *cli.Context) error {
 	var vals types.Report
 
 	utils.FlagsRequired(c, []string{"id"})
@@ -119,7 +120,7 @@ func cmdShow(c *cli.Context) {
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%g\n", l.ID, l.CommissionedAt, l.DecommissionedAt, l.InstanceID, l.InstanceName, l.InstanceFQDN, l.Consumption)
 	}
 	w.Flush()
-
+	return nil
 }
 
 // func SubCommands() []cli.Command {

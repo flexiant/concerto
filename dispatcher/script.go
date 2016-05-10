@@ -3,12 +3,13 @@ package dispatcher
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/flexiant/concerto/utils"
 	"github.com/flexiant/concerto/webservice"
-	"io/ioutil"
-	"os"
 )
 
 const (
@@ -145,14 +146,17 @@ func execute(phase string) {
 	}
 }
 
-func cmdBoot(c *cli.Context) {
+func cmdBoot(c *cli.Context) error {
 	execute("boot")
+	return nil
 }
 
-func cmdOperational(c *cli.Context) {
+func cmdOperational(c *cli.Context) error {
 	execute("operational")
+	return nil
 }
 
-func cmdShutdown(c *cli.Context) {
+func cmdShutdown(c *cli.Context) error {
 	execute("shutdown")
+	return nil
 }

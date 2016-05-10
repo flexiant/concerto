@@ -195,7 +195,7 @@ func (w *WebClient) getApiKeys() error {
 	return errors.New(fmt.Sprintf("We are not able to download your API keys. Please try by loging to %s/settings/api_key.zip in your web navigator ", w.url.String()))
 }
 
-func cmdSetupApiKeys(c *cli.Context) {
+func cmdSetupApiKeys(c *cli.Context) error {
 	var emailUnClean string
 	var passwordUnClean []byte
 
@@ -259,6 +259,7 @@ func cmdSetupApiKeys(c *cli.Context) {
 	} else {
 		log.Fatalf("Email address %s is not a valid email", email)
 	}
+	return nil
 }
 
 func SubCommands() []cli.Command {

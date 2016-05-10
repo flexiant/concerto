@@ -64,20 +64,23 @@ func get() Policy {
 	return policy
 }
 
-func cmdList(c *cli.Context) {
+func cmdList(c *cli.Context) error {
 	list(get())
+	return nil
 }
 
-func cmdApply(c *cli.Context) {
+func cmdApply(c *cli.Context) error {
 	policy := get()
 	// Only apply firewall if we get a non-empty set of rules
 	if len(policy.Rules) > 0 {
 		apply(policy)
 	}
+	return nil
 }
 
-func cmdFlush(c *cli.Context) {
+func cmdFlush(c *cli.Context) error {
 	flush()
+	return nil
 }
 
 func check(policy Policy, rule Rule) bool {
@@ -90,7 +93,7 @@ func check(policy Policy, rule Rule) bool {
 	return exists
 }
 
-func cmdCheck(c *cli.Context) {
+func cmdCheck(c *cli.Context) error {
 	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
 
 	newRule := &Rule{
@@ -102,9 +105,10 @@ func cmdCheck(c *cli.Context) {
 	policy := get()
 
 	fmt.Printf("%t\n", check(policy, *newRule))
+	return nil
 }
 
-func cmdAdd(c *cli.Context) {
+func cmdAdd(c *cli.Context) error {
 	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
 
 	// API accepts only 1 rule
@@ -135,9 +139,11 @@ func cmdAdd(c *cli.Context) {
 		utils.CheckError(err)
 		utils.CheckReturnCode(code, res)
 	}
+
+	return nil
 }
 
-func cmdUpdate(c *cli.Context) {
+func cmdUpdate(c *cli.Context) error {
 	utils.FlagsRequired(c, []string{"rules"})
 
 	fp := &FirewallProfile{
@@ -160,9 +166,10 @@ func cmdUpdate(c *cli.Context) {
 	}
 	utils.CheckError(err)
 	utils.CheckReturnCode(code, res)
+	return nil
 }
 
-func cmdRemove(c *cli.Context) {
+func cmdRemove(c *cli.Context) error {
 	utils.FlagsRequired(c, []string{"cidr", "minPort", "maxPort", "ipProtocol"})
 
 	existingRule := &Rule{
@@ -199,7 +206,7 @@ func cmdRemove(c *cli.Context) {
 		utils.CheckError(err)
 		utils.CheckReturnCode(code, res)
 	}
-
+	return nil
 }
 
 func SubCommands() []cli.Command {

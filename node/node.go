@@ -128,7 +128,7 @@ func cmdCreate(c *cli.Context) {
 // 	w.Flush()
 // }
 
-func cmdDockerHijack(c *cli.Context) {
+func cmdDockerHijack(c *cli.Context) error {
 
 	var nodes []Node
 	var node Node
@@ -222,10 +222,11 @@ func cmdDockerHijack(c *cli.Context) {
 			log.Fatal(fmt.Sprintf("Timeout out. Check conectivity to %s", nodeParameters))
 		}()
 
-		return
+		return nil
 
 	} else {
 		log.Warn(fmt.Sprintf("Node \"%s\" is not in your account please create it. Thank you.", nodeName))
 		os.Exit(1)
 	}
+	return nil
 }

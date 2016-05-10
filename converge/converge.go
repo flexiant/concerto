@@ -3,17 +3,18 @@ package converge
 import (
 	"bufio"
 	"errors"
-	log "github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/flexiant/concerto/utils"
 	"io"
 	"os/exec"
 	"path"
 	"regexp"
 	"runtime"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
+	"github.com/flexiant/concerto/utils"
 )
 
-func CmbConverge(c *cli.Context) {
+func CmbConverge(c *cli.Context) error {
 
 	var firstBootJsonChef string
 
@@ -66,5 +67,5 @@ func CmbConverge(c *cli.Context) {
 	} else {
 		log.Fatalf("Make sure %s chef client configuration exists.", firstBootJsonChef)
 	}
-
+	return nil
 }
