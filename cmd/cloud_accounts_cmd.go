@@ -48,7 +48,17 @@ func CloudAccountCreate(c *cli.Context) {
 	cloudAccountSvc, formatter := WireUpCloudAccount(c)
 
 	checkRequiredFlags(c, []string{"cloud_provider_id", "credentials"}, formatter)
-	cloudAccount, err := cloudAccountSvc.CreateCloudAccount(utils.FlagConvertParams(c))
+
+	//cloudAccount, err := cloudAccountSvc.CreateCloudAccount(utils.FlagConvertParams(c))
+
+	// parse json parameter values
+	params, err := utils.FlagConvertParamsJSON(c, []string{"credentials"})
+	if err != nil {
+		formatter.PrintFatal("Error parsing parameters", err)
+	}
+
+	cloudAccount, err := cloudAccountSvc.CreateCloudAccount(params)
+
 	if err != nil {
 		formatter.PrintFatal("Couldn't create cloudAccount", err)
 	}
