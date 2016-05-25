@@ -17,3 +17,5 @@ import:
   version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
 - package: github.com/pmezard/go-difflib
   version: 792786c7400a136282c1664665ae0a8db921c6c2
+- package: github.com/stretchr/objx
+  version: 1a9d0bb9f541897e62256577b352fdbc1fb4fd94
