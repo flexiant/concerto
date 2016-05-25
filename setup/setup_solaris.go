@@ -1,9 +1,8 @@
-// +build !solaris
+// +build solaris
 
 package setup
 
 import (
-	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -14,15 +13,11 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"strings"
-	"syscall"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/flexiant/concerto/utils"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/codegangsta/cli"
-	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/net/html"
 	"golang.org/x/net/publicsuffix"
 )
@@ -198,70 +193,7 @@ func (w *WebClient) getApiKeys() error {
 }
 
 func cmdSetupApiKeys(c *cli.Context) error {
-	var emailUnClean string
-	var passwordUnClean []byte
-
-	reader := bufio.NewReader(os.Stdin)
-	config, err := utils.GetConcertoConfig()
-	if err != nil {
-		log.Fatalf("Error getting current configuration: %s", err.Error)
-	}
-
-	loginURL := config.ConcertoURL
-	if err != nil {
-		log.Fatalf("Error getting Concerto URL: %s", err.Error)
-	}
-
-	fmt.Printf("Using Concerto endpoint %s \n", loginURL)
-	if c.IsSet("email") {
-		emailUnClean = c.String("email")
-	} else {
-		fmt.Printf("Email: ")
-		emailUnClean, _ = reader.ReadString('\n')
-	}
-
-	if c.IsSet("password") {
-		passwordUnClean = []byte(c.String("password"))
-	} else {
-		fmt.Printf("Password: ")
-		passwordUnClean, _ = terminal.ReadPassword(int(syscall.Stdin))
-	}
-
-	email := strings.TrimSpace(string(emailUnClean))
-	password := strings.TrimSpace(string(passwordUnClean))
-	fmt.Printf("\n")
-
-	if govalidator.IsEmail(email) {
-		client, err := NewWebClient(loginURL)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Printf("Logging into Concerto ...")
-		err = client.login(email, password)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf(" OK\n")
-
-		fmt.Printf("Checking/Generating API keys ...")
-		err = client.generateAPIKeys()
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf(" OK\n")
-
-		fmt.Printf("Downloading API keys ...")
-		err = client.getApiKeys()
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf(" OK\n")
-
-	} else {
-		log.Fatalf("Email address %s is not a valid email", email)
-	}
-	return nil
+	return fmt.Errorf("Setup not supported for Solaris")
 }
 
 func SubCommands() []cli.Command {
