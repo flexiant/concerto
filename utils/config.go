@@ -258,7 +258,7 @@ func getUsername() string {
 	osUser := ""
 
 	switch runtime.GOOS {
-	case "darwin", "linux":
+	case "darwin", "linux", "solaris":
 		osUser = os.Getenv("USER")
 	case "windows":
 		osUser = os.Getenv("USERNAME")
