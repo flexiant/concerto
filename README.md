@@ -456,7 +456,7 @@ We need kubectl in the path to manage the cluster. You can download kubectl bina
 
 `https://storage.googleapis.com/kubernetes-release/release/v1.0.7/bin/<os>/<architecture>/kubectl`
 
-Drop kubetcl in a location in your path.
+Drop kubectl in a location in your path.
 
 If you are using Linux:
 ```
